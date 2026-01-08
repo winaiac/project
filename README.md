@@ -3,9 +3,13 @@
 "Revolutionizing Lunar Logistics with Earth's Wisdom: Mass Drivers & Net Seas"
 "ปฏิวัติการขนส่งอวกาศด้วยพลังภูมิปัญญาแห่งมวลมนุษยชาติ"
 
+<!-- Badges Section -->
+
+<!-- Call to Action Button -->
+
 🇬🇧 Vision
 
-This project aims to reduce lunar logistics costs by 90% (from ~$1.2M to ~$100K per payload) by breaking the tyranny of the Rocket Equation. We propose eliminating the fuel required for landing deceleration.
+This project aims to reduce lunar logistics costs by 90% (from ~$1.2M to ~$100K per payload) by breaking the tyranny of the Rocket Equation. We propose eliminating the landing propellant entirely.
 
 Our Solution: "Shoot & Catch"
 
