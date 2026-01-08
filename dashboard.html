@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lunar Homestead: ยุทธศาสตร์การตั้งถิ่นฐานวิถีพอเพียงบนดวงจันทร์</title>
+    <title>Lunar Homestead Dashboard (Bilingual)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
@@ -88,6 +88,14 @@
             border-top-right-radius: 100%;
             background: linear-gradient(180deg, #333 0%, #1F2833 100%);
         }
+
+        .sub-lang {
+            display: block;
+            font-size: 0.85em;
+            opacity: 0.8;
+            margin-top: 0.2rem;
+            font-weight: 300;
+        }
     </style>
 </head>
 
@@ -98,21 +106,30 @@
         <div class="absolute inset-0 bg-gradient-to-b from-[#66FCF1] to-transparent opacity-5 pointer-events-none h-32">
         </div>
         <h1 class="text-3xl md:text-5xl font-bold neon-text mb-4 uppercase tracking-wider">LUNAR HOMESTEAD</h1>
-        <h2 class="text-xl md:text-2xl text-gray-400 font-light">ยุทธศาสตร์การตั้งถิ่นฐาน: ภูมิปัญญาและเทคโนโลยีพอเพียง
+        <h2 class="text-xl md:text-2xl text-gray-400 font-light">
+            Sufficiency Settlement Strategy
+            <span class="sub-lang">ยุทธศาสตร์การตั้งถิ่นฐานวิถีพอเพียง</span>
         </h2>
         <p class="mt-6 max-w-4xl mx-auto text-base text-gray-500 leading-relaxed">
-            เปลี่ยนดวงจันทร์ให้เป็นบ้าน ด้วยการประยุกต์ใช้ภูมิปัญญา "การหมุนเวียนทรัพยากร" (Circular Living)
-            ผสมผสานกับเทคโนโลยีเท่าที่จำเป็น เพื่อสร้างระบบนิเวศที่ยั่งยืนในพื้นที่ปิด (Closed Loop System)
+            Transforming the Moon into a home using "Circular Living" wisdom combined with essential technology for a
+            sustainable Closed Loop System.
+            <span class="sub-lang">เปลี่ยนดวงจันทร์ให้เป็นบ้าน ด้วยการประยุกต์ใช้ภูมิปัญญา "การหมุนเวียนทรัพยากร"
+                ผสมผสานกับเทคโนโลยีเท่าที่จำเป็น เพื่อสร้างระบบนิเวศที่ยั่งยืนในพื้นที่ปิด</span>
         </p>
     </header>
 
     <!-- Section 1: Habitat - Lava Tube Living (ภูมิปัญญาคนถ้ำ) -->
     <section class="mb-20">
         <div class="text-center mb-10">
-            <h3 class="text-3xl font-bold earth-tone-text mb-3">1. ที่พักอาศัย: วิถีมนุษย์ถ้ำ (Lava Tube Habitat)</h3>
+            <h3 class="text-3xl font-bold earth-tone-text mb-3">
+                1. Habitat: Lava Tube Living
+                <span class="sub-lang">ที่พักอาศัย: วิถีมนุษย์ถ้ำ</span>
+            </h3>
             <p class="text-gray-400 max-w-2xl mx-auto">
-                "อย่าสู้กับธรรมชาติ แต่ให้ธรรมชาติปกป้องเรา" ใช้โพรงลาวาเป็นเกราะกำบังรังสีและอุกกาบาต
-                กางเต็นท์วิทยาศาสตร์ภายในเพื่อสร้างแรงดันอากาศ
+                "Don't fight nature, let nature protect us." Using lava tubes as shields against radiation and
+                meteorites.
+                <span class="sub-lang">"อย่าสู้กับธรรมชาติ แต่ให้ธรรมชาติปกป้องเรา"
+                    ใช้โพรงลาวาเป็นเกราะกำบังรังสีและอุกกาบาต กางเต็นท์วิทยาศาสตร์ภายในเพื่อสร้างแรงดันอากาศ</span>
             </p>
         </div>
 
@@ -121,24 +138,31 @@
             <div class="card-bg p-8 rounded-xl relative overflow-hidden h-96 flex flex-col justify-end">
                 <div
                     class="absolute top-0 left-0 w-full h-1/2 cave-roof opacity-80 z-10 flex items-center justify-center">
-                    <span class="text-white font-bold bg-black/50 px-2 rounded">หินลาวาหนา 10m
-                        (กันรังสี/อุกกาบาต)</span>
+                    <div class="text-center">
+                        <span class="text-white font-bold bg-black/50 px-2 rounded block">10m Thick Basalt</span>
+                        <span class="text-gray-300 text-xs bg-black/50 px-2 rounded">หินลาวาหนา 10m (กันรังสี)</span>
+                    </div>
                 </div>
                 <div
                     class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/3 bg-blue-500/20 w-3/4 h-48 rounded-t-full border-4 border-[#66FCF1] z-0 flex items-center justify-center">
                     <div class="text-center">
                         <span class="text-[#66FCF1] font-bold text-xl block">Inflatable Habitat</span>
-                        <span class="text-xs text-[#66FCF1]">(แรงดัน 1 ATM)</span>
+                        <span class="text-xs text-[#66FCF1]">(Pressure 1 ATM)</span>
                     </div>
                 </div>
                 <div class="w-full bg-[#333] h-4 mt-auto z-20"></div> <!-- Floor -->
-                <p class="absolute bottom-2 left-4 text-xs text-gray-500">อุณหภูมิคงที่ -20°C ตลอดปี
-                    (ไม่ต้องสู้กับความร้อน 120°C)</p>
+                <p class="absolute bottom-2 left-4 text-xs text-gray-500">
+                    Stable Temp -20°C (Year-round)
+                    <br>อุณหภูมิคงที่ -20°C ตลอดปี
+                </p>
             </div>
 
             <!-- Chart: Temperature Stability -->
             <div>
-                <h4 class="text-center text-white mb-4 text-lg">ความเสถียรของอุณหภูมิ: ผิวดิน vs ในถ้ำ</h4>
+                <h4 class="text-center text-white mb-4 text-lg">
+                    Temperature Stability: Surface vs Cave
+                    <span class="sub-lang text-sm text-gray-400">ความเสถียรของอุณหภูมิ: ผิวดิน vs ในถ้ำ</span>
+                </h4>
                 <div class="chart-container">
                     <canvas id="tempChart"></canvas>
                 </div>
@@ -148,16 +172,17 @@
         <!-- Video Embeds -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="card-bg p-4 rounded-xl shadow-lg border border-[#1F2833]">
-                <h4 class="text-center text-[#66FCF1] mb-4 text-sm font-semibold">พบถ้ำลึกบนดวงจันทร์ (TNN)</h4>
+                <h4 class="text-center text-[#66FCF1] mb-4 text-sm font-semibold">Using Lunar Lava Tubes (English)</h4>
                 <div class="relative w-full pb-[56.25%] overflow-hidden rounded-lg">
-                    <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/kAM2axuNis8"
-                        title="YouTube video player" frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen></iframe>
+                    <iframe class="absolute top-0 left-0 w-full h-full"
+                        src="https://www.youtube.com/embed/w4iEjht96pQ?si=SUYWRa0wWuyLIDr9" title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
             </div>
             <div class="card-bg p-4 rounded-xl shadow-lg border border-[#1F2833]">
-                <h4 class="text-center text-[#66FCF1] mb-4 text-sm font-semibold">บ้านหลังที่ 2 ของมนุษย์ (TNN)</h4>
+                <h4 class="text-center text-[#66FCF1] mb-4 text-sm font-semibold">Humanity's 2nd Home (TNN)</h4>
                 <div class="relative w-full pb-[56.25%] overflow-hidden rounded-lg">
                     <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/XlR4r4fSifs"
                         title="YouTube video player" frameborder="0"
@@ -171,33 +196,41 @@
     <!-- Section 2: Water Management - Solar Distillation (ภูมิปัญญาการกลั่น) -->
     <section class="mb-20 bg-[#08090C] p-8 rounded-2xl border border-[#1F2833]">
         <div class="text-center mb-10">
-            <h3 class="text-3xl font-bold neon-text mb-3">2. การบริหารน้ำ: ระบบกลั่นพลังงานแสงอาทิตย์</h3>
+            <h3 class="text-3xl font-bold neon-text mb-3">
+                2. Water Management: Solar Distillation
+                <span class="sub-lang">การบริหารน้ำ: ระบบกลั่นพลังงานแสงอาทิตย์</span>
+            </h3>
             <p class="text-gray-400 max-w-2xl mx-auto">
-                "น้ำทุกหยดคือชีวิต" ใช้ระบบรีไซเคิลน้ำ 98% จากปัสสาวะและความชื้น ผ่านกระบวนการกลั่นด้วยแสงอาทิตย์ (Solar
-                Distillation) ที่เรียบง่ายแต่ทรงพลัง
+                "Water is Life." Recycling 98% of water from urine and humidity using simple yet powerful Solar
+                Distillation.
+                <span class="sub-lang">"น้ำทุกหยดคือชีวิต" ใช้ระบบรีไซเคิลน้ำ 98% จากปัสสาวะและความชื้น
+                    ผ่านกระบวนการกลั่นด้วยแสงอาทิตย์ที่เรียบง่ายแต่ทรงพลัง</span>
             </p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="col-span-1 flex flex-col space-y-4 justify-center">
                 <div class="flow-step border-yellow-500">
-                    <h5 class="font-bold text-yellow-500">น้ำเสีย (Wastewater)</h5>
-                    <p class="text-xs text-gray-400">ปัสสาวะ + น้ำซักล้าง</p>
+                    <h5 class="font-bold text-yellow-500">Wastewater (น้ำเสีย)</h5>
+                    <p class="text-xs text-gray-400">Urine + Greywater</p>
                 </div>
                 <div class="arrow-down"></div>
                 <div class="flow-step border-[#66FCF1]">
-                    <h5 class="font-bold text-[#66FCF1]">การกลั่น (Distillation)</h5>
-                    <p class="text-xs text-gray-400">ใช้ความร้อนจาก Solar Concentrator ระเหยน้ำ แยกสิ่งสกปรก</p>
+                    <h5 class="font-bold text-[#66FCF1]">Distillation (การกลั่น)</h5>
+                    <p class="text-xs text-gray-400">Using Solar Concentrator Heat</p>
                 </div>
                 <div class="arrow-down"></div>
                 <div class="flow-step border-blue-500">
-                    <h5 class="font-bold text-blue-500">น้ำบริสุทธิ์ (Potable Water)</h5>
-                    <p class="text-xs text-gray-400">เติมแร่ธาตุ พร้อมดื่ม</p>
+                    <h5 class="font-bold text-blue-500">Potable Water (น้ำบริสุทธิ์)</h5>
+                    <p class="text-xs text-gray-400">Mineralized & Ready to Drink</p>
                 </div>
             </div>
 
             <div class="col-span-1 md:col-span-2">
-                <h4 class="text-center text-white mb-4">ประสิทธิภาพการหมุนเวียนน้ำในระบบปิด</h4>
+                <h4 class="text-center text-white mb-4">
+                    Closed-Loop Water Cycle Efficiency
+                    <span class="sub-lang text-sm text-gray-400">ประสิทธิภาพการหมุนเวียนน้ำในระบบปิด</span>
+                </h4>
                 <div class="chart-container">
                     <canvas id="waterCycleChart"></canvas>
                 </div>
@@ -208,16 +241,23 @@
     <!-- Section 3: Food & Agriculture - Lunar Composting (ภูมิปัญญาปุ๋ยหมัก) -->
     <section class="mb-20">
         <div class="text-center mb-10">
-            <h3 class="text-3xl font-bold earth-tone-text mb-3">3. อาหาร: กสิกรรมไร้ทิ้ง (Zero Waste Agriculture)</h3>
+            <h3 class="text-3xl font-bold earth-tone-text mb-3">
+                3. Food: Zero Waste Agriculture
+                <span class="sub-lang">อาหาร: กสิกรรมไร้ทิ้ง</span>
+            </h3>
             <p class="text-gray-400 max-w-2xl mx-auto">
-                เปลี่ยน "ของเสีย" ให้เป็น "ทองคำ" (Soil Amendment) ด้วยการหมักปุ๋ยชีวภาพจากมูลมนุษย์และเศษพืช
-                เพื่อปลูกพืชหัวและสาหร่าย
+                Turning "Waste" into "Gold" (Soil Amendment) by composting bio-waste to grow root crops and algae.
+                <span class="sub-lang">เปลี่ยน "ของเสีย" ให้เป็น "ทองคำ" ด้วยการหมักปุ๋ยชีวภาพจากมูลมนุษย์และเศษพืช
+                    เพื่อปลูกพืชหัวและสาหร่าย</span>
             </p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div class="card-bg p-6 rounded-lg shadow-lg">
-                <h4 class="text-center text-white mb-4">สัดส่วนแหล่งอาหาร (Food Sources)</h4>
+                <h4 class="text-center text-white mb-4">
+                    Food Sources Proportion
+                    <span class="sub-lang text-sm text-gray-400">สัดส่วนแหล่งอาหาร</span>
+                </h4>
                 <div class="chart-container">
                     <canvas id="foodSourceChart"></canvas>
                 </div>
@@ -225,17 +265,20 @@
 
             <div class="flex flex-col justify-center space-y-6">
                 <div class="bg-[#0B0C10] p-6 rounded-r-xl border-l-4 border-[#FFD700]">
-                    <h4 class="text-xl font-bold text-[#FFD700]">💩 ปุ๋ยหมัก (Composting)</h4>
+                    <h4 class="text-xl font-bold text-[#FFD700]">💩 Composting (ปุ๋ยหมัก)</h4>
                     <p class="text-gray-400 text-sm mt-2">
-                        การใช้จุลินทรีย์ย่อยสลายมูลและเศษอาหาร ผสมกับหินภูเขาไฟบดละเอียด เพื่อสร้าง "ดินมีชีวิต" (Living
-                        Soil) สำหรับปลูกพืช
+                        Microbial decomposition of waste mixed with crushed regolith to create "Living Soil".
+                        <span class="sub-lang">การใช้จุลินทรีย์ย่อยสลายมูลและเศษอาหาร ผสมกับหินภูเขาไฟบดละเอียด
+                            เพื่อสร้าง "ดินมีชีวิต"</span>
                     </p>
                 </div>
                 <div class="bg-[#0B0C10] p-6 rounded-r-xl border-l-4 border-[#45A29E]">
-                    <h4 class="text-xl font-bold text-[#45A29E]">🍠 พืชเศรษฐกิจ (Staple Crops)</h4>
+                    <h4 class="text-xl font-bold text-[#45A29E]">🍠 Staple Crops (พืชเศรษฐกิจ)</h4>
                     <p class="text-gray-400 text-sm mt-2">
-                        เน้น <strong>มันเทศ</strong> (ให้พลังงานสูง/ใบกินได้), <strong>แหนเป็ด</strong>
-                        (โปรตีนสูง/โตไว), และ <strong>สาหร่าย</strong> (ผลิต O2)
+                        Focus on <strong>Sweet Potato</strong> (Energy), <strong>Duckweed</strong> (Protein), and
+                        <strong>Spirulina</strong> (Oxygen).
+                        <span class="sub-lang">เน้น มันเทศ (พลังงานสูง), แหนเป็ด (โปรตีนสูง), และ สาหร่าย (ผลิต
+                            O2)</span>
                     </p>
                 </div>
             </div>
@@ -245,30 +288,38 @@
     <!-- Section 4: Oxygen & Logistics (เทคโนโลยีเท่าที่จำเป็น) -->
     <section class="mb-20">
         <div class="text-center mb-10">
-            <h3 class="text-3xl font-bold neon-text mb-3">4. นวัตกรรม 3-in-1: น้ำ, อากาศ และบ้าน (Zero Waste)</h3>
+            <h3 class="text-3xl font-bold neon-text mb-3">
+                4. 3-in-1 Innovation: Water, Air, Shelter
+                <span class="sub-lang">นวัตกรรม 3-in-1: น้ำ, อากาศ และบ้าน (Zero Waste)</span>
+            </h3>
             <p class="text-gray-400 max-w-2xl mx-auto">
-                ใช้ทรัพยากรคุ้มค่าทุกเม็ด: ขุดดินปนน้ำแข็งมา "อบ" เพื่อเอาน้ำและอากาศ ส่วนกากดินที่เหลือ (Slag)
-                อย่านำไปทิ้ง! นำไปอัดเป็น <strong>"อิฐกันรังสี"</strong> เพื่อเสริมเกราะกำบังให้ที่พักอาศัย
+                Total Efficiency: Bake icy regolith to extract Water and Air. Use the leftover Slag to compress into
+                <strong>Radiation Shield Bricks</strong>.
+                <span class="sub-lang">ใช้ทรัพยากรคุ้มค่าทุกเม็ด: ขุดดินปนน้ำแข็งมา "อบ" เพื่อเอาน้ำและอากาศ
+                    ส่วนกากดินที่เหลือ (Slag) นำไปอัดเป็น "อิฐกันรังสี"</span>
             </p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
             <!-- Diagram: Triple Production Flow -->
             <div class="bg-[#08090C] p-6 rounded-2xl border border-[#1F2833] flex flex-col justify-center">
-                <h4 class="text-center text-white mb-6 font-semibold">วงจรการผลิตแบบไร้ของเสีย (Zero Waste Cycle)</h4>
+                <h4 class="text-center text-white mb-6 font-semibold">
+                    Zero Waste Production Cycle
+                    <span class="sub-lang text-xs">วงจรการผลิตแบบไร้ของเสีย</span>
+                </h4>
 
                 <div class="flex flex-col items-center space-y-2">
                     <!-- Step 1 -->
                     <div class="flow-step border-gray-500 w-full max-w-xs">
-                        <h5 class="font-bold text-gray-300">1. วัตถุดิบ: ดินปนน้ำแข็ง (Icy Regolith)</h5>
-                        <p class="text-xs text-gray-500">ขุดจากก้นหลุมอุกกาบาต</p>
+                        <h5 class="font-bold text-gray-300">1. Icy Regolith (วัตถุดิบ)</h5>
+                        <p class="text-xs text-gray-500">Mined from shadowed craters</p>
                     </div>
                     <div class="arrow-down"></div>
 
                     <!-- Step 2 -->
                     <div class="flow-step border-[#FFD700] w-full max-w-xs">
-                        <h5 class="font-bold text-[#FFD700]">2. เตาอบแสงอาทิตย์ (Solar Oven)</h5>
-                        <p class="text-xs text-gray-400">แยกส่วนระเหย (Volatiles) ออกจากของแข็ง</p>
+                        <h5 class="font-bold text-[#FFD700]">2. Solar Oven (เตาอบแสงอาทิตย์)</h5>
+                        <p class="text-xs text-gray-400">Separate Volatiles from Solids</p>
                     </div>
                     <div class="arrow-down"></div>
 
@@ -278,24 +329,24 @@
                         <div class="flex flex-col items-center">
                             <div class="h-8 w-0.5 bg-[#66FCF1]"></div>
                             <div class="flow-step border-blue-500 w-full h-full flex flex-col justify-center p-2">
-                                <h5 class="font-bold text-blue-500 text-sm">💧 น้ำดื่ม</h5>
-                                <p class="text-[10px] text-gray-400">ควบแน่นไอน้ำ</p>
+                                <h5 class="font-bold text-blue-500 text-sm">💧 Water</h5>
+                                <p class="text-[10px] text-gray-400">Condensation</p>
                             </div>
                         </div>
                         <!-- Middle: Air -->
                         <div class="flex flex-col items-center">
                             <div class="h-8 w-0.5 bg-[#66FCF1]"></div>
                             <div class="flow-step border-[#66FCF1] w-full h-full flex flex-col justify-center p-2">
-                                <h5 class="font-bold text-[#66FCF1] text-sm">💨 อากาศ</h5>
-                                <p class="text-[10px] text-gray-400">แยก H2O ด้วยไฟฟ้า</p>
+                                <h5 class="font-bold text-[#66FCF1] text-sm">💨 Air (O2)</h5>
+                                <p class="text-[10px] text-gray-400">Electrolysis</p>
                             </div>
                         </div>
                         <!-- Right: Shelter (New) -->
                         <div class="flex flex-col items-center">
                             <div class="h-8 w-0.5 bg-[#FF4500]"></div>
                             <div class="flow-step border-[#FF4500] w-full h-full flex flex-col justify-center p-2">
-                                <h5 class="font-bold text-[#FF4500] text-sm">🧱 อิฐก่อสร้าง</h5>
-                                <p class="text-[10px] text-gray-400">กากดินอัดก้อน</p>
+                                <h5 class="font-bold text-[#FF4500] text-sm">🧱 Bricks</h5>
+                                <p class="text-[10px] text-gray-400">Sintered Slag</p>
                             </div>
                         </div>
                     </div>
@@ -304,13 +355,15 @@
 
             <!-- Chart: Production Output -->
             <div>
-                <h4 class="text-center text-white mb-4 text-sm font-semibold">ผลผลิตรวม 3 ประเภท (Cumulative Output)
+                <h4 class="text-center text-white mb-4 text-sm font-semibold">
+                    Cumulative Output
+                    <span class="sub-lang text-xs">ผลผลิตรวม 3 ประเภท</span>
                 </h4>
                 <div class="chart-container">
                     <canvas id="dualProductionChart"></canvas>
                 </div>
                 <p class="text-center text-xs text-gray-500 mt-4">
-                    *กากดิน (Slag) มีปริมาณมากที่สุด นำไปสร้างผนังกันรังสีหนา 50cm ได้
+                    *Slag (Soil waste) is abundant, used for 50cm thick radiation walls.
                 </p>
             </div>
         </div>
@@ -319,11 +372,15 @@
     <!-- Section 5: Low-Cost Logistics (ภูมิปัญญาการขนส่ง) -->
     <section class="mb-20 bg-[#08090C] p-8 rounded-2xl border border-[#1F2833]">
         <div class="text-center mb-10">
-            <h3 class="text-3xl font-bold earth-tone-text mb-3">5. ระบบขนส่งภูมิปัญญา: ยิงแล้วรับ (Shoot & Catch)</h3>
+            <h3 class="text-3xl font-bold earth-tone-text mb-3">
+                5. Logistics: Shoot & Catch
+                <span class="sub-lang">ระบบขนส่งภูมิปัญญา: ยิงแล้วรับ</span>
+            </h3>
             <p class="text-gray-400 max-w-4xl mx-auto">
-                ปฏิวัติวงการขนส่งด้วยหลักการ <strong>"หนังสติ๊กอวกาศ"</strong> ดีดสัมภาระไปดวงจันทร์ และสร้าง
-                <strong>"ทะเลตาข่าย"</strong>
-                รอรับของเพื่อลดแรงกระแทก ประหยัดงบประมาณกว่า 90% พร้อมเปิดระดมทุนรูปแบบใหม่ที่ไม่รับแค่เงิน
+                Revolutionizing transport with "Space Slingshot" and "Net Sea". Reducing costs by 90% and open for
+                Crowd-Resourcing.
+                <span class="sub-lang">ปฏิวัติวงการขนส่งด้วยหลักการ "หนังสติ๊กอวกาศ" และ "ทะเลตาข่าย" ลดต้นทุนกว่า 90%
+                    พร้อมเปิดระดมทุนแบบ Crowd-Resourcing</span>
             </p>
         </div>
 
@@ -332,17 +389,17 @@
             <!-- Diagram: Shoot & Catch Flow -->
             <div class="flex flex-col space-y-4">
                 <div class="relative p-6 border-2 border-dashed border-gray-600 rounded-xl bg-[#0B0C10]">
-                    <span class="absolute -top-3 left-4 bg-[#0B0C10] px-2 text-gray-500 text-xs">ต้นทาง (Earth
+                    <span class="absolute -top-3 left-4 bg-[#0B0C10] px-2 text-gray-500 text-xs">Origin (Earth
                         Orbit)</span>
                     <div class="flex items-center justify-between">
                         <div class="text-center">
                             <div class="text-2xl mb-2">🚀</div>
                             <h5 class="font-bold text-[#66FCF1]">Mass Driver</h5>
-                            <p class="text-[10px] text-gray-400">รางแม่เหล็กดีดกล่องสัมภาระ</p>
+                            <p class="text-[10px] text-gray-400">Magnetic Catapult</p>
                         </div>
                         <div class="flex-1 h-1 bg-gradient-to-r from-[#66FCF1] to-transparent mx-4"></div>
                         <div class="text-right">
-                            <span class="text-xs text-[#66FCF1] animate-pulse">>>> ความเร็วสูง</span>
+                            <span class="text-xs text-[#66FCF1] animate-pulse">>>> High Velocity</span>
                         </div>
                     </div>
                 </div>
@@ -350,7 +407,7 @@
                 <div class="arrow-down border-gray-600"></div>
 
                 <div class="relative p-6 border-2 border-[#FFD700] rounded-xl bg-[#0B0C10] overflow-hidden">
-                    <span class="absolute -top-3 left-4 bg-[#0B0C10] px-2 text-[#FFD700] text-xs">ปลายทาง (Moon
+                    <span class="absolute -top-3 left-4 bg-[#0B0C10] px-2 text-[#FFD700] text-xs">Destination (Moon
                         Crater)</span>
 
                     <!-- Net Visualization using CSS -->
@@ -362,10 +419,10 @@
 
                     <div class="flex items-center justify-center relative z-10 flex-col">
                         <div class="text-4xl mb-2 transform transition hover:scale-110 cursor-pointer">🕸️</div>
-                        <h5 class="font-bold text-[#FFD700] text-xl">The Net Sea (ทะเลตาข่าย)</h5>
+                        <h5 class="font-bold text-[#FFD700] text-xl">The Net Sea</h5>
                         <p class="text-xs text-gray-300 mt-2 max-w-xs text-center">
-                            ตาข่ายเคฟลาร์ขึงปากหลุมอุกกาบาต ยืดหยุ่นเพื่อรับแรงกระแทก (G-Force Absorption)
-                            โดยไม่พังเสียหาย
+                            Kevlar Mesh at Crater Mouth<br>
+                            (Absorbs G-Force / ซับแรงกระแทก)
                         </p>
                     </div>
                 </div>
@@ -373,13 +430,15 @@
 
             <!-- Chart: Budget Comparison -->
             <div>
-                <h4 class="text-center text-white mb-4 text-sm font-semibold">เปรียบเทียบงบประมาณขนส่ง (Budget
-                    Comparison)</h4>
+                <h4 class="text-center text-white mb-4 text-sm font-semibold">
+                    Cost Comparison
+                    <span class="sub-lang text-xs">เปรียบเทียบงบประมาณขนส่ง</span>
+                </h4>
                 <div class="chart-container">
                     <canvas id="budgetChart"></canvas>
                 </div>
                 <p class="text-center text-xs text-gray-500 mt-4">
-                    *ลดต้นทุนจาก ~40 ล้านบาท เหลือเพียง ~3.4 ล้านบาท ต่อเที่ยวบิน
+                    *Cost reduced from ~40M THB to ~3.4M THB per flight.
                 </p>
             </div>
         </div>
@@ -387,7 +446,9 @@
         <!-- Part B: Crowd-Resourcing Strategy -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div class="order-2 md:order-1">
-                <h4 class="text-center text-white mb-4 text-sm font-semibold">โมเดลระดมสรรพกำลัง (Crowd-Resourcing 4.0)
+                <h4 class="text-center text-white mb-4 text-sm font-semibold">
+                    Crowd-Resourcing 4.0 Model
+                    <span class="sub-lang text-xs">โมเดลระดมสรรพกำลัง</span>
                 </h4>
                 <div class="chart-container">
                     <canvas id="resourceChart"></canvas>
@@ -395,27 +456,29 @@
             </div>
 
             <div class="order-1 md:order-2 flex flex-col justify-center space-y-4">
-                <h4 class="text-2xl font-bold earth-tone-text mb-2">มากกว่าเงิน คือ "พลังสมองและแรงงาน"</h4>
+                <h4 class="text-2xl font-bold earth-tone-text mb-2">More than Money: Brains & Labor</h4>
                 <p class="text-gray-400 text-sm mb-4">
-                    เราเปิดรับบริจาคในรูปแบบใหม่ เพื่อให้ทุกคนบนโลกมีส่วนร่วมสร้างอาณานิคมนี้
+                    We accept donations in form of ideas and volunteering.
+                    <span class="sub-lang">เราเปิดรับบริจาคในรูปแบบใหม่
+                        เพื่อให้ทุกคนบนโลกมีส่วนร่วมสร้างอาณานิคมนี้</span>
                 </p>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-[#1F2833] p-4 rounded border-l-2 border-[#66FCF1]">
-                        <h5 class="font-bold text-[#66FCF1]">🧠 สมอง (Brainpower)</h5>
-                        <p class="text-xs text-gray-400">ระดมสมองวิศวกร/นักวิทย์ฯ ช่วยแก้โจทย์เทคนิค</p>
+                        <h5 class="font-bold text-[#66FCF1]">🧠 Brainpower (สมอง)</h5>
+                        <p class="text-xs text-gray-400">Engineering & Physics Solving</p>
                     </div>
                     <div class="bg-[#1F2833] p-4 rounded border-l-2 border-[#FFD700]">
-                        <h5 class="font-bold text-[#FFD700]">💪 แรงงาน (Labor)</h5>
-                        <p class="text-xs text-gray-400">อาสาสมัครช่วยประกอบชิ้นส่วนภาคพื้นดิน</p>
+                        <h5 class="font-bold text-[#FFD700]">💪 Labor (แรงงาน)</h5>
+                        <p class="text-xs text-gray-400">Volunteers for Assembly</p>
                     </div>
                     <div class="bg-[#1F2833] p-4 rounded border-l-2 border-[#FF4500]">
-                        <h5 class="font-bold text-[#FF4500]">🧱 สิ่งของ (Goods)</h5>
-                        <p class="text-xs text-gray-400">บริจาควัสดุเหลือใช้/แผงโซลาร์เก่า/เคฟลาร์</p>
+                        <h5 class="font-bold text-[#FF4500]">🧱 Goods (สิ่งของ)</h5>
+                        <p class="text-xs text-gray-400">Used Solar Panels / Materials</p>
                     </div>
                     <div class="bg-[#1F2833] p-4 rounded border-l-2 border-[#45A29E]">
-                        <h5 class="font-bold text-[#45A29E]">💰 ทุน & ที่ปรึกษา</h5>
-                        <p class="text-xs text-gray-400">เงินทุน และผู้เชี่ยวชาญการของบฯ วิจัย</p>
+                        <h5 class="font-bold text-[#45A29E]">💰 Funding (ทุน)</h5>
+                        <p class="text-xs text-gray-400">Money & Grant Consulting</p>
                     </div>
                 </div>
             </div>
@@ -426,7 +489,7 @@
     <footer class="text-center py-8 border-t border-[#1F2833] mt-12">
         <p class="text-gray-600 text-sm">Generated by Gemini | Canvas Visualization | No SVG Used</p>
         <p class="text-[#45A29E] text-xs mt-2">Based on 'Lunar Homestead' Strategy</p>
-        <p class="text-gray-500 text-xs mt-2">ค้นคว้าโดย Mr.Winai Phanarkat</p>
+        <p class="text-gray-500 text-xs mt-2 font-bold">Initiated by Mr.Winai Phanarkat (Thailand)</p>
     </footer>
 
     <!-- Scripts -->
@@ -480,13 +543,13 @@
             data: {
                 labels: ['Day 1', 'Night 1', 'Day 2', 'Night 2', 'Day 3', 'Night 3'],
                 datasets: [{
-                    label: 'พื้นผิวดวงจันทร์ (-170 ถึง 120°C)',
+                    label: 'Lunar Surface / ผิวดวงจันทร์ (-170 to 120°C)',
                     data: [120, -170, 120, -170, 120, -170],
                     borderColor: '#FF4500',
                     borderDash: [5, 5],
                     tension: 0.1
                 }, {
-                    label: 'ในโพรงลาวา (-20°C คงที่)',
+                    label: 'Inside Lava Tube / ในโพรงลาวา (-20°C)',
                     data: [-20, -20, -20, -20, -20, -20],
                     borderColor: '#66FCF1',
                     backgroundColor: 'rgba(102, 252, 241, 0.1)',
@@ -500,18 +563,18 @@
         new Chart(document.getElementById('waterCycleChart'), {
             type: 'bar',
             data: {
-                labels: ['น้ำเข้า (Input)', 'น้ำออก (Output)'],
+                labels: ['Input (น้ำเข้า)', 'Output (น้ำออก)'],
                 datasets: [{
-                    label: 'รีไซเคิลจากปัสสาวะ/เหงื่อ',
-                    data: [90, 88], // Lose a little bit
+                    label: 'Recycled (รีไซเคิล)',
+                    data: [90, 88],
                     backgroundColor: '#66FCF1'
                 }, {
-                    label: 'น้ำจากอาหาร (Food)',
+                    label: 'Food (อาหาร)',
                     data: [10, 5],
                     backgroundColor: '#45A29E'
                 }, {
-                    label: 'สูญเสีย (Loss)',
-                    data: [0, 7], // Lost in sludge/leak
+                    label: 'Loss (สูญเสีย)',
+                    data: [0, 7],
                     backgroundColor: '#FF4500'
                 }]
             },
@@ -519,7 +582,7 @@
                 ...commonOptions,
                 scales: {
                     x: { stacked: true },
-                    y: { stacked: true, title: { display: true, text: 'ปริมาณ (%)' } }
+                    y: { stacked: true, title: { display: true, text: 'Volume (%)' } }
                 }
             }
         });
@@ -528,10 +591,10 @@
         new Chart(document.getElementById('foodSourceChart'), {
             type: 'doughnut',
             data: {
-                labels: splitLabel('พืชหัว (มันเทศ) - พลังงานหลัก', 20).concat(
-                    splitLabel('สาหร่าย/แหนเป็ด - โปรตีน', 20),
-                    splitLabel('ผักใบเขียว - วิตามิน', 20),
-                    splitLabel('อาหารสำรองจากโลก (Emergency)', 20)
+                labels: splitLabel('Root Crops (มันเทศ) - Energy', 20).concat(
+                    splitLabel('Algae/Duckweed (สาหร่าย) - Protein', 20),
+                    splitLabel('Vegetables (ผัก) - Vitamins', 20),
+                    splitLabel('Earth Backup (อาหารสำรอง)', 20)
                 ),
                 datasets: [{
                     data: [50, 30, 15, 5],
@@ -549,7 +612,7 @@
             data: {
                 labels: ['Month 1', 'Month 3', 'Month 6', 'Month 9', 'Month 12'],
                 datasets: [{
-                    label: 'น้ำดื่ม (L)',
+                    label: 'Water (L) / น้ำดื่ม',
                     data: [100, 450, 1200, 2100, 3500],
                     borderColor: '#45A29E',
                     backgroundColor: 'rgba(69, 162, 158, 0.2)',
@@ -557,15 +620,15 @@
                     fill: true,
                     tension: 0.4
                 }, {
-                    label: 'ออกซิเจน (kg)',
+                    label: 'Oxygen (kg) / ออกซิเจน',
                     data: [50, 200, 500, 900, 1400],
                     borderColor: '#66FCF1',
                     backgroundColor: 'rgba(102, 252, 241, 0.2)',
-                    yAxisID: 'y1', // Using same axis scale as water usually fine visually, or separate
+                    yAxisID: 'y1',
                     fill: true,
                     tension: 0.4
                 }, {
-                    label: 'อิฐก่อสร้าง (ก้อน)',
+                    label: 'Bricks (Units) / อิฐก่อสร้าง',
                     data: [500, 2000, 5000, 8500, 12000],
                     borderColor: '#FF4500',
                     backgroundColor: 'rgba(255, 69, 0, 0.1)',
@@ -586,17 +649,17 @@
                         type: 'linear',
                         display: true,
                         position: 'left',
-                        title: { display: true, text: 'ปริมาณ (L / kg)' },
+                        title: { display: true, text: 'Volume (L / kg)' },
                         grid: { color: '#1F2833' }
                     },
                     y1: {
-                        display: false // Hide to avoid clutter, share scale with y roughly
+                        display: false
                     },
                     y2: {
                         type: 'linear',
                         display: true,
                         position: 'right',
-                        title: { display: true, text: 'อิฐ (ก้อน)' },
+                        title: { display: true, text: 'Bricks (Units)' },
                         grid: { drawOnChartArea: false }
                     },
                     x: {
@@ -610,10 +673,10 @@
         new Chart(document.getElementById('budgetChart'), {
             type: 'bar',
             data: {
-                labels: ['วิธีดั้งเดิม (Traditional)', 'วิธีภูมิปัญญา (Shoot & Catch)'],
+                labels: ['Traditional / วิธีดั้งเดิม', 'Shoot & Catch / ภูมิปัญญา'],
                 datasets: [{
-                    label: 'ค่าขนส่งต่อเที่ยวบิน (ล้านบาท)',
-                    data: [40, 3.4], // Converted to THB Millions
+                    label: 'Cost per Flight (Million THB)',
+                    data: [40, 3.4],
                     backgroundColor: ['#C5C6C7', '#66FCF1'],
                     borderColor: ['#C5C6C7', '#66FCF1'],
                     borderWidth: 1
@@ -627,14 +690,14 @@
                     tooltip: {
                         callbacks: {
                             label: function (context) {
-                                return context.raw + ' ล้านบาท';
+                                return context.raw + ' Million THB';
                             }
                         }
                     }
                 },
                 scales: {
                     y: {
-                        title: { display: true, text: 'งบประมาณ (ล้านบาท)' }
+                        title: { display: true, text: 'Budget (Million THB)' }
                     }
                 }
             }
@@ -644,9 +707,9 @@
         new Chart(document.getElementById('resourceChart'), {
             type: 'polarArea',
             data: {
-                labels: ['เงินบริจาค (Funding)', 'แรงงานอาสา (Labor)', 'มันสมอง (Brainpower)', 'วัสดุ/สิ่งของ (Materials)'],
+                labels: ['Funding (เงินบริจาค)', 'Labor (แรงงานอาสา)', 'Brainpower (มันสมอง)', 'Materials (วัสดุ/สิ่งของ)'],
                 datasets: [{
-                    label: 'สัดส่วนเป้าหมายการระดมทุน',
+                    label: 'Resource Target Share',
                     data: [25, 25, 30, 20],
                     backgroundColor: [
                         'rgba(69, 162, 158, 0.5)',  // Funding (Teal)
