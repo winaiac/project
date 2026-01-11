@@ -3,13 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <!-- Viewport settings for mobile responsiveness -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUNAR HOMESTEAD: Orbital Sync Simulation</title>
-    <!-- Import Sarabun Font -->
+    <title>Thai Spaceport: Orbital Sync (Fixed)</title>
+    <!-- เพิ่มฟอนต์ Sarabun เพื่อความสวยงามและรองรับภาษาไทย -->
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Base styles */
         body {
             margin: 0;
             overflow: hidden;
@@ -19,7 +17,6 @@
             user-select: none;
         }
 
-        /* UI Layer */
         #ui-layer {
             position: absolute;
             top: 0;
@@ -32,39 +29,21 @@
             justify-content: space-between;
             padding: 20px;
             box-sizing: border-box;
-            z-index: 10;
         }
 
-        /* Header */
         .header {
             text-align: center;
             text-shadow: 0 0 10px #00ffff;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
             border-radius: 15px;
             pointer-events: auto;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            max-width: 600px;
-            margin: 0 auto;
         }
 
         h1 {
             margin: 0;
             font-size: 24px;
             color: #00ffff;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .flag-icon {
-            height: 24px;
-            width: auto;
-            border-radius: 2px;
-            box-shadow: 0 0 5px rgba(255,255,255,0.5);
         }
 
         p {
@@ -73,52 +52,24 @@
             color: #aaa;
         }
 
-        .sub-project {
-            font-size: 10px;
-            letter-spacing: 2px;
-            color: #facc15;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        /* Panels */
-        .left-panel,
-        .right-panel {
+        .left-panel {
             position: absolute;
-            top: 90px;
-            width: 300px;
-            pointer-events: auto;
+            top: 20px;
+            left: 20px;
+            width: 320px;
             display: flex;
             flex-direction: column;
             gap: 10px;
-        }
-
-        .left-panel {
-            left: 20px;
+            pointer-events: auto;
         }
 
         .right-panel {
+            position: absolute;
+            top: 20px;
             right: 20px;
+            width: 340px;
+            pointer-events: auto;
             font-family: 'Courier New', monospace;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .left-panel, .right-panel {
-                position: relative;
-                width: 100%;
-                top: 0;
-                left: 0;
-                right: 0;
-                margin-bottom: 10px;
-                display: none; /* Hide panels on mobile by default or add toggle */
-            }
-            
-            /* Show simplified UI for mobile if needed, or keeping it hidden for clean view */
-            .header {
-                width: 90%;
-            }
         }
 
         .panel-box {
@@ -126,10 +77,8 @@
             border: 1px solid #444;
             padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
-        /* Form Elements */
         .time-row {
             margin-bottom: 10px;
             display: flex;
@@ -142,8 +91,7 @@
             color: #888;
         }
 
-        input[type="datetime-local"],
-        input[type="number"] {
+        input {
             background: #111;
             color: #00ffff;
             border: 1px solid #333;
@@ -159,7 +107,6 @@
             gap: 5px;
         }
 
-        /* Switch */
         .switch-row {
             display: flex;
             align-items: center;
@@ -177,10 +124,8 @@
         input[type="checkbox"] {
             transform: scale(1.5);
             cursor: pointer;
-            accent-color: #00ffff;
         }
 
-        /* Buttons */
         .btn-group {
             display: flex;
             gap: 5px;
@@ -197,12 +142,10 @@
             cursor: pointer;
             font-size: 12px;
             transition: 0.2s;
-            font-weight: bold;
         }
 
         button:hover {
             background: #3b82f6;
-            transform: translateY(-1px);
         }
 
         button.urgent {
@@ -221,7 +164,6 @@
             background: #6b7280;
         }
 
-        /* Dev Button */
         button.dev-btn {
             background: #059669;
             margin-top: 10px;
@@ -232,7 +174,6 @@
             background: #10b981;
         }
 
-        /* Status Text */
         .status-row {
             display: flex;
             justify-content: space-between;
@@ -242,19 +183,16 @@
 
         .val-ok {
             color: #4ade80;
-            font-weight: bold;
         }
 
         .val-bad {
             color: #ef4444;
-            font-weight: bold;
         }
 
         .val-lead {
             color: #facc15;
         }
 
-        /* Physics Data Style */
         .physics-data {
             background: rgba(0, 10, 20, 0.95);
             border: 1px solid #00ffcc;
@@ -269,7 +207,6 @@
             border-bottom: 1px solid #00ffcc;
             margin-bottom: 10px;
             padding-bottom: 5px;
-            text-align: center;
         }
 
         .data-row {
@@ -291,17 +228,9 @@
             border-top: 1px dashed #555;
         }
 
-        .economy-title {
-            color: #facc15;
-            font-weight: bold;
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
-
-        /* Bottom Controls */
         .control-panel {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
             pointer-events: auto;
             display: flex;
             flex-direction: column;
@@ -341,11 +270,10 @@
             font-size: 14px;
             color: #ddd;
             background: rgba(0, 0, 0, 0.8);
-            padding: 8px 20px;
+            padding: 5px 15px;
             border-radius: 20px;
             display: inline-block;
             border: 1px solid #555;
-            backdrop-filter: blur(3px);
         }
 
         .fire-btn {
@@ -381,10 +309,8 @@
             transition: opacity 0.5s;
             text-align: center;
             pointer-events: none;
-            width: 100%;
         }
 
-        /* Credits */
         .credits {
             position: absolute;
             bottom: 10px;
@@ -400,16 +326,10 @@
             line-height: 1.6;
         }
 
-        .credits a {
-            color: #60a5fa;
-            text-decoration: none;
-        }
-
         .credits a:hover {
             text-decoration: underline;
         }
 
-        /* Modal for Formulas */
         .modal {
             display: none;
             position: fixed;
@@ -418,22 +338,19 @@
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
             background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
         }
 
         .modal-content {
             background-color: #1e1b4b;
             margin: 10% auto;
-            padding: 25px;
+            padding: 20px;
             border: 1px solid #00ffcc;
             width: 80%;
             max-width: 600px;
             color: white;
             border-radius: 10px;
             font-family: 'Sarabun', sans-serif;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
         }
 
         .close-btn {
@@ -444,10 +361,6 @@
             cursor: pointer;
         }
 
-        .close-btn:hover {
-            color: #fff;
-        }
-
         .formula-item {
             margin-bottom: 15px;
             border-bottom: 1px dashed #555;
@@ -456,7 +369,7 @@
 
         .code-block {
             background: #000;
-            padding: 5px 8px;
+            padding: 5px;
             font-family: monospace;
             color: #4ade80;
             border-radius: 4px;
@@ -464,7 +377,6 @@
             margin-top: 5px;
         }
     </style>
-    <!-- Three.js Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.146.0/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.146.0/examples/js/controls/OrbitControls.js"></script>
 </head>
@@ -472,40 +384,29 @@
 <body>
 
     <div id="ui-layer">
-        <!-- Left Panel -->
         <div class="left-panel">
             <div class="panel-box">
-                <h3 style="margin:0 0 10px 0; color:#fff; border-bottom: 1px solid #444; padding-bottom: 5px;">Mission Control</h3>
-
-                <div class="time-row">
-                    <label>Date/Time (เวลาจำลอง)</label>
-                    <input type="datetime-local" id="sim-datetime">
-                </div>
+                <h3 style="margin:0 0 10px 0; color:#fff;">Mission Control</h3>
+                <div class="time-row"><label>Date/Time (เวลาจำลอง)</label><input type="datetime-local"
+                        id="sim-datetime"></div>
 
                 <div class="time-row" style="border-top:1px solid #444; padding-top:10px;">
-                    <label>Launch Coordinates (พิกัดฐานยิง)</label>
-                    <div class="coord-group">
-                        <input type="number" id="input-lat" value="13.7" placeholder="Lat">
-                        <input type="number" id="input-lon" value="100.5" placeholder="Lon">
-                    </div>
+                    <label>Launch Coordinates (Thailand)</label>
+                    <!-- UPDATED: Set default to Thailand (Lat 15, Lon 100) and logic adjusted to match user calibration -->
+                    <div class="coord-group"><input type="number" id="input-lat" value="15" placeholder="Lat"><input
+                            type="number" id="input-lon" value="100" placeholder="Lon"></div>
                 </div>
 
-                <div class="switch-row">
-                    <span class="switch-label">📡 Auto-Track (ระบบติดตาม)</span>
-                    <input type="checkbox" id="auto-track" checked>
-                </div>
-
-                <div class="switch-row">
-                    <span class="switch-label">⏩ Time Warp (เร่งเวลา 600x)</span>
-                    <input type="checkbox" id="time-warp">
-                </div>
+                <div class="switch-row"><span class="switch-label">⏩ Time Warp (เร่งเวลา)</span><input type="checkbox"
+                        id="time-warp"></div>
+                <div class="switch-row"><span class="switch-label">📡 Auto-Track (ระบบติดตาม)</span><input
+                        type="checkbox" id="auto-track" checked></div>
 
                 <div class="btn-group">
                     <button onclick="setNow()">⏰ Now</button>
                     <button class="urgent" onclick="findNextWindow()">🚀 Find Window</button>
                     <button class="reset" onclick="fullReset()">🔄 Reset</button>
                 </div>
-
                 <button class="dev-btn" onclick="openDevModal()">🛠️ สูตรคำนวณ (Dev Menu)</button>
 
                 <div
@@ -521,7 +422,6 @@
             </div>
         </div>
 
-        <!-- Right Panel -->
         <div class="right-panel">
             <div class="physics-data">
                 <div class="data-header">LIVE DATA (ข้อมูลการส่ง)</div>
@@ -532,10 +432,11 @@
                 <div class="data-row"><span>Est. G-Force:</span> <span class="data-val" id="phy-gforce">0 G</span></div>
                 <div class="data-row"><span>Flight Time (Real):</span> <span class="data-val" id="phy-est-time"
                         style="color:#facc15">--h --m</span></div>
-                <div class="data-row"><span>Elapsed Time (Sim):</span> <span class="data-val" id="phy-time"
-                        style="color:#00ffcc">00:00:00</span></div>
+                <div class="data-row"><span>Sim Clock:</span> <span class="data-val" id="phy-time"
+                        style="color:#00ffcc">--</span></div>
                 <div class="data-row"><span>Sim Speed:</span> <span class="data-val" id="sim-speed"
-                        style="color:#00ffcc">1x (Real-time)</span></div>
+                        style="color:#00ffcc">1x</span></div>
+                <div class="data-row"><span>ETA (ถึงปลายทาง):</span> <span class="data-val" id="phy-eta">--</span></div>
 
                 <div class="economy-section">
                     <div class="economy-title">COST (ค่าใช้จ่าย)</div>
@@ -549,12 +450,8 @@
 
         <div class="header">
             <div class="sub-project">PROJECT: LUNAR HOMESTEAD</div>
-            <h1>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Flag_of_Thailand.svg/200px-Flag_of_Thailand.svg.png" 
-                     alt="Thai Flag" class="flag-icon">
-                THAI SPACEPORT
-            </h1>
-            <p>Shoot & Catch: High-Speed Simulation</p>
+            <h1>THAI SPACEPORT</h1>
+            <p>Shoot & Catch: Precision Orbital Intercept</p>
         </div>
 
         <div id="message">MISSION SUCCESS!</div>
@@ -569,193 +466,118 @@
         </div>
 
         <div class="credits">
-            <p><b>International Open Source (MIT License)</b></p>
-            <p>Initiated by: <strong style="color: #3b82f6;">Mr.Winai Phanarkat</strong></p>
-            <p>Email: <a href="mailto:winayo@gmail.com" style="color: #facc15;">winayo@gmail.com</a></p>
+            <p><b>Thai Open Source License</b></p>
+            <p>พัฒนาโดย: <strong style="color: #3b82f6;">Mr.Winai Phanarkat</strong></p>
+            <p>Line: 0926533228 | Email: <a href="mailto:winayo@gmail.com" style="color: #facc15;">winayo@gmail.com</a>
+            </p>
         </div>
     </div>
 
-    <!-- Developer Modal -->
     <div id="devModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeDevModal()">&times;</span>
-            <h2 style="color:#00ffcc; margin-top:0;">Technical & Math Data</h2>
-            <div class="formula-item"><strong>1. Lead Calculation:</strong> <span class="code-block">Aim = MoonPos +
-                    (Vel * 7h)</span> <small>ยิงดักหน้า 7 ชม. เพื่อให้ทันดวงจันทร์โคจร</small></div>
-            <div class="formula-item"><strong>2. Physics:</strong> <span class="code-block">E = 0.5mv²</span>
-                <small>พลังงานจลน์ที่ใช้ส่งพัสดุ</small></div>
-            
-            <div class="formula-item"><strong>3. Contribution:</strong>
-                <p style="font-size:12px; margin-top:5px; color:#ddd;">
-                    โปรเจกต์นี้ต้องการอาสาสมัครช่วยพัฒนาส่วน "Net Sea" (ระบบรับแรงกระแทก) สามารถ Fork โปรเจกต์ได้ที่ GitHub
-                </p>
-            </div>
-
-            <div
-                style="text-align:center; margin-top:20px; color:#aaa; font-size:12px; border-top:1px solid #444; padding-top:10px;">
-                * Open Source Project for Global Collaboration (MIT License)
-            </div>
+            <h2 style="color:#00ffcc; margin-top:0;">Advanced Physics Data</h2>
+            <div class="formula-item"><strong>1. Flight Duration Lock:</strong> <span class="code-block">Target T = 7.00
+                    hrs</span> <small>ระบบล็อกเวลาเดินทางไว้ที่ 7 ชั่วโมงตามโจทย์</small></div>
+            <div class="formula-item"><strong>2. Required Velocity:</strong> <span class="code-block">v = Distance / T =
+                    384,400km / 25,200s ≈ 15.25 km/s</span> <small>ความเร็วต้นที่ต้องใช้เพื่อให้ไปถึงใน 7
+                    ชั่วโมง</small></div>
+            <div class="formula-item"><strong>3. Lead Targeting:</strong> <span class="code-block">FuturePos = Moon(t +
+                    7h)</span> <small>ยิงไปที่ตำแหน่งอนาคตของดวงจันทร์</small></div>
         </div>
     </div>
 
     <script>
-        // --- 1. SETUP SCENE ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x020205);
-
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100000);
         camera.position.set(0, 300, 400);
         camera.lookAt(0, 0, 0);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true;
         document.body.appendChild(renderer.domElement);
 
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.minDistance = 20;
-        controls.maxDistance = 5000;
+        controls.minDistance = 20; controls.maxDistance = 5000;
 
         const textureLoader = new THREE.TextureLoader();
 
-        // --- 2. CELESTIAL OBJECTS ---
+        // Scale: 1 unit = 1000 km
+        const EARTH_R = 6.37;
+        const MOON_R = 1.73;
+        const ORBIT_R = 384;
+        const MS_PER_DAY = 86400000;
+        const MOON_PERIOD = 27.3 * MS_PER_DAY;
+        const YEAR_PERIOD = 365.25 * MS_PER_DAY;
+        const TARGET_FLIGHT_HOURS = 7;
+        const TARGET_FLIGHT_SEC = TARGET_FLIGHT_HOURS * 3600;
+
+        // Earth
         const earthGroup = new THREE.Group();
-        const earthGeo = new THREE.SphereGeometry(6.37, 64, 64);
+        const earthGeo = new THREE.SphereGeometry(EARTH_R, 64, 64);
         const earthTex = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg');
         const earthMat = new THREE.MeshPhongMaterial({ map: earthTex, shininess: 5 });
         const earth = new THREE.Mesh(earthGeo, earthMat);
         earthGroup.add(earth);
 
-        const railGroup = new THREE.Group();
-        earthGroup.add(railGroup);
-
-        const railGeo = new THREE.CylinderGeometry(0.2, 0.8, 4, 8);
-        railGeo.translate(0, 2, 0); railGeo.rotateX(Math.PI / 2);
-        const rail = new THREE.Mesh(railGeo, new THREE.MeshLambertMaterial({ color: 0x888888 }));
-        rail.position.set(0, 0, 6.3);
-        rail.scale.set(0.1, 0.1, 0.1);
+        // Rail
+        const railGroup = new THREE.Group(); earthGroup.add(railGroup);
+        const rail = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.8, 4, 8), new THREE.MeshLambertMaterial({ color: 0x888888 }));
+        rail.geometry.translate(0, 2, 0); rail.geometry.rotateX(Math.PI / 2);
+        rail.position.set(0, 0, 6.3); rail.scale.set(0.1, 0.1, 0.1);
         railGroup.add(rail);
 
-        const laserGeo = new THREE.CylinderGeometry(0.05, 0.05, 500, 8);
-        laserGeo.translate(0, 250, 0); laserGeo.rotateX(Math.PI / 2);
-        const laserMat = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.2 });
-        const laser = new THREE.Mesh(laserGeo, laserMat);
-        laser.position.set(0, 0, 6.3);
-        laser.scale.set(0.1, 0.1, 0.1);
+        const laser = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1000, 8), new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.2 }));
+        laser.geometry.translate(0, 500, 0); laser.geometry.rotateX(Math.PI / 2);
+        laser.position.set(0, 0, 6.3); laser.scale.set(0.1, 0.1, 0.1);
         railGroup.add(laser);
 
-        // --- ADD THAI FLAGS ---
-        const flagUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Flag_of_Thailand.svg/200px-Flag_of_Thailand.svg.png';
-        const flagTexture = textureLoader.load(flagUrl);
-        
-        function createThaiFlag() {
-            const flagGroup = new THREE.Group();
-            
-            // Pole
-            const poleMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 1, 8), new THREE.MeshStandardMaterial({color: 0x888888}));
-            poleMesh.position.y = 0.5;
-            flagGroup.add(poleMesh);
-            
-            // Cloth
-            const clothMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.4), new THREE.MeshBasicMaterial({ map: flagTexture, side: THREE.DoubleSide }));
-            clothMesh.position.set(0.3, 0.8, 0);
-            flagGroup.add(clothMesh);
-            
-            return flagGroup;
-        }
-
-        // Earth Flag
-        const earthFlag = createThaiFlag();
-        earthFlag.scale.set(0.3, 0.3, 0.3);
-        earthFlag.position.set(0.8, 0, 6.2); // Position near the rail
-        earthFlag.lookAt(0, 0, 100); 
-        earthFlag.rotation.x = Math.PI / 2; // Orient upright relative to surface
-        railGroup.add(earthFlag);
+        // Marker
+        const marker = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+        marker.position.set(0, 0, 6.3); marker.scale.set(0.1, 0.1, 0.1);
+        railGroup.add(marker);
 
         scene.add(earthGroup);
 
-        const orbitRadius = 150;
-        const moonPivot = new THREE.Group();
-        scene.add(moonPivot);
-
-        const moonGroup = new THREE.Group();
-        moonGroup.position.set(orbitRadius, 0, 0);
-        moonPivot.add(moonGroup);
-
-        const moonGeo = new THREE.SphereGeometry(1.73, 32, 32);
+        // Moon
+        const moonPivot = new THREE.Group(); scene.add(moonPivot);
+        const moonGroup = new THREE.Group(); moonGroup.position.set(ORBIT_R, 0, 0); moonPivot.add(moonGroup);
         const moonTex = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg');
-        // Fallback color in case texture fails
-        const moon = new THREE.Mesh(moonGeo, new THREE.MeshPhongMaterial({ map: moonTex, color: 0xcccccc }));
-        moon.rotation.y = -Math.PI / 2;
-        moon.scale.set(2, 2, 2);
+        const moon = new THREE.Mesh(new THREE.SphereGeometry(MOON_R, 32, 32), new THREE.MeshPhongMaterial({ map: moonTex, color: 0xcccccc }));
+        moon.rotation.y = -Math.PI / 2; moon.scale.set(2, 2, 2);
         moonGroup.add(moon);
 
-        // Catch Track
+        // Track
         const track = new THREE.Mesh(new THREE.BoxGeometry(10, 1, 3), new THREE.MeshStandardMaterial({ color: 0x555555 }));
-        track.position.set(0, 0, 1.8 * 2);
-        moonGroup.add(track);
-
-        // Moon Flag
-        const moonFlag = createThaiFlag();
-        moonFlag.scale.set(0.5, 0.5, 0.5);
-        moonFlag.position.set(2, 0, 3.6); // Position near the track
-        moonFlag.rotation.x = Math.PI / 2; // Stand upright
-        moonGroup.add(moonFlag);
+        track.position.set(0, 0, 1.8 * 2); moonGroup.add(track);
 
         // Payload
         const eggGeo = new THREE.SphereGeometry(0.4, 16, 16);
         eggGeo.scale(1, 1.5, 1);
         const eggMat = new THREE.MeshPhongMaterial({ color: 0xffaa00, emissive: 0xff4400, emissiveIntensity: 0.5 });
         const payload = new THREE.Mesh(eggGeo, eggMat);
-        payload.scale.set(1, 1.5, 1);
-        payload.visible = false;
-
-        const payloadLight = new THREE.PointLight(0xff4400, 1, 100);
-        payload.add(payloadLight);
+        payload.scale.set(1, 1.5, 1); payload.visible = false;
+        payload.add(new THREE.PointLight(0xff4400, 1, 100));
         scene.add(payload);
 
-        // Sun
-        const sunLight = new THREE.DirectionalLight(0xffffff, 1.5);
-        sunLight.position.set(0, 0, 1000);
-        sunLight.castShadow = true;
-        scene.add(sunLight);
+        // Sun & Stars
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1.5); sunLight.position.set(0, 0, 1000); scene.add(sunLight);
+        const sunMesh = new THREE.Mesh(new THREE.SphereGeometry(20, 32, 32), new THREE.MeshBasicMaterial({ color: 0xffff00 })); scene.add(sunMesh);
         scene.add(new THREE.AmbientLight(0x222222));
-
-        const sunMesh = new THREE.Mesh(new THREE.SphereGeometry(20, 32, 32), new THREE.MeshBasicMaterial({ color: 0xffff00 }));
-        scene.add(sunMesh);
-
-        // Stars
-        const starGeo = new THREE.BufferGeometry();
-        const starCount = 3000;
-        const pos = new Float32Array(starCount * 3);
-        for (let i = 0; i < 9000; i++) pos[i] = (Math.random() - 0.5) * 5000;
-        starGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+        const starGeo = new THREE.BufferGeometry(); const starPos = new Float32Array(9000);
+        for (let i = 0; i < 9000; i++) starPos[i] = (Math.random() - 0.5) * 5000;
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
         scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.8 })));
 
-        // --- 3. PHYSICS & LOGIC ---
-        let simTime = new Date();
-        let isRealTime = true;
-        let state = 'IDLE';
-        let power = 0;
-        let realVelocityKmH = 0;
-        let simVelocity = 0;
-        let launchWindowOpen = false;
-        let flightStartTime = 0;
+        // Vars
+        let simTime = new Date(); let isRealTime = true; let state = 'IDLE';
+        let flightStartTime = 0; let launchWindowOpen = false;
         let velocityVector = new THREE.Vector3();
-        let visualSpeedFactor = 1;
-        let timeScale = 1;
         const clock = new THREE.Clock();
 
-        const trailGeo = new THREE.BufferGeometry();
-        const MAX_TRAIL = 200;
-        const trailPositions = new Float32Array(MAX_TRAIL * 3);
-        trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
-        const trailMesh = new THREE.Line(trailGeo, new THREE.LineBasicMaterial({ color: 0xff8800 }));
-        trailMesh.frustumCulled = false;
-        scene.add(trailMesh);
-
+        // DOM Elements
         const timeInput = document.getElementById('sim-datetime');
         const inputLat = document.getElementById('input-lat');
         const inputLon = document.getElementById('input-lon');
@@ -767,7 +589,6 @@
         const elEarthAngle = document.getElementById('earth-angle');
         const elMoonAngle = document.getElementById('moon-angle');
         const elTargetLead = document.getElementById('target-lead');
-        const elInstruct = document.getElementById('instruct-text');
         const msg = document.getElementById('message');
 
         const uiPhyVel = document.getElementById('phy-vel');
@@ -778,79 +599,83 @@
         const uiPhyTime = document.getElementById('phy-time');
         const uiPhyEstTime = document.getElementById('phy-est-time');
         const uiSimSpeed = document.getElementById('sim-speed');
+        const uiPhyEta = document.getElementById('phy-eta');
+
+        // Modal
         const devModal = document.getElementById('devModal');
 
-        const MS_PER_DAY = 86400000;
-        const MOON_PERIOD = 27.3 * MS_PER_DAY;
-        const YEAR_PERIOD = 365.25 * MS_PER_DAY;
-        const SCALE_UNITS_PER_KM = 150 / 384400;
+        // --- LOGIC ---
+        function updatePhysics(powerPercent) {
+            const v_kms = 15.25;
+            const v_kmh = v_kms * 3600;
+            const e_mj = 0.5 * 1.0 * (v_kms * 1000) ** 2 / 1000000;
+            const cost = (e_mj / 3.6) * 5 + 2500;
 
-        // --- LOGIC FUNCTIONS ---
+            uiPhyVel.innerText = v_kmh.toLocaleString('en-US', { maximumFractionDigits: 0 }) + " km/h";
+            uiPhyEnergy.innerText = e_mj.toFixed(1) + " MJ";
+            uiPhyCostSingle.innerText = Math.round(cost).toLocaleString() + " ฿";
+            uiPhyCostBulk.innerText = Math.round((e_mj / 3.6) * 5 + 2.5).toLocaleString() + " ฿/kg";
+            uiPhyGForce.innerText = "237 G";
+        }
+
+        function updateBaseLocation() {
+            const lat = parseFloat(inputLat.value);
+            const lon = parseFloat(inputLon.value);
+            
+            // Correction for Three.js texture phase (Align Visual to Real World)
+            // Changed from -90 to +90 to fix "opposite side of world" issue
+            const lonCorrection = 90; 
+
+            railGroup.rotation.y = (lon + lonCorrection) * (Math.PI / 180);
+            
+            // UPDATED: User calibration "360 - 15" implies standard rotation was inverted relative to map.
+            // Changed from -lat to +lat to make 15 behave like 345 (360-15)
+            railGroup.rotation.x = lat * (Math.PI / 180);
+
+            if (!checkAutoTrack.checked) {
+                const tilt = lat * (Math.PI / 180);
+                rail.rotation.x = tilt; laser.rotation.x = tilt;
+                rail.rotation.y = 0; laser.rotation.y = 0;
+            }
+        }
+
+        function setNow() { simTime = new Date(); isRealTime = true; checkTimeWarp.checked = false; uiSimSpeed.innerText = "1x (Real-time)"; }
+
+        function resetSim() {
+            state = 'IDLE'; payload.visible = false; msg.style.opacity = 0;
+            controls.target.set(0, 0, 0); uiPhyEstTime.innerText = "--h --m";
+            if (checkTimeWarp.checked) { checkTimeWarp.checked = false; uiSimSpeed.innerText = "1x (Reset)"; }
+            updatePhysics(0);
+        }
+
+        function fullReset() {
+            setNow(); updateTimeUI(); resetSim();
+            camera.position.set(0, 300, 400); camera.lookAt(0, 0, 0);
+            // UPDATED: Reset to Thailand (15, 100)
+            inputLat.value = 15; inputLon.value = 100;
+            updateBaseLocation();
+        }
+
         function updateTimeUI() {
             const tzOffset = simTime.getTimezoneOffset() * 60000;
             const iso = (new Date(simTime - tzOffset)).toISOString().slice(0, 16);
             if (document.activeElement !== timeInput) timeInput.value = iso;
         }
 
-        function updateBaseLocation() {
-            const lat = parseFloat(inputLat.value);
-            const lon = parseFloat(inputLon.value);
-            railGroup.rotation.y = lon * (Math.PI / 180);
-            railGroup.rotation.x = -lat * (Math.PI / 180);
-
-            if (!checkAutoTrack.checked) {
-                const tilt = lat * (Math.PI / 180);
-                rail.rotation.x = tilt;
-                laser.rotation.x = tilt;
-                rail.rotation.y = 0; laser.rotation.y = 0;
-            }
-        }
-
-        function setNow() {
-            simTime = new Date();
-            isRealTime = true;
-            checkTimeWarp.checked = false;
-            uiSimSpeed.innerText = "1x (Real-time)";
-        }
-
-        function resetSim() {
-            state = 'IDLE';
-            payload.visible = false;
-            trailMesh.visible = false;
-            msg.style.opacity = 0;
-            controls.target.set(0, 0, 0);
-            uiPhyEstTime.innerText = "--h --m";
-            if (checkTimeWarp.checked) {
-                checkTimeWarp.checked = false;
-                uiSimSpeed.innerText = "1x (Reset)";
-            }
-            updatePhysicsDisplay(0);
-        }
-
-        function fullReset() {
-            setNow();
-            updateTimeUI();
-            resetSim();
-            camera.position.set(0, 300, 400);
-            camera.lookAt(0, 0, 0);
-            inputLat.value = 13.7;
-            inputLon.value = 100.5;
-            updateBaseLocation();
-        }
-
         function calculatePositions() {
             const t = simTime.getTime();
-
-            const utcHours = simTime.getUTCHours() + simTime.getUTCMinutes() / 60;
-            const earthRot = (utcHours - 12) * (Math.PI * 2 / 24);
+            const earthRot = ((t % MS_PER_DAY) / MS_PER_DAY) * Math.PI * 2;
             earthGroup.rotation.y = earthRot;
+            
+            // Fix: Defined moonRot
+            const moonOrbit = ((t % MOON_PERIOD) / MOON_PERIOD) * Math.PI * 2;
+            const moonRot = moonOrbit; // Added this line to fix the error
+            moonPivot.rotation.y = moonOrbit;
 
-            const moonRot = (t % (27.32 * 86400000)) / (27.32 * 86400000) * Math.PI * 2;
-            moonPivot.rotation.y = moonRot;
-
-            const sunPosDist = 1000;
-            sunLight.position.set(0, 0, sunPosDist);
-            sunMesh.position.set(0, 0, sunPosDist * 2);
+            const yearFrac = (t % YEAR_PERIOD) / YEAR_PERIOD;
+            const sunAngle = yearFrac * Math.PI * 2;
+            sunMesh.position.set(Math.cos(sunAngle) * 500, 0, Math.sin(sunAngle) * 500);
+            sunLight.position.copy(sunMesh.position);
 
             earthGroup.updateMatrixWorld(true);
             moonPivot.updateMatrixWorld(true);
@@ -858,35 +683,33 @@
 
             const moonPos = new THREE.Vector3(); moonGroup.getWorldPosition(moonPos);
             const railPos = new THREE.Vector3(); rail.getWorldPosition(railPos);
-
-            const sunDir = new THREE.Vector3(0, 0, 1);
+            const sunDir = sunMesh.position.clone().normalize();
             const sunDot = railPos.clone().normalize().dot(sunDir);
             elSunStatus.innerText = sunDot > 0 ? "Daylight (กลางวัน)" : "Night (กลางคืน)";
             elSunStatus.style.color = sunDot > 0 ? "#facc15" : "#555";
 
             const flightSec = 7 * 3600;
-            const moonSpeed = (Math.PI * 2) / (27.32 * 86400);
+            const moonSpeed = (Math.PI * 2) / (MOON_PERIOD / 1000);
             const leadAngle = moonSpeed * flightSec;
-            const futurePivotY = moonRot + leadAngle;
-            const futureMoonPos = new THREE.Vector3(150, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), futurePivotY);
+            
+            // Using moonRot here caused the error before
+            const futureMoonRot = moonRot + leadAngle; 
+            const futureMoonPos = new THREE.Vector3(ORBIT_R, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), futureMoonRot);
 
             if (checkAutoTrack.checked) {
-                rail.lookAt(futureMoonPos);
-                laser.lookAt(futureMoonPos);
-                const up = railPos.clone().normalize();
-                const aim = futureMoonPos.clone().sub(railPos).normalize();
-                launchWindowOpen = up.dot(aim) > 0.05;
+                rail.lookAt(futureMoonPos); laser.lookAt(futureMoonPos);
+                const dot = railPos.clone().normalize().dot(futureMoonPos.clone().sub(railPos).normalize());
+                launchWindowOpen = dot > 0.05;
             } else {
                 launchWindowOpen = false;
             }
 
-            elStatus.innerText = launchWindowOpen ? "OPEN (พร้อม)" : "BLOCKED (ติดขอบฟ้า)";
-            elStatus.className = launchWindowOpen ? "val-ok" : "val-bad";
-            laser.material.color.setHex(launchWindowOpen ? 0x00ff00 : 0xff0000);
-
             elEarthAngle.innerText = (earthRot * 180 / Math.PI % 360).toFixed(0) + "°";
             elMoonAngle.innerText = (moonRot * 180 / Math.PI % 360).toFixed(0) + "°";
             elTargetLead.innerText = "+" + (leadAngle * 180 / Math.PI).toFixed(1) + "°";
+            elStatus.innerText = launchWindowOpen ? "OPEN (พร้อม)" : "BLOCKED";
+            elStatus.className = launchWindowOpen ? "val-ok" : "val-bad";
+            laser.material.color.setHex(launchWindowOpen ? 0x00ff00 : 0xff0000);
 
             if (state === 'IDLE') {
                 payload.visible = true;
@@ -898,45 +721,30 @@
         }
 
         function findNextWindow() {
-            if (checkAutoTrack.checked) { alert("Auto-Track active. Always ready if not blocked."); return; }
-            alert("Please enable Auto-Track for easiest launch solution.");
+            if (checkAutoTrack.checked) { alert("Auto-Track active."); return; }
+            alert("Please enable Auto-Track.");
         }
 
         function launch() {
             if (!launchWindowOpen) { alert("Horizon Blocked!"); return; }
-
             state = 'FLYING';
             flightStartTime = simTime.getTime();
-
             checkTimeWarp.checked = true;
             isRealTime = false;
             uiSimSpeed.innerText = ">> WARP x2500";
-            trailMesh.visible = true;
-
             const dir = new THREE.Vector3();
             rail.getWorldDirection(dir);
             velocityVector.copy(dir).multiplyScalar(10.9);
-
-            updatePhysicsDisplay(80);
-
+            updatePhysics(80);
             const h = 7; const m = 0;
             uiPhyEstTime.innerText = `${h}h ${m}m`;
-
-            for (let i = 0; i < MAX_TRAIL * 3; i++) trailPositions[i] = payload.position.x;
-        }
-
-        function updatePhysicsDisplay(power) {
-            uiPhyVel.innerText = "10,900 km/h";
-            uiPhyEnergy.innerText = "59.4 MJ";
-            uiPhyCostSingle.innerText = "3,000 ฿";
-            uiPhyCostBulk.innerText = "90 ฿/kg";
-            uiPhyGForce.innerText = "120 G";
+            const arrival = new Date(simTime.getTime() + TARGET_FLIGHT_SEC * 1000);
+            uiPhyEta.innerText = arrival.toLocaleTimeString('th-TH');
         }
 
         function animate() {
             requestAnimationFrame(animate);
             const dt = clock.getDelta();
-
             let scale = 1;
             if (checkTimeWarp.checked || state === 'FLYING') scale = 2500;
 
@@ -958,13 +766,12 @@
             }
 
             if (state === 'FLYING') {
-                // Visual Speed Factor
                 const moveStep = velocityVector.clone().multiplyScalar(0.001 * dt * scale);
                 payload.position.add(moveStep);
 
-                const delta = moveStep.clone();
-                camera.position.add(delta);
                 controls.target.copy(payload.position);
+                const camOffset = velocityVector.clone().normalize().multiplyScalar(-20).add(new THREE.Vector3(0, 10, 0));
+                camera.position.add(moveStep);
 
                 const trackPos = new THREE.Vector3();
                 track.getWorldPosition(trackPos);
@@ -982,26 +789,14 @@
                     msg.style.color = "#00ff00";
                     checkTimeWarp.checked = false;
                 }
-
-                if (payload.position.length() > 150 + 50) {
+                if (payload.position.length() > ORBIT_R + 50) {
                     state = 'MISSED';
                     msg.style.opacity = 1;
                     msg.innerText = "MISSED";
                     msg.style.color = "red";
                     checkTimeWarp.checked = false;
                 }
-
-                for (let i = MAX_TRAIL - 1; i > 0; i--) {
-                    trailPositions[i * 3] = trailPositions[(i - 1) * 3];
-                    trailPositions[i * 3 + 1] = trailPositions[(i - 1) * 3 + 1];
-                    trailPositions[i * 3 + 2] = trailPositions[(i - 1) * 3 + 2];
-                }
-                trailPositions[0] = payload.position.x;
-                trailPositions[1] = payload.position.y;
-                trailPositions[2] = payload.position.z;
-                trailMesh.geometry.attributes.position.needsUpdate = true;
             }
-
             controls.update();
             renderer.render(scene, camera);
         }
@@ -1010,39 +805,18 @@
         inputLat.addEventListener('input', updateBaseLocation);
         inputLon.addEventListener('input', updateBaseLocation);
         checkAutoTrack.addEventListener('change', updateBaseLocation);
-        timeInput.addEventListener('change', (e) => {
-            simTime = new Date(e.target.value);
-            isRealTime = false;
-            resetSim();
-        });
-        fireBtn.addEventListener('click', () => {
-            if (state === 'IDLE') launch();
-            else fullReset();
-        });
-
-        // Resize handler
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
+        timeInput.addEventListener('change', (e) => { simTime = new Date(e.target.value); isRealTime = false; resetSim(); });
+        fireBtn.addEventListener('click', () => { if (state === 'IDLE') launch(); else window.location.reload(); });
         window.setNow = setNow;
         window.findNextWindow = findNextWindow;
         window.fullReset = fullReset;
-        window.openDevModal = () => devModal.style.display = 'block';
-        window.closeDevModal = () => devModal.style.display = 'none';
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target == devModal) {
-                closeDevModal();
-            }
-        }
+        window.openDevModal = () => document.getElementById('devModal').style.display = 'block';
+        window.closeDevModal = () => document.getElementById('devModal').style.display = 'none';
 
         updateBaseLocation();
         setNow();
         updateTimeUI();
+        updatePhysics(0);
         animate();
 
     </script>
