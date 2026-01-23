@@ -1,33 +1,27 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI MEDITATION ULTIMATE - Creative by Mr. Winai Phanarkat</title>
-
+    <title>Superhuman Evolution Interface v2 - Creative by Mr. Winai Phanarkat</title>
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
+    
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    
     <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
+    
     <!-- Google Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&family=Noto+Sans+Thai:wght@300;400;600&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&family=Noto+Sans+Thai:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --neon-cyan: #22D3EE;
-            /* 3D */
-            --neon-purple: #A855F7;
-            /* 4D */
-            --neon-gold: #FACC15;
-            /* 5D */
+            --neon-blue: #0EA5E9;   /* 3D: Bio */
+            --neon-purple: #D946EF; /* 4D: Psi */
+            --neon-gold: #F59E0B;   /* 5D: Cosmic */
             --bg-dark: #020617;
         }
 
@@ -38,10 +32,7 @@
             overflow-x: hidden;
         }
 
-        h1,
-        h2,
-        h3,
-        .sci-fi-font {
+        h1, h2, h3, h4, .sci-fi-font {
             font-family: 'Chakra Petch', sans-serif;
         }
 
@@ -55,64 +46,58 @@
         }
 
         .nav-btn.active {
-            background: linear-gradient(90deg, rgba(34, 211, 238, 0.1), rgba(168, 85, 247, 0.1));
-            border-bottom: 2px solid var(--neon-cyan);
-            color: var(--neon-cyan);
+            background: linear-gradient(90deg, rgba(14, 165, 233, 0.1), rgba(217, 70, 239, 0.1));
+            border-bottom: 2px solid var(--neon-blue);
+            color: var(--neon-blue);
         }
 
-        /* --- Cycle Selector --- */
-        .cycle-btn {
+        /* --- Mode Selector Buttons --- */
+        .mode-btn {
             background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #94A3B8;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(4px);
         }
-
-        .cycle-btn:hover {
+        
+        .mode-btn:hover {
             border-color: white;
             color: white;
-            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
         }
 
-        .cycle-btn.selected-3d {
-            border-color: var(--neon-cyan);
-            color: var(--neon-cyan);
-            box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
-            background: rgba(34, 211, 238, 0.1);
+        .mode-btn.selected-3d {
+            border-color: var(--neon-blue); color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.3);
+            background: rgba(14, 165, 233, 0.1);
+        }
+        .mode-btn.selected-4d {
+            border-color: var(--neon-purple); color: var(--neon-purple);
+            box-shadow: 0 0 15px rgba(217, 70, 239, 0.3);
+            background: rgba(217, 70, 239, 0.1);
+        }
+        .mode-btn.selected-5d {
+            border-color: var(--neon-gold); color: var(--neon-gold);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+            background: rgba(245, 158, 11, 0.1);
         }
 
-        .cycle-btn.selected-4d {
-            border-color: var(--neon-purple);
-            color: var(--neon-purple);
-            box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
-            background: rgba(168, 85, 247, 0.1);
-        }
-
-        .cycle-btn.selected-5d {
-            border-color: var(--neon-gold);
-            color: var(--neon-gold);
-            box-shadow: 0 0 10px rgba(250, 204, 21, 0.2);
-            background: rgba(250, 204, 21, 0.1);
-        }
-
-        /* --- IMMERSIVE WRAPPER (The Main Stage) --- */
+        /* --- IMMERSIVE WRAPPER --- */
         #immersive-stage {
             position: relative;
             width: 100%;
             height: 600px;
-            /* Taller default height */
             border-radius: 1rem;
             overflow: hidden;
-            background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
+            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 10;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 40px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* --- Fullscreen State --- */
         #immersive-stage.immersive-active {
             position: fixed !important;
             top: 0 !important;
@@ -124,271 +109,309 @@
             margin: 0 !important;
         }
 
-        /* Canvas acts as background */
         #three-canvas-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            /* Lowest */
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
         }
 
-        /* UI Overlay Layer (Sit on top of canvas) */
+        /* --- UI Overlay --- */
         .ui-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 20;
-            /* High */
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20;
             pointer-events: none;
-            /* Let clicks pass through to canvas if needed, but we catch them on buttons */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
+            display: flex; flex-direction: column; justify-content: space-between;
         }
 
         .ui-overlay-top {
-            display: flex;
-            justify-content: flex-end;
-            /* Top Right buttons */
+            padding: 20px;
+            display: flex; justify-content: flex-end;
             pointer-events: auto;
         }
 
         .ui-overlay-center {
             text-align: center;
-            /* Center vertically */
-            position: absolute;
-            top: 50%;
-            left: 50%;
+            position: absolute; top: 45%; left: 50%;
             transform: translate(-50%, -50%);
             width: 100%;
+            pointer-events: none;
         }
 
         .ui-overlay-bottom {
-            background: linear-gradient(to top, rgba(2, 6, 23, 0.9) 0%, rgba(2, 6, 23, 0) 100%);
-            padding: 2rem 1rem 1rem 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
+            background: linear-gradient(to top, rgba(2, 6, 23, 0.95) 0%, rgba(2, 6, 23, 0) 100%);
+            padding: 3rem 1rem 1.5rem 1rem;
+            display: flex; flex-direction: column; align-items: center; gap: 1rem;
             pointer-events: auto;
-            /* Enable clicking buttons */
-            margin-bottom: -20px;
-            /* Offset padding */
-            margin-left: -20px;
-            margin-right: -20px;
-            width: calc(100% + 40px);
         }
 
-        /* Hide elements dynamically */
-        .immersive-btn-exit {
-            display: none;
-        }
+        .immersive-btn-exit { display: none; }
+        #immersive-stage.immersive-active .immersive-btn-exit { display: flex; }
+        #immersive-stage.immersive-active .immersive-btn-enter { display: none; }
 
-        #immersive-stage.immersive-active .immersive-btn-exit {
-            display: flex;
+        @keyframes pulse-glow {
+            0%, 100% { text-shadow: 0 0 10px currentColor; opacity: 1; }
+            50% { text-shadow: 0 0 20px currentColor; opacity: 0.8; }
         }
-
-        #immersive-stage.immersive-active .immersive-btn-enter {
-            display: none;
-        }
-
-        /* Progress Bar Animation */
-        @keyframes fillBar {
-            from {
-                width: 0%;
-            }
-
-            to {
-                width: var(--target-width);
-            }
-        }
-
-        .progress-fill {
-            animation: fillBar 1.5s ease-out forwards;
-        }
+        .text-glow { animation: pulse-glow 3s infinite; }
+        
+        /* Custom Scrollbar for dashboard content */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
     </style>
 </head>
-
 <body class="min-h-screen flex flex-col">
 
     <!-- Navbar -->
     <nav class="sticky top-0 z-50 glass-panel border-b border-gray-800">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex flex-col md:flex-row items-center justify-between h-auto md:h-20 py-2 md:py-0">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between h-auto md:h-20 py-3 md:py-0">
                 <div class="flex flex-col mb-2 md:mb-0">
-                    <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 rounded-full bg-cyan-500 animate-pulse"></div>
-                        <span
-                            class="sci-fi-font text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-400 to-yellow-400">
-                            AI MEDITATION ULTIMATE
+                    <div class="flex items-center gap-3">
+                        <div class="relative w-4 h-4">
+                            <div class="absolute w-full h-full rounded-full bg-cyan-500 animate-ping opacity-75"></div>
+                            <div class="relative w-full h-full rounded-full bg-cyan-500"></div>
+                        </div>
+                        <span class="sci-fi-font text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-yellow-400 tracking-wider">
+                            SUPERHUMAN EVOLUTION
                         </span>
                     </div>
-                    <a href="https://www.facebook.com/winayo1/" target="_blank"
-                        class="text-[10px] text-gray-400 hover:text-cyan-400 transition-colors ml-5 flex items-center gap-1 group">
+                    <a href="https://www.facebook.com/winayo1/" target="_blank" class="text-[10px] text-gray-400 hover:text-cyan-400 transition-colors ml-7 flex items-center gap-1 group">
                         <span>Creative Concept by Mr. Winai Phanarkat</span>
                     </a>
                 </div>
                 <div class="flex space-x-2 md:space-x-4">
-                    <button onclick="switchTab('practice')" id="tab-practice"
-                        class="nav-btn active sci-fi-font px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors">TRAINING
-                        (VR)</button>
-                    <button onclick="switchTab('dashboard')" id="tab-dashboard"
-                        class="nav-btn sci-fi-font px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors">DASHBOARD</button>
+                    <button onclick="switchTab('practice')" id="tab-practice" class="nav-btn active sci-fi-font px-4 py-2 text-xs md:text-sm font-bold hover:text-white transition-colors tracking-wide">
+                        PROTOCOL ACTIVATION
+                    </button>
+                    <button onclick="switchTab('dashboard')" id="tab-dashboard" class="nav-btn sci-fi-font px-4 py-2 text-xs md:text-sm font-bold hover:text-white transition-colors tracking-wide">
+                        EVOLUTION METRICS
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="flex-grow max-w-5xl mx-auto w-full p-4 md:p-6 space-y-6 relative">
+    <main class="flex-grow max-w-7xl mx-auto w-full p-4 md:p-6 space-y-6 relative">
 
-        <!-- ======================= TAB 1: VISUALIZER (The Main Stage) ======================= -->
+        <!-- ======================= TAB 1: VISUALIZER ======================= -->
         <div id="practice-view" class="space-y-4 animate-fade-in">
-
-            <!-- Header Text (Optional, hidden in immersive) -->
-            <div class="text-center space-y-1 mb-4">
-                <h2 class="text-2xl font-bold text-white sci-fi-font" id="dimension-title">3D Bio-Synchronization</h2>
-                <p class="text-gray-400 text-xs" id="dimension-desc">เชื่อมต่อระดับเซลล์ร่างกาย (Physical Plane)</p>
+            
+            <div class="text-center space-y-1 mb-2">
+                <h2 class="text-2xl md:text-3xl font-bold text-white sci-fi-font tracking-widest text-glow" id="dimension-title">Bio-Optimization</h2>
+                <p class="text-gray-400 text-xs md:text-sm" id="dimension-desc">อัปเกรดเซลล์สมองและร่างกายสู่ศักยภาพสูงสุด</p>
             </div>
 
-            <!-- THE IMMERSIVE STAGE (Wraps everything) -->
-            <div id="immersive-stage" class="border border-gray-700">
-
-                <!-- 1. Background Canvas -->
+            <!-- IMMERSIVE STAGE -->
+            <div id="immersive-stage">
+                
+                <!-- 3D Canvas -->
                 <div id="three-canvas-container"></div>
 
-                <!-- 2. UI Overlay (Floating on top) -->
+                <!-- UI Overlay -->
                 <div class="ui-overlay">
-
-                    <!-- Top Right: Window Controls -->
-                    <div class="ui-overlay-top gap-2">
-                        <!-- Enter Fullscreen -->
-                        <button onclick="toggleImmersive()"
-                            class="immersive-btn-enter bg-black/50 hover:bg-cyan-500/80 p-2 rounded-lg text-white transition-all border border-white/10"
-                            title="Full Screen">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                            </svg>
+                    
+                    <!-- Top Controls -->
+                    <div class="ui-overlay-top gap-3">
+                        <button onclick="toggleImmersive()" class="immersive-btn-enter bg-black/40 hover:bg-white/10 p-2.5 rounded-lg text-white transition-all border border-white/10 backdrop-blur-sm" title="Immersive Mode">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
                         </button>
-                        <!-- Exit Fullscreen -->
-                        <button onclick="toggleImmersive()"
-                            class="immersive-btn-exit bg-red-600/80 hover:bg-red-500 p-2 rounded-full text-white transition-all shadow-lg border border-white/20"
-                            title="Exit">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                        <button onclick="toggleImmersive()" class="immersive-btn-exit bg-red-600/80 hover:bg-red-500 p-2.5 rounded-full text-white transition-all shadow-lg border border-white/20" title="Exit">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
                     </div>
 
-                    <!-- Center: Timer & Instructions -->
-                    <div class="ui-overlay-center pointer-events-none">
-                        <div id="timerDisplay"
-                            class="sci-fi-font text-6xl md:text-8xl font-bold text-cyan-400 drop-shadow-[0_0_20px_rgba(0,0,0,1)] transition-colors duration-500">
-                            Ready</div>
-                        <div id="instructionText"
-                            class="text-xl md:text-2xl font-bold text-white drop-shadow-md mt-2 sci-fi-font tracking-wider">
-                            หายใจตามแสง...
+                    <!-- Center Display -->
+                    <div class="ui-overlay-center">
+                        <div id="timerDisplay" class="sci-fi-font text-7xl md:text-9xl font-bold text-cyan-400 drop-shadow-[0_0_30px_rgba(0,0,0,0.8)] transition-colors duration-500">Ready</div>
+                        <div id="instructionText" class="text-xl md:text-3xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mt-4 sci-fi-font tracking-wider uppercase">
+                            เตรียมพร้อมอัปเกรดระบบ
                         </div>
                     </div>
 
-                    <!-- Bottom: Control Bar (Floating) -->
+                    <!-- Bottom Controls -->
                     <div class="ui-overlay-bottom">
+                        
+                        <!-- Mode Selector -->
+                        <div class="flex flex-wrap justify-center gap-3 w-full max-w-3xl mb-4" id="cycleSelectorContainer">
+                            
+                            <!-- Mode 1: Body/Brain -->
+                            <button onclick="selectDimension(3)" class="mode-btn selected-3d flex-1 min-w-[140px] py-3 px-4 rounded-xl flex flex-col items-center gap-1 group" id="btn-dim-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xl">🧬</span>
+                                    <span class="sci-fi-font font-bold text-lg">Bio-Opt</span>
+                                </div>
+                                <span class="text-[10px] uppercase tracking-wider opacity-70 group-hover:opacity-100">ร่างกาย & สมอง</span>
+                            </button>
 
-                        <!-- Dimension/Level Selector -->
-                        <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-2" id="cycleSelectorContainer">
-                            <button onclick="selectDimension(3)"
-                                class="cycle-btn selected-3d sci-fi-font px-4 py-2 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2"
-                                id="btn-dim-3">
-                                <span class="text-base">3D</span> <span>Physical</span>
+                            <!-- Mode 2: Mind/Psi -->
+                            <button onclick="selectDimension(4)" class="mode-btn flex-1 min-w-[140px] py-3 px-4 rounded-xl flex flex-col items-center gap-1 group" id="btn-dim-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xl">🔮</span>
+                                    <span class="sci-fi-font font-bold text-lg">Psi-Active</span>
+                                </div>
+                                <span class="text-[10px] uppercase tracking-wider opacity-70 group-hover:opacity-100">พลังจิต & ความคิด</span>
                             </button>
-                            <button onclick="selectDimension(4)"
-                                class="cycle-btn sci-fi-font px-4 py-2 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2"
-                                id="btn-dim-4">
-                                <span class="text-base">4D</span> <span>Mind</span>
-                            </button>
-                            <button onclick="selectDimension(5)"
-                                class="cycle-btn sci-fi-font px-4 py-2 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2"
-                                id="btn-dim-5">
-                                <span class="text-base">5D</span> <span>Unity</span>
+
+                            <!-- Mode 3: Spirit/Contact -->
+                            <button onclick="selectDimension(5)" class="mode-btn flex-1 min-w-[140px] py-3 px-4 rounded-xl flex flex-col items-center gap-1 group" id="btn-dim-5">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xl">👽</span>
+                                    <span class="sci-fi-font font-bold text-lg">Cosmic</span>
+                                </div>
+                                <span class="text-[10px] uppercase tracking-wider opacity-70 group-hover:opacity-100">ยอดมนุษย์ & ต่างดาว</span>
                             </button>
                         </div>
 
-                        <!-- Main Action Button -->
-                        <div>
-                            <button onclick="startBreathing()" id="startBtn"
-                                class="px-12 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-400 hover:to-blue-400 text-white font-bold rounded-full shadow-[0_0_20px_rgba(34,211,238,0.5)] transition-all transform hover:scale-105 sci-fi-font text-lg tracking-widest border border-white/20">
-                                START SYSTEM
-                            </button>
-                            <button onclick="stopBreathing()" id="stopBtn"
-                                class="hidden px-12 py-3 bg-red-900/80 hover:bg-red-700 text-white font-bold rounded-full border border-red-500 transition-all sci-fi-font text-lg tracking-widest shadow-[0_0_20px_rgba(239,68,68,0.5)]">
-                                TERMINATE
+                        <!-- Main Action -->
+                        <div class="relative group">
+                            <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-yellow-600 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+                            <button onclick="startBreathing()" id="startBtn" class="relative px-16 py-4 bg-gray-900 ring-1 ring-gray-600 hover:bg-gray-800 text-white font-bold rounded-full transition-all sci-fi-font text-xl tracking-[0.2em] flex items-center gap-3">
+                                <span class="animate-pulse">▶</span> ACTIVATE
                             </button>
                         </div>
-
-                        <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-2">Neural Interface Active</p>
+                        
+                        <button onclick="stopBreathing()" id="stopBtn" class="hidden px-16 py-4 bg-red-900/90 hover:bg-red-800 text-white font-bold rounded-full border border-red-500 transition-all sci-fi-font text-xl tracking-[0.2em] shadow-[0_0_30px_rgba(220,38,38,0.4)]">
+                            ■ TERMINATE
+                        </button>
+                        
                     </div>
                 </div>
             </div>
 
-            <!-- Additional Info (Below Stage) -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-gray-500 mt-4">
-                <div class="glass-panel p-3 rounded text-center">Inhale (4s): Oxygenate</div>
-                <div class="glass-panel p-3 rounded text-center">Hold (7s): Transition</div>
-                <div class="glass-panel p-3 rounded text-center">Exhale (8s): Release</div>
+            <!-- Context Info -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-gray-400 mt-2 font-mono">
+                <div class="glass-panel p-3 rounded flex items-center justify-center gap-2 border-l-2 border-blue-500">
+                    <span class="font-bold text-blue-400">PHASE 1:</span> Oxygenate (เติมพลัง)
+                </div>
+                <div class="glass-panel p-3 rounded flex items-center justify-center gap-2 border-l-2 border-purple-500">
+                    <span class="font-bold text-purple-400">PHASE 2:</span> Absorb (ซึมซับ)
+                </div>
+                <div class="glass-panel p-3 rounded flex items-center justify-center gap-2 border-l-2 border-yellow-500">
+                    <span class="font-bold text-yellow-400">PHASE 3:</span> Transmit (ส่งสัญญาณ)
+                </div>
             </div>
 
         </div>
 
         <!-- ======================= TAB 2: DASHBOARD ======================= -->
-        <div id="dashboard-view" class="hidden space-y-8 animate-fade-in dashboard-metrics">
-            <div class="flex justify-between items-end border-b border-gray-800 pb-4">
+        <div id="dashboard-view" class="hidden space-y-8 animate-fade-in dashboard-metrics pb-12">
+            <div class="flex flex-col md:flex-row justify-between items-end border-b border-gray-800 pb-4 gap-4">
                 <div>
-                    <h2 class="text-2xl font-bold text-white sci-fi-font">Dimensional Analytics</h2>
-                    <p class="text-gray-400 text-sm">วิเคราะห์ผลลัพธ์การยกระดับจิตวิญญาณ</p>
+                    <h2 class="text-2xl font-bold text-white sci-fi-font">Evolution Analytics</h2>
+                    <p class="text-gray-400 text-sm">วิเคราะห์ระดับวิวัฒนาการทางกายภาพและจิตวิญญาณ</p>
                 </div>
-                <div class="text-right hidden md:block">
-                    <p class="text-xs text-gray-500">TARGET STATE</p>
-                    <p class="sci-fi-font text-xl text-yellow-400 glow">5D UNITY</p>
+                <div class="flex gap-4 text-right">
+                    <div>
+                        <p class="text-[10px] text-gray-500">PSYCHIC LEVEL</p>
+                        <p class="sci-fi-font text-lg text-purple-400">CLASS IV</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-500">CONTACT STATUS</p>
+                        <p class="sci-fi-font text-lg text-yellow-400 animate-pulse">LISTENING...</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Knowledge Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="glass-panel p-4 rounded-xl border-l-4 border-cyan-500">
-                    <h3 class="text-cyan-400 font-bold mb-1 sci-fi-font">3D: Physical</h3>
-                    <p class="text-xs text-gray-300">มิติทางกายภาพ กว้างxยาวxสูง การฟื้นฟูเซลล์ และการผ่อนคลายกล้ามเนื้อ
-                    </p>
+            <!-- Knowledge Cards (Expanded with Explanations) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- CARD 1: BIO-OPTIMIZATION -->
+                <div class="glass-panel p-6 rounded-xl border-t-4 border-blue-500 hover:bg-gray-800/50 transition-colors custom-scroll">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">🧬</span>
+                        <h3 class="text-blue-400 font-bold sci-fi-font text-xl">Bio-Optimization</h3>
+                    </div>
+                    <div class="text-xs text-gray-300 space-y-4">
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-white text-sm">ฟื้นฟูระดับ DNA (Telomere)</h4>
+                            <p class="text-gray-400 leading-relaxed pl-2 border-l-2 border-blue-500/30">
+                                การซ่อมแซม "เทโลเมียร์" หรือส่วนปลายของโครโมโซมที่เปรียบเสมือนนาฬิกาชีวิต การทำสมาธิลึกช่วยชะลอการหดสั้นของเทโลเมียร์ ทำให้เซลล์แก่ช้าลงและย้อนวัยทางชีวภาพ (Reverse Aging)
+                            </p>
+                        </div>
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-white text-sm">เพิ่มพลังสมอง (Neuroplasticity)</h4>
+                            <p class="text-gray-400 leading-relaxed pl-2 border-l-2 border-blue-500/30">
+                                กระบวนการสร้างเส้นใยประสาทใหม่ (New Neural Pathways) สมองจะมีความยืดหยุ่นสูง เรียนรู้เร็วขึ้น ความจำดีเยี่ยม และป้องกันโรคอัลไซเมอร์ ผ่านการกระตุ้นด้วยคลื่นสมอง Gamma
+                            </p>
+                        </div>
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-white text-sm">ความแข็งแกร่งทางกายภาพ</h4>
+                            <p class="text-gray-400 leading-relaxed pl-2 border-l-2 border-blue-500/30">
+                                การเพิ่มประสิทธิภาพของไมโทคอนเดรีย (เตาปฏิกรณ์พลังงานในเซลล์) ทำให้ร่างกายมีความอึด ทนทาน และระบบภูมิคุ้มกันแข็งแกร่งดุจเกราะป้องกันโรคภัย
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="glass-panel p-4 rounded-xl border-l-4 border-purple-500">
-                    <h3 class="text-purple-400 font-bold mb-1 sci-fi-font">4D: Time & Mind</h3>
-                    <p class="text-xs text-gray-300">มิติแห่งเวลาและความคิด (Hypercube)
-                        การก้าวข้ามเส้นเวลาและการหยั่งรู้ (Insight)</p>
+
+                <!-- CARD 2: PSI-ACTIVATION -->
+                <div class="glass-panel p-6 rounded-xl border-t-4 border-purple-500 hover:bg-gray-800/50 transition-colors custom-scroll">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">🔮</span>
+                        <h3 class="text-purple-400 font-bold sci-fi-font text-xl">Psi-Activation</h3>
+                    </div>
+                    <div class="text-xs text-gray-300 space-y-4">
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-white text-sm">พลังจิต (Telepathy/Intuition)</h4>
+                            <p class="text-gray-400 leading-relaxed pl-2 border-l-2 border-purple-500/30">
+                                การปลุกประสาทสัมผัสที่ 6 ให้ตื่นตัว สามารถรับรู้ข้อมูลผ่านจิตโดยตรง (Direct Knowing) การอ่านใจ และการส่งกระแสจิตเพื่อสื่อสารโดยไม่ต้องใช้คำพูด
+                            </p>
+                        </div>
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-white text-sm">โปรแกรมความคิด (Mindset)</h4>
+                            <p class="text-gray-400 leading-relaxed pl-2 border-l-2 border-purple-500/30">
+                                การล้างโปรแกรมความเชื่อเก่าที่จำกัดศักยภาพ (Subconscious Reprogramming) และติดตั้ง "ชุดความคิดของผู้ชนะ" ลงไปใหม่ เพื่อให้สมองทำงานดุจซูเปอร์คอมพิวเตอร์
+                            </p>
+                        </div>
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-white text-sm">วาจาสิทธิ์ (Manifestation Speech)</h4>
+                            <p class="text-gray-400 leading-relaxed pl-2 border-l-2 border-purple-500/30">
+                                การใช้วาจาที่มีคลื่นความถี่จำเพาะ (Frequency Match) เพื่อสั่งการจักรวาล ทุกคำพูดจะกลายเป็นความจริง (Reality Hacking) เพราะเสียงคือแรงสั่นสะเทือนที่เปลี่ยนโครงสร้างสสารได้
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="glass-panel p-4 rounded-xl border-l-4 border-yellow-500">
-                    <h3 class="text-yellow-400 font-bold mb-1 sci-fi-font">5D: Unity Field</h3>
-                    <p class="text-xs text-gray-300">มิติแห่งจิตสำนึกรวมหมู่ (Oneness) ความรักไร้เงื่อนไข
-                        และการตื่นรู้สมบูรณ์</p>
+
+                <!-- CARD 3: COSMIC CONTACT -->
+                <div class="glass-panel p-6 rounded-xl border-t-4 border-yellow-500 hover:bg-gray-800/50 transition-colors custom-scroll">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">🛸</span>
+                        <h3 class="text-yellow-400 font-bold sci-fi-font text-xl">Cosmic Contact</h3>
+                    </div>
+                    <div class="text-xs text-gray-300 space-y-4">
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-white text-sm">เชื่อมต่อจิตจักรวาล (Unity)</h4>
+                            <p class="text-gray-400 leading-relaxed pl-2 border-l-2 border-yellow-500/30">
+                                สภาวะ "เอกภาพ" (Oneness) ที่ตระหนักรู้ว่าเราคือหนึ่งเดียวกับทุกสรรพสิ่ง ไร้ตัวตน ไร้การแบ่งแยก เป็นบ่อเกิดของความรักไร้เงื่อนไขและปัญญาญาณสูงสุด
+                            </p>
+                        </div>
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-white text-sm">สื่อสารต่างมิติ (CE-5 Protocol)</h4>
+                            <p class="text-gray-400 leading-relaxed pl-2 border-l-2 border-yellow-500/30">
+                                ขั้นตอนการทำสมาธิแบบกลุ่มเพื่อเชิญและสื่อสารกับสิ่งมีชีวิตทรงภูมิปัญญาจากต่างดาว (ETs) ด้วยสันติวิธีและการแลกเปลี่ยนคลื่นความถี่แห่งความปรารถนาดี
+                            </p>
+                        </div>
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-white text-sm">สภาวะยอดมนุษย์ (Superhuman)</h4>
+                            <p class="text-gray-400 leading-relaxed pl-2 border-l-2 border-yellow-500/30">
+                                จุดสูงสุดของวิวัฒนาการที่มนุษย์ก้าวข้ามขีดจำกัดทางชีวภาพเดิม เข้าสู่สายพันธุ์ใหม่ (Homo Luminous - มนุษย์แห่งแสง) ผู้มีร่างกายทิพย์และจิตที่ตื่นรู้สมบูรณ์
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Charts -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="glass-panel p-6 rounded-xl">
-                    <h3 class="sci-fi-font text-white mb-4">Evolution of Consciousness</h3>
+                    <h3 class="sci-fi-font text-white mb-4 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-blue-500"></span> Potential Radar
+                    </h3>
                     <div class="h-64 w-full"><canvas id="dimChart"></canvas></div>
                 </div>
                 <div class="glass-panel p-6 rounded-xl">
-                    <h3 class="sci-fi-font text-white mb-4">Frequency Shift</h3>
+                    <h3 class="sci-fi-font text-white mb-4 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-purple-500"></span> Frequency Ascension
+                    </h3>
                     <div class="h-64 w-full"><canvas id="freqChart"></canvas></div>
                 </div>
             </div>
@@ -396,76 +419,78 @@
 
     </main>
 
-    <footer class="text-center py-6 text-gray-600 text-xs sci-fi-font bg-black/50">
-        AI MEDITATION ULTIMATE v5.0 | CONCEPT BY MR. WINAI PHANARKAT
-    </footer>
-
     <script>
-        // --- 3D / 4D / 5D Visualization Engine (Three.js) ---
+        // --- 3D Visualization Engine ---
         let scene, camera, renderer;
-        let object3D, object4D, object5D; // Objects for each dimension
+        let object3D, object4D, object5D;
         let currentDim = 3;
         let targetScale = 1, currentScale = 1;
-        let activeColor = 0x22D3EE;
 
         function initThreeJS() {
             const container = document.getElementById('three-canvas-container');
-            // Wait for element to be ready
-            if (!container) return;
+            if(!container) return;
 
             scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x020617, 0.03);
+            // Starfield Background
+            scene.fog = new THREE.FogExp2(0x020617, 0.02);
 
             camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
             camera.position.z = 6;
 
             renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
 
-            // --- 3D Object: Bio-Sphere ---
-            const geo3D = new THREE.IcosahedronGeometry(1.8, 2);
+            // --- 3D: Bio-Sphere (Cell/Health) ---
+            const geo3D = new THREE.IcosahedronGeometry(1.8, 4);
             const mat3D = new THREE.MeshPhysicalMaterial({
-                color: 0x22D3EE, wireframe: true,
-                emissive: 0x22D3EE, emissiveIntensity: 0.2
+                color: 0x0EA5E9, wireframe: true,
+                emissive: 0x0EA5E9, emissiveIntensity: 0.3,
+                transparent: true, opacity: 0.8
             });
             object3D = new THREE.Mesh(geo3D, mat3D);
-            // Inner Core
-            const core3D = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 16), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 }));
+            const core3D = new THREE.Mesh(new THREE.SphereGeometry(1.2, 32, 32), new THREE.MeshBasicMaterial({ color: 0xBAE6FD, transparent: true, opacity: 0.4 }));
             object3D.add(core3D);
             scene.add(object3D);
 
-            // --- 4D Object: Tesseract (Hypercube Illusion) ---
+            // --- 4D: Hypercube (Mind/Psychic) ---
             object4D = new THREE.Group();
-            const outerBox = new THREE.Mesh(new THREE.BoxGeometry(2.5, 2.5, 2.5), new THREE.MeshBasicMaterial({ color: 0xA855F7, wireframe: true, transparent: true, opacity: 0.3 }));
-            const innerBox = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 1.2), new THREE.MeshBasicMaterial({ color: 0xFFFFFF, wireframe: true }));
+            const boxGeo = new THREE.BoxGeometry(2.2, 2.2, 2.2);
+            const boxMat = new THREE.MeshBasicMaterial({ color: 0xD946EF, wireframe: true, transparent: true, opacity: 0.5 });
+            const outerBox = new THREE.Mesh(boxGeo, boxMat);
+            const innerBox = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.0, 1.0), new THREE.MeshBasicMaterial({ color: 0xFFFFFF, wireframe: true }));
             object4D.add(outerBox);
             object4D.add(innerBox);
             object4D.visible = false;
             scene.add(object4D);
 
-            // --- 5D Object: Light Torus (Unity Field) ---
-            const torusGeo = new THREE.TorusKnotGeometry(1.5, 0.5, 100, 16);
-            const torusMat = new THREE.PointsMaterial({ color: 0xFACC15, size: 0.05, transparent: true, opacity: 0.8 });
-            object5D = new THREE.Points(torusGeo, torusMat);
-
-            // Add particle field aura
-            const particlesGeo = new THREE.BufferGeometry();
-            const pCount = 500;
+            // --- 5D: Cosmic Torus (Spirit/ET) ---
+            object5D = new THREE.Group();
+            const torusGeo = new THREE.TorusKnotGeometry(1.4, 0.4, 120, 20);
+            const torusMat = new THREE.PointsMaterial({ color: 0xF59E0B, size: 0.04, transparent: true, opacity: 0.8 });
+            const torus = new THREE.Points(torusGeo, torusMat);
+            
+            // Star Dust Aura
+            const pGeo = new THREE.BufferGeometry();
+            const pCount = 800;
             const pPos = new Float32Array(pCount * 3);
-            for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 10;
-            particlesGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-            const particles = new THREE.Points(particlesGeo, new THREE.PointsMaterial({ color: 0xFFD700, size: 0.03, transparent: true }));
+            for(let i=0; i<pCount*3; i++) {
+                pPos[i] = (Math.random()-0.5) * 12;
+            }
+            pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+            const pMat = new THREE.PointsMaterial({color: 0xFFFFFF, size: 0.03, transparent: true, opacity: 0.5});
+            const particles = new THREE.Points(pGeo, pMat);
+            
+            object5D.add(torus);
             object5D.add(particles);
-
             object5D.visible = false;
             scene.add(object5D);
 
             // Lights
             const ambient = new THREE.AmbientLight(0x404040);
             scene.add(ambient);
-            const light = new THREE.PointLight(0xffffff, 1);
+            const light = new THREE.PointLight(0xffffff, 1.5);
             light.position.set(5, 5, 5);
             scene.add(light);
 
@@ -475,12 +500,10 @@
 
         function onWindowResize() {
             const wrapper = document.getElementById('immersive-stage');
-            if (!wrapper) return;
-
+            if(!wrapper) return;
             const width = wrapper.clientWidth;
             const height = wrapper.clientHeight;
-
-            if (camera && renderer) {
+            if(camera && renderer) {
                 camera.aspect = width / height;
                 camera.updateProjectionMatrix();
                 renderer.setSize(width, height);
@@ -489,101 +512,94 @@
 
         function animate() {
             requestAnimationFrame(animate);
-
             const time = Date.now() * 0.001;
-            currentScale += (targetScale - currentScale) * 0.03;
+            
+            currentScale += (targetScale - currentScale) * 0.04;
 
-            // 3D Animation
-            if (object3D.visible) {
+            if(object3D.visible) {
                 object3D.scale.setScalar(currentScale);
-                object3D.rotation.y += 0.005;
-                object3D.rotation.x += 0.002;
+                object3D.rotation.y += 0.003;
+                object3D.rotation.z += 0.001;
+                object3D.children[0].scale.setScalar(0.8 + Math.sin(time*2)*0.1);
             }
 
-            // 4D Animation
-            if (object4D.visible) {
-                object4D.scale.setScalar(currentScale * 0.8);
-                object4D.children[0].rotation.y += 0.01;
-                object4D.children[0].rotation.z += 0.005;
+            if(object4D.visible) {
+                object4D.scale.setScalar(currentScale * 0.9);
+                object4D.children[0].rotation.x += 0.01;
+                object4D.children[0].rotation.y += 0.005;
                 object4D.children[1].rotation.x -= 0.02;
                 object4D.children[1].rotation.y -= 0.01;
-                object4D.rotation.z = Math.sin(time) * 0.2;
             }
 
-            // 5D Animation
-            if (object5D.visible) {
+            if(object5D.visible) {
                 object5D.scale.setScalar(currentScale);
-                object5D.rotation.x += 0.005;
-                object5D.rotation.y += 0.008;
-                object5D.children[0].rotation.y -= 0.002;
+                object5D.children[0].rotation.z -= 0.005;
+                object5D.children[0].rotation.x += 0.002;
+                object5D.children[1].rotation.y += 0.001;
             }
 
             renderer.render(scene, camera);
         }
 
-        // --- Logic Controller ---
+        // --- Controller ---
         let isRunning = false;
         let totalCycles = 4;
         let cycleCount = 0;
         let timerInterval, sessionTimeout;
 
         function selectDimension(dim) {
-            if (isRunning) return;
+            if(isRunning) return;
             currentDim = dim;
-
-            // UI Reset
-            document.querySelectorAll('.cycle-btn').forEach(b => {
+            
+            document.querySelectorAll('.mode-btn').forEach(b => {
                 b.classList.remove('selected-3d', 'selected-4d', 'selected-5d');
-                b.style.opacity = '0.5';
+                b.style.opacity = '0.6';
             });
 
             const btn = document.getElementById(`btn-dim-${dim}`);
             btn.style.opacity = '1';
-
-            if (dim === 3) {
+            
+            if(dim === 3) {
                 btn.classList.add('selected-3d');
                 totalCycles = 4;
                 updateScene(true, false, false);
-                updateTitle("3D Bio-Synchronization", "เซลล์กายภาพ: ฟื้นฟูร่างกาย");
+                updateLabels("Bio-Optimization", "ร่างกาย & สมอง: ฟื้นฟูระดับเซลล์และสุขภาพ", "#0EA5E9");
             } else if (dim === 4) {
                 btn.classList.add('selected-4d');
                 totalCycles = 8;
                 updateScene(false, true, false);
-                updateTitle("4D Time Dilation", "เทสเซอแร็ค: ก้าวข้ามเวลาและความคิด");
+                updateLabels("Psi-Activation", "พลังจิต & ความคิด: โปรแกรมจิตและวาจาสิทธิ์", "#D946EF");
             } else {
                 btn.classList.add('selected-5d');
                 totalCycles = 16;
                 updateScene(false, false, true);
-                updateTitle("5D Unity Field", "ทอรัสแห่งแสง: จิตหนึ่งเดียว");
+                updateLabels("Cosmic Contact", "จักรวาล & ต่างดาว: สื่อสารและรวมเป็นหนึ่ง", "#F59E0B");
             }
         }
 
         function updateScene(v3, v4, v5) {
-            if (!object3D) return;
+            if(!object3D) return;
             object3D.visible = v3;
             object4D.visible = v4;
             object5D.visible = v5;
-
-            document.getElementById('timerDisplay').style.color = v3 ? '#22D3EE' : (v4 ? '#A855F7' : '#FACC15');
         }
 
-        function updateTitle(title, desc) {
-            const t = document.getElementById('dimension-title');
-            const d = document.getElementById('dimension-desc');
-            if (t) t.innerText = title;
-            if (d) d.innerText = desc;
+        function updateLabels(title, desc, color) {
+            document.getElementById('dimension-title').innerText = title;
+            document.getElementById('dimension-desc').innerText = desc;
+            document.getElementById('timerDisplay').style.color = color;
         }
 
         async function startBreathing() {
-            if (isRunning) return;
+            if(isRunning) return;
             isRunning = true;
             cycleCount = 0;
-
+            
             document.getElementById('startBtn').classList.add('hidden');
             document.getElementById('stopBtn').classList.remove('hidden');
             document.getElementById('cycleSelectorContainer').classList.add('pointer-events-none', 'opacity-50');
 
-            document.getElementById('instructionText').innerText = `Initialising ${currentDim}D Sequence...`;
+            document.getElementById('instructionText').innerText = "INITIALIZING SEQUENCE...";
             await new Promise(r => setTimeout(r, 1000));
             runCycle();
         }
@@ -592,34 +608,46 @@
             isRunning = false;
             clearInterval(timerInterval);
             clearTimeout(sessionTimeout);
-
+            
             document.getElementById('timerDisplay').innerText = "Ready";
-            document.getElementById('instructionText').innerText = "หายใจตามแสง...";
-
-            targetScale = 1;
-
+            document.getElementById('instructionText').innerText = "เตรียมพร้อมอัปเกรดระบบ";
+            
+            targetScale = 1; 
+            
             document.getElementById('startBtn').classList.remove('hidden');
             document.getElementById('stopBtn').classList.add('hidden');
             document.getElementById('cycleSelectorContainer').classList.remove('pointer-events-none', 'opacity-50');
         }
 
         function runCycle() {
-            if (!isRunning) return;
-            if (cycleCount >= totalCycles) {
+            if(!isRunning) return;
+            if(cycleCount >= totalCycles) {
                 finishSession();
                 return;
             }
             cycleCount++;
 
-            // Inhale (Expand)
-            performPhase("หายใจเข้า (Inhale)", 4, 2.0, () => {
-                if (!isRunning) return;
-                // Hold (Absorb)
-                performPhase("กลั้นหายใจ (Hold)", 7, 2.1, () => {
-                    if (!isRunning) return;
-                    // Exhale (Release)
-                    performPhase("ผ่อนลมออก (Exhale)", 8, 1.0, () => {
-                        if (!isRunning) return;
+            let tInhale, tHold, tExhale;
+            if(currentDim === 3) {
+                tInhale = "สูดพลังงานบริสุทธิ์ (Health)";
+                tHold = "ซ่อมแซมเซลล์ (Repair)";
+                tExhale = "ขับไล่โรคภัย (Detox)";
+            } else if (currentDim === 4) {
+                tInhale = "ดึงดูดปัญญา (Wisdom)";
+                tHold = "บรรจุพลังจิต (Charge)";
+                tExhale = "แผ่ขยายคลื่น (Broadcast)";
+            } else {
+                tInhale = "รับแสงจักรวาล (Light)";
+                tHold = "เชื่อมต่อสัญญาณ (Connect)";
+                tExhale = "ส่งสาส์นรัก (Contact)";
+            }
+
+            performPhase(tInhale, 4, 2.0, () => {
+                if(!isRunning) return;
+                performPhase(tHold, 7, 2.2, () => {
+                    if(!isRunning) return;
+                    performPhase(tExhale, 8, 1.0, () => {
+                        if(!isRunning) return;
                         runCycle();
                     });
                 });
@@ -627,16 +655,14 @@
         }
 
         function performPhase(text, duration, scale, callback) {
-            // Update center text inside the 3D view
             document.getElementById('instructionText').innerText = text;
             targetScale = scale;
-
             let left = duration;
             document.getElementById('timerDisplay').innerText = left;
-
+            
             timerInterval = setInterval(() => {
                 left--;
-                if (left > 0) document.getElementById('timerDisplay').innerText = left;
+                if(left > 0) document.getElementById('timerDisplay').innerText = left;
             }, 1000);
 
             sessionTimeout = setTimeout(() => {
@@ -647,54 +673,34 @@
 
         function finishSession() {
             stopBreathing();
-            alert("Dimension Integration Complete.");
-            // Optionally exit immersive
+            alert("Evolution Sequence Complete. Neural Pathways Updated.");
             const wrapper = document.getElementById('immersive-stage');
-            if (wrapper.classList.contains('immersive-active')) {
-                toggleImmersive();
-            }
+            if(wrapper.classList.contains('immersive-active')) toggleImmersive();
         }
 
-        // --- Immersive Mode Logic ---
+        // --- Immersive UI ---
         function toggleImmersive() {
             const wrapper = document.getElementById('immersive-stage');
-            const body = document.body;
-
             wrapper.classList.toggle('immersive-active');
-
-            if (wrapper.classList.contains('immersive-active')) {
-                body.style.overflow = 'hidden';
-            } else {
-                body.style.overflow = '';
-            }
-
-            // Force Resize
+            document.body.style.overflow = wrapper.classList.contains('immersive-active') ? 'hidden' : '';
             onWindowResize();
-            setTimeout(onWindowResize, 50);
+            setTimeout(onWindowResize, 100);
         }
 
         function switchTab(tab) {
             const pView = document.getElementById('practice-view');
             const dView = document.getElementById('dashboard-view');
-            if (tab === 'practice') {
+            if(tab === 'practice') {
                 pView.classList.remove('hidden'); dView.classList.add('hidden');
                 setTimeout(onWindowResize, 100);
             } else {
                 pView.classList.add('hidden'); dView.classList.remove('hidden');
-                // Refresh charts
-                if (dimChart) dimChart.resize();
-                if (freqChart) freqChart.resize();
+                if(dimChart) dimChart.resize();
+                if(freqChart) freqChart.resize();
             }
         }
 
-        // Init
-        window.onload = () => {
-            initThreeJS();
-            selectDimension(3);
-            initCharts();
-        };
-
-        // Charts
+        // --- Charts ---
         let dimChart, freqChart;
         function initCharts() {
             Chart.defaults.color = '#94A3B8';
@@ -703,35 +709,45 @@
             dimChart = new Chart(document.getElementById('dimChart'), {
                 type: 'radar',
                 data: {
-                    labels: ['Body (3D)', 'Mind (4D)', 'Spirit (5D)', 'Emotion', 'Energy'],
+                    labels: ['ร่างกาย (Health)', 'พลังจิต (Psychic)', 'การสื่อสาร (Contact)', 'สมอง (Brain)', 'การกระทำ (Action)', 'จิตวิญญาณ (Spirit)'],
                     datasets: [{
-                        label: 'Current Level',
-                        data: [80, 50, 30, 60, 50],
-                        borderColor: '#22D3EE', backgroundColor: 'rgba(34,211,238,0.2)'
+                        label: 'ระดับปัจจุบัน (Current)',
+                        data: [75, 45, 20, 80, 65, 50],
+                        borderColor: '#0EA5E9', backgroundColor: 'rgba(14, 165, 233, 0.2)',
+                        borderWidth: 2
                     }, {
-                        label: 'Target 5D',
-                        data: [100, 100, 100, 100, 100],
-                        borderColor: '#FACC15', backgroundColor: 'transparent', borderDash: [5, 5]
+                        label: 'เป้าหมายยอดมนุษย์ (Superhuman)',
+                        data: [100, 100, 100, 100, 100, 100],
+                        borderColor: '#F59E0B', backgroundColor: 'transparent', 
+                        borderDash: [4,4], borderWidth: 1
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { r: { grid: { color: 'rgba(255,255,255,0.1)' } } } }
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { r: { angleLines: {color:'rgba(255,255,255,0.1)'}, grid: {color:'rgba(255,255,255,0.1)'}, pointLabels: {font:{size:10}} } }
+                }
             });
 
             freqChart = new Chart(document.getElementById('freqChart'), {
                 type: 'line',
                 data: {
-                    labels: ['Start', '3D State', '4D Shift', '5D Unity'],
+                    labels: ['Start', 'Bio-Opt', 'Psi-Active', 'Cosmic-Contact'],
                     datasets: [{
                         label: 'Frequency (Hz)',
-                        data: [20, 10, 40, 100],
-                        borderColor: '#A855F7', tension: 0.4, fill: true,
-                        backgroundColor: 'rgba(168,85,247,0.1)'
+                        data: [20, 40, 100, 963],
+                        borderColor: '#D946EF', backgroundColor: 'rgba(217, 70, 239, 0.1)',
+                        fill: true, tension: 0.4
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } } } }
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color:'rgba(255,255,255,0.05)' } } } }
             });
         }
+
+        window.onload = () => {
+            initThreeJS();
+            selectDimension(3);
+            initCharts();
+        };
     </script>
 </body>
-
 </html>
