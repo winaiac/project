@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โครงการ: ระบบพลังงานบริสุทธิ์ฟรี จากพระแม่ธรณี</title>
+    <!-- Thai Flag Favicon -->
+    <link rel="icon"
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJv6AAAALElEQVQokWNgYGD4z0AEYBqcX7m5uVOnTqWlpTExMTIyMqKjozMyMv7//08YDwAtshP99Y88VAAAAABJRU5ErkJggg==">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&display=swap');
+
+        :root {
+            --emerald: #10b981;
+            --cyan: #06b6d4;
+            --amber: #f59e0b;
+            --indigo: #6366f1;
+            --th-red: #ED1C24;
+            --th-blue: #241D73;
+            --dark-bg: #010409;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--dark-bg);
+            color: #f8fafc;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .nav-tab {
+            position: relative;
+            transition: all 0.3s ease;
+            color: #94a3b8;
+            font-weight: 700;
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-tab.active {
+            color: var(--emerald);
+            text-shadow: 0 0 10px var(--emerald);
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--emerald), transparent);
+            box-shadow: 0 0 15px var(--emerald);
+            border-radius: 2px;
+        }
+
+        .viewport-container {
+            width: 100%;
+            height: 60vh;
+            cursor: grab;
+            background: radial-gradient(circle at center, #051a14 0%, #000 100%);
+            border-radius: 2rem;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-ui {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .th-flag {
+            width: 35px;
+            height: 22px;
+            background: linear-gradient(to bottom,
+                    var(--th-red) 0% 16.6%,
+                    #fff 16.6% 33.3%,
+                    var(--th-blue) 33.3% 66.6%,
+                    #fff 66.6% 83.3%,
+                    var(--th-red) 83.3% 100%);
+            border-radius: 3px;
+            box-shadow: 0 0 15px rgba(237, 28, 36, 0.3);
+        }
+
+        .glow-emerald {
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
+        }
+
+        .glow-amber {
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.8);
+        }
+
+        .glow-indigo {
+            text-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.1;
+        }
+
+        .step-card {
+            background: rgba(15, 23, 42, 0.5);
+            border-left: 4px solid var(--emerald);
+            padding: 1.5rem;
+            border-radius: 0 1.5rem 1.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            background: rgba(16, 185, 129, 0.1);
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header Navigation -->
+    <header class="fixed top-0 w-full z-[1000] glass-ui rounded-none border-b border-emerald-500/30">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 shrink-0">
+                <div class="flex flex-col items-center">
+                    <div class="th-flag mb-1"></div>
+                    <div
+                        class="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.5)]">
+                        <span class="text-black text-xl font-black italic">⚡</span>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-sm sm:text-lg font-black leading-none uppercase tracking-tighter italic">
+                        ระบบพลังงานบริสุทธิ์ฟรี <span class="text-emerald-500">จากพระแม่ธรณี</span></h1>
+                    <p class="text-[8px] text-slate-500 uppercase tracking-widest mt-1 font-bold">Research by <span
+                            class="text-emerald-400 font-black">Mr. Winai Phanarkat</span></p>
+                </div>
+            </div>
+
+            <nav class="flex items-center gap-4 sm:gap-6 h-full overflow-x-auto no-scrollbar">
+                <button onclick="switchView('aloe')" id="btn-aloe"
+                    class="nav-tab active px-2 text-[10px] sm:text-xs">01. ว่านหาง</button>
+                <button onclick="switchView('mfc')" id="btn-mfc" class="nav-tab px-2 text-[10px] sm:text-xs">02. ระบบ
+                    MFC</button>
+                <button onclick="switchView('pyramid')" id="btn-pyramid" class="nav-tab px-2 text-[10px] sm:text-xs">03.
+                    พีระมิด</button>
+                <button onclick="switchView('guide')" id="btn-guide" class="nav-tab px-2 text-[10px] sm:text-xs">04.
+                    คู่มือ & วิชาการ</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pt-28 pb-20">
+
+        <!-- SIM 1: ALOE -->
+        <section id="view-aloe" class="container mx-auto px-4 animate-in fade-in duration-700">
+            <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+                <div class="xl:col-span-3 relative group">
+                    <div id="canvas-aloe" class="viewport-container shadow-2xl"></div>
+                    <div class="scanline"></div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="glass-ui p-8 shadow-xl border border-emerald-500/20">
+                        <h2 class="text-xs font-black text-emerald-500 mb-6 uppercase tracking-[0.2em]">Bio-Current
+                            Terminal</h2>
+                        <div class="space-y-6">
+                            <div class="flex justify-between items-end">
+                                <span class="text-slate-400 text-xs font-bold uppercase">Active Nodes:</span>
+                                <span id="aloe-count-label" class="text-5xl font-black text-white glow-emerald">6</span>
+                            </div>
+                            <div class="bg-black/60 p-6 rounded-3xl border border-emerald-500/20">
+                                <div class="text-[9px] text-emerald-500 mb-1 font-black uppercase">Calculated Output
+                                </div>
+                                <div id="aloe-volt-label"
+                                    class="text-6xl font-black text-emerald-400 glow-emerald leading-none">5.10<span
+                                        class="text-xl opacity-50 ml-1">V</span></div>
+                            </div>
+                            <button onclick="aloeAddNode()"
+                                class="w-full py-5 bg-gradient-to-r from-emerald-600 to-emerald-400 text-black font-black rounded-xl shadow-lg active:scale-95 uppercase">⚡
+                                เพิ่มการต่อเซลล์</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SIM 2: MFC -->
+        <section id="view-mfc" class="hidden container mx-auto px-4">
+            <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+                <div class="xl:col-span-3 relative group">
+                    <div id="canvas-mfc" class="viewport-container shadow-2xl"
+                        style="background: radial-gradient(circle at center, #1a1005 0%, #000 100%);"></div>
+                    <div class="scanline"></div>
+                </div>
+                <div class="space-y-6">
+                    <div class="glass-ui p-8 shadow-xl border border-amber-500/20">
+                        <h2 class="text-xs font-black text-amber-500 mb-6 uppercase tracking-widest">Earth Current
+                            Monitor</h2>
+                        <div class="space-y-6">
+                            <div class="flex justify-between items-end text-white">
+                                <span class="text-slate-400 text-xs font-bold">STACK UNITS:</span>
+                                <span class="text-5xl font-black glow-amber">10</span>
+                            </div>
+                            <div class="bg-black/60 p-6 rounded-3xl border border-amber-500/20">
+                                <div id="mfc-volt-label" class="text-6xl font-black text-amber-400 glow-amber">5.00<span
+                                        class="text-xl opacity-50 ml-1">V</span></div>
+                                <div class="mt-4 text-[9px] text-amber-500 mb-1 font-black uppercase">Flow: 55 mA</div>
+                            </div>
+                            <button onclick="mfcAction()"
+                                class="w-full py-5 bg-gradient-to-r from-amber-600 to-amber-400 text-black font-black rounded-xl shadow-lg active:scale-95 uppercase">🧬
+                                กระตุ้นแบคทีเรียดิน</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SIM 3: PYRAMID -->
+        <section id="view-pyramid" class="hidden container mx-auto px-4">
+            <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+                <div class="xl:col-span-3 relative group">
+                    <div id="canvas-pyramid" class="viewport-container shadow-2xl"
+                        style="background: radial-gradient(circle at center, #0a0520 0%, #000 100%);"></div>
+                    <div class="scanline"></div>
+                </div>
+                <div class="space-y-6">
+                    <div class="glass-ui p-8 shadow-xl border border-indigo-500/20">
+                        <h2 class="text-xs font-black text-indigo-500 mb-6 uppercase tracking-widest">Ancient Resonance
+                        </h2>
+                        <div class="space-y-6">
+                            <div class="bg-black/80 p-6 rounded-3xl border border-white/5 text-center">
+                                <div class="text-[9px] text-indigo-400 mb-1 uppercase font-black">Estimated Potential
+                                </div>
+                                <div id="pyramid-volt"
+                                    class="text-6xl font-black text-indigo-400 glow-indigo leading-none">12.5<span
+                                        class="text-xl opacity-50 ml-1">kV</span></div>
+                            </div>
+                            <div class="space-y-2 p-4 bg-indigo-900/10 rounded-2xl">
+                                <label class="text-[10px] text-slate-500 uppercase font-black block mb-2">Aquifer Level
+                                    (Ground Water)</label>
+                                <input type="range" id="water-level-slider" min="0" max="100" value="50"
+                                    class="w-full accent-indigo-500" oninput="updatePyramidState()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: COMPREHENSIVE ACADEMIC GUIDE -->
+        <section id="view-guide"
+            class="hidden container mx-auto px-4 space-y-16 animate-in slide-in-from-bottom-8 duration-700">
+
+            <div class="text-center pt-10">
+                <div class="th-flag mx-auto mb-6 shadow-xl"></div>
+                <h2 class="text-5xl sm:text-7xl font-black text-white italic uppercase tracking-tighter">
+                    คู่มือการประดิษฐ์ <span class="text-emerald-500">3 ระบบพลังงาน</span></h2>
+                <p class="text-slate-400 mt-6 text-xl">วิเคราะห์วิศวกรรมโดย Mr. Winai Phanarkat:
+                    การผสานชีววิทยาและฟิสิกส์ปฐพี</p>
+            </div>
+
+            <!-- SYSTEM 1: ALOE VERA -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 pt-10">
+                <div class="glass-ui p-10 border-l-8 border-emerald-500">
+                    <h3
+                        class="text-3xl font-black text-emerald-400 mb-8 italic uppercase underline decoration-white/20">
+                        1. ว่านหางจรเข้ (Aloe Battery)</h3>
+                    <div class="space-y-4 text-slate-300">
+                        <div class="step-card">
+                            <h4 class="font-bold text-white mb-2">ขั้นตอนการติดตั้ง:</h4>
+                            <p class="text-sm leading-relaxed">ใช้แผ่นทองแดง (+) และสังกะสี (-)
+                                เสียบลงในเนื้อวุ้นที่หั่นเป็นชิ้นหรือเสียบสดบนต้น ระยะห่าง 2-3 ซม. ต่ออนุกรม 6-7
+                                ใบเพื่อให้ได้แรงดัน 5V</p>
+                        </div>
+                        <div class="step-card" style="border-color: #06b6d4;">
+                            <h4 class="font-bold text-white mb-2">หลักการวิทยาศาสตร์:</h4>
+                            <p class="text-sm leading-relaxed">อาศัยปฏิกิริยารีดอกซ์ (Redox) โดยมีเนื้อวุ้น Parenchyma
+                                ที่มีน้ำสูงเป็นตัวนำไอออน (Electrolyte)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-ui p-10">
+                    <h4 class="text-center font-bold text-sm mb-6 uppercase text-emerald-400">Ion Transfer Matrix</h4>
+                    <div class="chart-box">
+                        <canvas id="chartMaterials"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SYSTEM 2: MFC SOIL -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="glass-ui p-10 border-l-8 border-amber-500">
+                    <h3 class="text-3xl font-black text-amber-500 mb-8 italic uppercase underline decoration-white/20">
+                        2. เซลล์เชื้อเพลิงจุลินทรีย์ (MFC)</h3>
+                    <div class="space-y-4 text-slate-300">
+                        <div class="step-card" style="border-color: #f59e0b;">
+                            <h4 class="font-bold text-white mb-2">ขั้นตอนการติดตั้ง:</h4>
+                            <p class="text-sm leading-relaxed">ใช้ขั้วแอโนด (กราไฟต์หรือสแตนเลส)
+                                ฝังลึกในชั้นโคลนไร้ออกซิเจน และแคโทดวางบนผิวน้ำที่สัมผัสอากาศ ต่ออนุกรม 10
+                                ชั้นเพื่อให้ได้ 5V สำหรับกระแสไฟสูง</p>
+                        </div>
+                        <div class="step-card" style="border-color: #fff;">
+                            <h4 class="font-bold text-white mb-2">หัวใจสำคัญ:</h4>
+                            <p class="text-sm leading-relaxed">แบคทีเรียกลุ่ม Geobacter
+                                จะย่อยสารอาหารที่รากพืชปล่อยออกมาและคายอิเล็กตรอนเข้าสู่ขั้วไฟฟ้าโดยตรง</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-ui p-10 flex flex-col justify-center">
+                    <div class="p-6 bg-amber-500/10 rounded-3xl border border-amber-500/30 text-center">
+                        <h5 class="text-amber-500 font-black mb-2 uppercase">ประสิทธิภาพกระแส (Amperage)</h5>
+                        <div class="text-4xl font-black text-white">45-60 mA</div>
+                        <p class="text-[10px] text-slate-500 mt-2 uppercase">สูงกว่าพืชปกติถึง 30 เท่า</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SYSTEM 3: PYRAMID -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="glass-ui p-10 border-l-8 border-indigo-500">
+                    <h3 class="text-3xl font-black text-indigo-500 mb-8 italic uppercase underline decoration-white/20">
+                        3. พีระมิดพลังงาน (Earth Battery)</h3>
+                    <div class="space-y-4 text-slate-300">
+                        <div class="step-card" style="border-color: #6366f1;">
+                            <h4 class="font-bold text-white mb-2">โครงสร้างทางวิศวกรรม:</h4>
+                            <p class="text-sm leading-relaxed">สร้างเสาตัวนำ 4 มุม (Pillars)
+                                หยั่งลึกถึงชั้นน้ำบาดาลเพื่อดึงประจุไฟฟ้าสถิตขึ้นสู่โครงสร้างหินควอตซ์ (แกรนิต)
+                                ที่มีสมบัติ Piezoelectric</p>
+                        </div>
+                        <div class="step-card" style="border-color: #312e81;">
+                            <h4 class="font-bold text-white mb-2">ทฤษฎี Giza Power Plant:</h4>
+                            <p class="text-sm leading-relaxed">
+                                พีระมิดทำหน้าที่เป็นเสาอากาศยักษ์รวบรวมประจุจากบรรยากาศและพื้นโลก (Resonance)
+                                เพื่อผลิตแรงดันไฟฟ้าแรงสูง</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-ui p-10 flex flex-col justify-center space-y-6">
+                    <div class="p-6 bg-indigo-500/10 rounded-3xl border border-indigo-500/30 text-center">
+                        <h5 class="text-indigo-400 font-black mb-2 uppercase">แรงดันไฟฟ้าเชิงสมมติฐาน</h5>
+                        <div class="text-4xl font-black text-white">10-50 kV</div>
+                        <p class="text-[10px] text-slate-500 mt-2 uppercase">ระดับพลังงานที่สามารถส่งผ่านอากาศได้</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SMARTPHONE CHARGING SOLUTION -->
+            <div class="p-12 glass-ui border-t-8 border-cyan-500 text-center relative overflow-hidden">
+                <div class="absolute inset-0 thai-ornament opacity-20"></div>
+                <h3
+                    class="text-3xl font-black text-white mb-8 italic underline decoration-cyan-500 uppercase tracking-widest">
+                    การต่อชาร์จสมาร์ทโฟน (Technical Solution)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                    <div class="p-6 bg-slate-950 rounded-3xl border border-white/10">
+                        <div class="text-2xl mb-2">🔌</div>
+                        <h5 class="text-emerald-400 font-bold mb-2">1. Series 5.5V</h5>
+                        <p class="text-[10px] text-slate-400 italic">ต่ออนุกรมให้แรงดันเกิน 5V
+                            เล็กน้อยเพื่อชนะความต้านทาน</p>
+                    </div>
+                    <div class="p-6 bg-slate-950 rounded-3xl border border-white/10">
+                        <div class="text-2xl mb-2">🔋</div>
+                        <h5 class="text-amber-500 font-bold mb-2">2. Super Capacitor</h5>
+                        <p class="text-[10px] text-slate-400 italic">ใช้ตัวเก็บประจุแรงสูงรวบรวมพลังงานตลอด 24 ชม.</p>
+                    </div>
+                    <div class="p-6 bg-slate-950 rounded-3xl border border-white/10">
+                        <div class="text-2xl mb-2">📱</div>
+                        <h5 class="text-cyan-400 font-bold mb-2">3. Boost Converter</h5>
+                        <p class="text-[10px] text-slate-400 italic">ใช้วงจร Step-up รักษากระแสให้คงที่ 5V 2A</p>
+                    </div>
+                </div>
+                <p class="mt-12 text-slate-500 italic uppercase font-bold text-xs tracking-widest leading-loose">
+                    "ห้ามต่อตรง! พลังงานจากธรรมชาติมีกระแสต่ำ ต้องรวบรวม (Harvesting) ก่อนใช้งานจริงเสมอ"
+                </p>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="py-16 border-t border-emerald-900/30 bg-black/90 text-center">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="flex flex-col items-center gap-4 mb-6 text-white">
+                <div class="th-flag shadow-lg"></div>
+                <h3 class="font-black text-2xl tracking-tighter uppercase italic">Mr. Winai Phanarkat</h3>
+                <a href="https://www.facebook.com/winayo1" target="_blank"
+                    class="text-blue-500 font-bold hover:underline">Facebook: winayo1</a>
+            </div>
+            <p class="text-slate-600 text-[10px] font-black uppercase tracking-[0.4em] italic leading-relaxed">
+                MOTHER EARTH PURE ENERGY SYSTEM • THAILAND RESEARCH 2026<br>
+                DESIGNED FOR FUTURE SUSTAINABILITY
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. CORE NAVIGATION & LAZY INIT ---
+        let initialized = { aloe: false, mfc: false, pyramid: false };
+
+        function switchView(id) {
+            ['aloe', 'mfc', 'pyramid', 'guide'].forEach(v => {
+                document.getElementById('view-' + v).classList.add('hidden');
+                document.getElementById('btn-' + v).classList.remove('active', 'text-white');
+            });
+            document.getElementById('view-' + id).classList.remove('hidden');
+            document.getElementById('btn-' + id).classList.add('active', 'text-white');
+
+            if (id === 'aloe' && !initialized.aloe) { initAloe(); initialized.aloe = true; }
+            if (id === 'mfc' && !initialized.mfc) { initMFC(); initialized.mfc = true; }
+            if (id === 'pyramid' && !initialized.pyramid) { initPyramid(); initialized.pyramid = true; }
+
+            window.dispatchEvent(new Event('resize'));
+        }
+
+        // --- 2. ASSET HELPERS ---
+        function createPattern(color) {
+            const c = document.createElement('canvas'); c.width = 512; c.height = 512;
+            const ctx = c.getContext('2d'); ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.globalAlpha = 0.3;
+            for (let i = 0; i < 512; i += 32) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 512); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(512, i); ctx.stroke(); }
+            return new THREE.CanvasTexture(c);
+        }
+
+        // --- 3. ALOE SYSTEM ---
+        let aScene, aCam, aRen, aGroup, aLeaves = [], aCount = 0, aLED;
+        function initAloe() {
+            const container = document.getElementById('canvas-aloe');
+            aScene = new THREE.Scene(); aCam = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
+            aCam.position.set(0, 18, 42); aRen = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            aRen.setSize(container.clientWidth, container.clientHeight); container.appendChild(aRen.domElement);
+            aGroup = new THREE.Group(); aScene.add(aGroup); aScene.add(new THREE.AmbientLight(0xffffff, 0.5));
+            const pl = new THREE.PointLight(0x00ffcc, 1.5, 100); pl.position.set(0, 10, 5); aScene.add(pl);
+
+            const pot = new THREE.Mesh(new THREE.CylinderGeometry(5, 3.5, 3, 32), new THREE.MeshStandardMaterial({ color: 0x0a0a0a, metalness: 0.9 })); aGroup.add(pot);
+            const soil = new THREE.Mesh(new THREE.CircleGeometry(4.8, 32), new THREE.MeshStandardMaterial({ color: 0x020202 })); soil.rotation.x = -Math.PI / 2; soil.position.y = 1.55; aGroup.add(soil);
+
+            for (let i = 0; i < 16; i++) {
+                const pivot = new THREE.Object3D(); pivot.rotation.y = (i / 16) * Math.PI * 2;
+                const pts = []; for (let k = 0; k < 20; k++) pts.push(new THREE.Vector2(Math.sin(k / 20 * Math.PI) * 1.3 * (1 - k / 20), k * 1.1));
+                const leaf = new THREE.Mesh(new THREE.LatheGeometry(pts, 16), new THREE.MeshStandardMaterial({ color: 0x1a4a1a, transparent: true, opacity: 0.8, emissive: 0x10b981, emissiveIntensity: 0 }));
+                leaf.position.set(0, 1.6, 2.5); leaf.rotation.x = 0.6 + (i / 16); pivot.add(leaf); aGroup.add(pivot); aLeaves.push(leaf);
+            }
+            aLED = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), new THREE.MeshBasicMaterial({ color: 0x000000 }));
+            aLED.position.set(0, 4.2, 0); aGroup.add(aLED);
+            for (let i = 0; i < 6; i++) { if (aLeaves[i]) { aLeaves[i].material.emissiveIntensity = 2.0; aLeaves[i].material.opacity = 0.4; aCount++; } }
+            updateAloeUI();
+            let d = false, lx; container.onmousedown = (e) => { d = true; lx = e.clientX; }; window.onmouseup = () => d = false;
+            window.onmousemove = (e) => { if (d) aGroup.rotation.y += (e.clientX - lx) * 0.01; lx = e.clientX; };
+            (function animate() { requestAnimationFrame(animate); aCam.lookAt(0, 4, 0); aRen.render(aScene, aCam); })();
+        }
+        function aloeAddNode() { if (aCount >= aLeaves.length) return; aLeaves[aCount++].material.emissiveIntensity = 2.0; updateAloeUI(); }
+        function updateAloeUI() { document.getElementById('aloe-count-label').innerText = aCount; document.getElementById('aloe-volt-label').innerHTML = (aCount * 0.85).toFixed(2) + '<span class="text-lg opacity-50 ml-1">V</span>'; aLED.material.color.set(aCount * 0.85 > 4.5 ? 0x00ffcc : 0x000000); }
+
+        // --- 4. MFC SYSTEM ---
+        let mScene, mCam, mRen, mGroup, mParticles = [], mBoost = 0;
+        function initMFC() {
+            const container = document.getElementById('canvas-mfc');
+            mScene = new THREE.Scene(); mCam = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
+            mCam.position.set(0, 25, 55); mRen = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            mRen.setSize(container.clientWidth, container.clientHeight); container.appendChild(mRen.domElement);
+            mGroup = new THREE.Group(); mScene.add(mGroup); mScene.add(new THREE.AmbientLight(0xffffff, 0.6));
+
+            const mud = new THREE.Mesh(new THREE.BoxGeometry(15, 6, 10), new THREE.MeshStandardMaterial({ color: 0x1a110a })); mud.position.y = -3; mGroup.add(mud);
+            for (let i = 0; i < 10; i++) {
+                const x = -6 + (i * 1.3);
+                const a = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.1, 6), new THREE.MeshStandardMaterial({ color: 0x111111, emissive: 0xf59e0b, emissiveIntensity: 0.2 })); a.position.set(x, -5, 0); mGroup.add(a);
+                const c = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.1, 6), new THREE.MeshStandardMaterial({ color: 0x555555 })); c.position.set(x, -0.2, 0); mGroup.add(c);
+            }
+            for (let i = 0; i < 50; i++) { const g = new THREE.Mesh(new THREE.ConeGeometry(0.1, 8, 8), new THREE.MeshStandardMaterial({ color: 0x1a4a1a })); g.position.set((Math.random() - 0.5) * 14, 2, (Math.random() - 0.5) * 9); mGroup.add(g); }
+            for (let i = 0; i < 150; i++) { const p = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.6 })); p.position.set((Math.random() - 0.5) * 14, -5 + Math.random() * 4.5, (Math.random() - 0.5) * 8); mScene.add(p); mParticles.push(p); }
+            let d = false, lx; container.onmousedown = (e) => { d = true; lx = e.clientX; }; window.onmouseup = () => d = false;
+            window.onmousemove = (e) => { if (d) mGroup.rotation.y += (e.clientX - lx) * 0.01; lx = e.clientX; };
+            (function animate() { requestAnimationFrame(animate); mParticles.forEach(p => { p.position.y += 0.05 + (mBoost > 0 ? 0.2 : 0); if (p.position.y > -0.2) p.position.y = -5; }); if (mBoost > 0) mBoost -= 0.1; mCam.lookAt(0, 0, 0); mRen.render(mScene, mCam); })();
+        }
+        function mfcAction() { mBoost = 12; document.getElementById('mfc-current-label').innerHTML = (55.0 + Math.random() * 28).toFixed(1) + ' <span class="text-sm opacity-50">mA</span>'; setTimeout(() => { document.getElementById('mfc-current-label').innerHTML = '55.0 <span class="text-sm opacity-50">mA</span>'; }, 2000); }
+
+        // --- 5. PYRAMID SYSTEM ---
+        let pScene, pCam, pRen, pGroup, pParticles = [];
+        function initPyramid() {
+            const container = document.getElementById('canvas-pyramid');
+            pScene = new THREE.Scene(); pCam = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 2000);
+            pCam.position.set(0, 30, 75); pRen = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            pRen.setSize(container.clientWidth, container.clientHeight); container.appendChild(pRen.domElement);
+            pGroup = new THREE.Group(); pScene.add(pGroup); pScene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+            const pTex = createPattern('#6366f1');
+            const pyr = new THREE.Mesh(new THREE.ConeGeometry(15, 22, 4), new THREE.MeshStandardMaterial({ color: 0x6366f1, transparent: true, opacity: 0.5, emissive: 0x4f46e5, emissiveMap: pTex, emissiveIntensity: 2.0 }));
+            pyr.position.y = 11; pGroup.add(pyr);
+
+            const water = new THREE.Mesh(new THREE.BoxGeometry(50, 4, 50), new THREE.MeshStandardMaterial({ color: 0x0ea5e9, transparent: true, opacity: 0.4 })); water.position.y = -15; pGroup.add(water);
+
+            const corners = [[11, 11], [-11, 11], [11, -11], [-11, -11]];
+            corners.forEach(c => {
+                const pil = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 30, 16), new THREE.MeshStandardMaterial({ color: 0x312e81, emissive: 0x6366f1, emissiveIntensity: 1.5 }));
+                pil.position.set(c[0], -15, c[1]); pGroup.add(pil);
+            });
+
+            for (let i = 0; i < 250; i++) { const p = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 8), new THREE.MeshBasicMaterial({ color: 0x6366f1, transparent: true, opacity: 0.7 })); p.position.set((Math.random() - 0.5) * 30, -15, (Math.random() - 0.5) * 30); pScene.add(p); pParticles.push(p); }
+            let d = false, lx; container.onmousedown = (e) => { d = true; lx = e.clientX; }; window.onmouseup = () => d = false;
+            window.onmousemove = (e) => { if (d) pGroup.rotation.y += (e.clientX - lx) * 0.01; lx = e.clientX; };
+            (function animate() {
+                requestAnimationFrame(animate);
+                pParticles.forEach(p => { p.position.y += 0.15; if (p.position.y > 0) { p.position.y = -15; p.position.x = (Math.random() - 0.5) * 30; p.position.z = (Math.random() - 0.5) * 30; } });
+                pCam.lookAt(0, 5, 0); pRen.render(pScene, pCam);
+            })();
+        }
+        function updatePyramidState() { const val = document.getElementById('water-level-slider').value; document.getElementById('pyramid-volt').innerHTML = (val * 0.25).toFixed(1) + '<span class="text-lg opacity-50 ml-1">kV</span>'; }
+
+        // --- 6. CHARTS ---
+        window.onload = () => {
+            switchView('aloe');
+            const ctx = document.getElementById('chartMaterials').getContext('2d');
+            new Chart(ctx, { type: 'bar', data: { labels: ['หินปูน', 'แกรนิต', 'ดินเลน', 'วุ้น'], datasets: [{ label: 'คะแนนการนำประจุ', data: [22, 86, 94, 88], backgroundColor: ['#1e293b', '#6366f1', '#f59e0b', '#10b981'], borderRadius: 12 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } } } });
+            window.addEventListener('resize', () => {
+                [{ id: 'canvas-aloe', cam: aCam, ren: aRen }, { id: 'canvas-mfc', cam: mCam, ren: mRen }, { id: 'canvas-pyramid', cam: pCam, ren: pRen }].forEach(obj => {
+                    const c = document.getElementById(obj.id); if (c && obj.cam && obj.ren) { obj.cam.aspect = c.clientWidth / c.clientHeight; obj.cam.updateProjectionMatrix(); obj.ren.setSize(c.clientWidth, c.clientHeight); }
+                });
+            });
+        };
+    </script>
+</body>
+
+</html>
