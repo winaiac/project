@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Power Unit (Low Cost Concept - Mr. Winai)</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #111;
+            font-family: 'Sarabun', sans-serif;
+        }
+
+        #dashboard {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 320px;
+            pointer-events: none;
+            user-select: none;
+            z-index: 10;
+        }
+
+        .panel {
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid #555;
+            border-radius: 8px;
+            padding: 15px;
+            color: #eee;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        /* Enhanced Credit Panel for Social Sharing */
+        #credit-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 280px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #FFD700;
+            border-radius: 12px;
+            padding: 15px;
+            color: #fff;
+            text-align: center;
+            z-index: 100;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+
+        #credit-panel .author {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        #credit-panel .cost-info {
+            font-size: 15px;
+            color: #00e5ff;
+            font-weight: bold;
+            margin: 10px 0;
+            border: 1px dashed #00e5ff;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        #credit-panel a {
+            display: inline-block;
+            background: #1877F2;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        #credit-panel a:hover {
+            background: #166fe5;
+            transform: scale(1.05);
+        }
+
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #FFD700;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 6px;
+            align-items: center;
+        }
+
+        .val {
+            font-family: monospace;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .unit {
+            color: #aaa;
+            font-size: 11px;
+            margin-left: 4px;
+        }
+
+        .bar-bg {
+            background: #333;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4caf50, #ffeb3b, #f44336);
+            transition: width 0.1s;
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-off {
+            color: #666;
+            border: 1px solid #444;
+        }
+
+        .badge-on {
+            color: #00e5ff;
+            border: 1px solid #00e5ff;
+            background: rgba(0, 229, 255, 0.1);
+        }
+
+        .badge-auto {
+            color: #4caf50;
+            border: 1px solid #4caf50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        #machine-selector {
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .btn {
+            background: #333;
+            color: #ccc;
+            border: 1px solid #555;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+
+        .btn.active {
+            background: #FFD700;
+            color: #000;
+            border-color: #FFD700;
+            font-weight: bold;
+        }
+
+        #bottom-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .action-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn.active {
+            background: #66bb6a;
+            color: #000;
+            box-shadow: 0 0 15px #66bb6a;
+        }
+
+        .action-btn.detach {
+            background: #f44336;
+        }
+
+        #graph-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #555;
+            border-radius: 8px;
+            padding: 10px;
+            display: none;
+        }
+
+        #hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #FFD700;
+            color: #FFD700;
+            padding: 20px 40px;
+            border-radius: 10px;
+            z-index: 999;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .fade-out {
+            animation: fadeOut 0.8s forwards;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Start Overlay Hint -->
+    <div id="hint" onclick="app.initAudio()">
+        🔊 คลิกเพื่อเริ่มระบบระดับโปร<br>
+        <small>Universal Engine Concept - Mr. Winai</small>
+    </div>
+
+    <!-- Credits & Concept Information -->
+    <div id="credit-panel">
+        <div class="author">Mr. Winai Phanarkat</div>
+        <div class="cost-info">ต้นทุนเครื่องยนต์ตั้งต้น < 1,000 บาท</div>
+                <p style="font-size: 11px; color: #ccc; margin: 5px 0;">Creative Concept & Design
+                    สำหรับโปรแกรมเมอร์และนักสร้างสรรค์</p>
+                <a href="https://www.facebook.com/winayo1" target="_blank">🔗 ติดตามผลงาน/แอดเฟสบุ๊ก</a>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div id="dashboard">
+            <div class="panel">
+                <div class="row">
+                    <h1>เครื่องยนต์ (NB411)</h1>
+                    <span id="govBadge" class="badge badge-off">Manual</span>
+                </div>
+                <div class="row"><span>รอบเครื่อง:</span> <span><span id="rpmVal" class="val">0</span> <span
+                            class="unit">RPM</span></span></div>
+                <div class="bar-bg">
+                    <div id="rpmBar" class="bar-fill"></div>
+                </div>
+                <div class="row" style="margin-top: 8px;">
+                    <span>น้ำมัน:</span> <span><span id="fuelVal" class="val">0.00</span><span
+                            class="unit">ลิตร/ชม.</span></span>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="row">
+                    <h1 id="outputLabel">สถานะระบบ</h1>
+                    <span id="autoBadge" class="badge badge-off">Manual</span>
+                </div>
+                <div class="row"><span>เครื่องจักร:</span> <span id="machineName" class="val"
+                        style="color:#FFD700">รถสามล้อ</span></div>
+                <div class="row"><span>ทิศทาง:</span> <span id="autoDir" class="val" style="color:#FFD700">อิสระ</span>
+                </div>
+                <div class="row">
+                    <span id="perfLabel">ความเร็ว:</span> <span><span id="outputVal" class="val">0</span><span
+                            id="outputUnit" class="unit">กม./ชม.</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Machine Selection Controls -->
+        <div id="machine-selector">
+            <button class="btn active" data-id="trike" onclick="app.handleSwitch(event, 'trike')">🛺
+                รถสามล้อคุณหมู</button>
+            <button class="btn" data-id="mower" onclick="app.handleSwitch(event, 'mower')">✂️ เครื่องตัดหญ้า</button>
+            <button class="btn" data-id="miller" onclick="app.handleSwitch(event, 'miller')">🌾 เครื่องสีข้าว</button>
+            <button class="btn" data-id="pump" onclick="app.handleSwitch(event, 'pump')">💧 เครื่องสูบน้ำ</button>
+            <button class="btn" data-id="gen" onclick="app.handleSwitch(event, 'gen')">⚡ เครื่องปั่นไฟ</button>
+        </div>
+
+        <!-- Global Action Buttons -->
+        <div id="bottom-controls">
+            <button id="autoBtn" class="action-btn" onclick="app.toggleAutoPilot()">🤖 ขับอัตโนมัติ (P)</button>
+            <button id="govBtn" class="action-btn" onclick="app.toggleGovernor()">🔒 ล็อกรอบ (L)</button>
+            <button id="toggleBtn" class="action-btn detach" onclick="app.toggleEngine()">ถอดเครื่องยนต์</button>
+        </div>
+
+        <!-- Generator Graph Output -->
+        <div id="graph-panel">
+            <canvas id="powerGraph" width="250" height="100"></canvas>
+        </div>
+
+        <script>
+            /**
+             * PROJECT: Universal Power Unit Simulation
+             * DEVELOPER CONCEPT: Mr. Winai Phanarkat
+             * DESCRIPTION: A Three.js interactive simulation of a low-cost universal engine (NB411)
+             * with multiple utility attachments. Designed to be accessible and cost-effective (< 1,000 THB).
+             */
+            const app = {
+                scene: null, camera: null, renderer: null,
+                machines: {}, currentMachine: 'trike',
+                engineModule: null, belt: null, engineAttached: true,
+
+                rpm: 0, targetRpm: 0, throttle: 0,
+                isGovActive: false, lockedThrottle: 0,
+                isAutoPilot: false, autoSteerState: 'straight',
+                targetAutoRotation: 0, cardinalIndex: 0,
+
+                speed: 0, steering: 0,
+                IDLE_RPM: 1200, MAX_RPM: 8500, GRASS_LIMIT: 42,
+
+                keys: { w: false, s: false, a: false, d: false },
+                mouse: { x: 0, y: 0, down: false },
+                cam: { r: 12, theta: Math.PI / 4, phi: Math.PI / 3.5 },
+                targetLook: new THREE.Vector3(0, 0.5, 0),
+
+                audioCtx: null, osc: null, gain: null, audioStarted: false,
+                rice: null, water: null, cutGrass: null, powerData: [], bulbs: [],
+
+                init: function () {
+                    try {
+                        this.scene = new THREE.Scene();
+                        this.scene.background = new THREE.Color(0x87ceeb);
+                        this.scene.fog = new THREE.Fog(0x87ceeb, 20, 100);
+
+                        this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
+                        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+                        this.renderer.setSize(window.innerWidth, window.innerHeight);
+                        this.renderer.shadowMap.enabled = true;
+                        document.body.appendChild(this.renderer.domElement);
+
+                        this.scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+                        const sun = new THREE.DirectionalLight(0xffffff, 1.0);
+                        sun.position.set(50, 100, 50); sun.castShadow = true;
+                        sun.shadow.mapSize.set(2048, 2048);
+                        this.scene.add(sun);
+
+                        this.createRealisticGrass();
+                        this.createEngine();
+                        this.machines['trike'] = this.createTrike();
+                        this.machines['mower'] = this.createMower();
+                        this.machines['miller'] = this.createMiller();
+                        this.machines['pump'] = this.createPump();
+                        this.machines['gen'] = this.createGen();
+
+                        this.switchMachine('trike');
+
+                        window.addEventListener('resize', () => this.onResize());
+                        window.addEventListener('keydown', e => this.onKey(e, true));
+                        window.addEventListener('keyup', e => this.onKey(e, false));
+                        document.addEventListener('mousedown', e => this.onMouseDown(e));
+                        document.addEventListener('mousemove', e => this.onMouseMove(e));
+                        document.addEventListener('mouseup', () => this.mouse.down = false);
+
+                        this.animate();
+                    } catch (e) { console.error(e); }
+                },
+
+                createRealisticGrass: function () {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 512; canvas.height = 512;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#3a7d3a'; ctx.fillRect(0, 0, 512, 512);
+                    for (let i = 0; i < 10000; i++) {
+                        ctx.fillStyle = `rgba(0,${40 + Math.random() * 40},0,0.1)`;
+                        ctx.fillRect(Math.random() * 512, Math.random() * 512, 5, 5);
+                    }
+                    const tex = new THREE.CanvasTexture(canvas);
+                    tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(15, 15);
+                    const floor = new THREE.Mesh(new THREE.PlaneGeometry(150, 150), new THREE.MeshPhongMaterial({ map: tex }));
+                    floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; this.scene.add(floor);
+
+                    const bladeGeo = new THREE.PlaneGeometry(0.12, 0.45); bladeGeo.translate(0, 0.22, 0);
+                    const grassCount = 12000;
+                    const instancedGrass = new THREE.InstancedMesh(bladeGeo, new THREE.MeshPhongMaterial({ color: 0x4caf50, side: 2 }), grassCount);
+                    const dummy = new THREE.Object3D();
+                    for (let i = 0; i < grassCount; i++) {
+                        dummy.position.set((Math.random() - 0.5) * 140, 0, (Math.random() - 0.5) * 140);
+                        dummy.rotation.y = Math.random() * Math.PI; dummy.scale.setScalar(0.5 + Math.random());
+                        dummy.updateMatrix(); instancedGrass.setMatrixAt(i, dummy.matrix);
+                    }
+                    this.scene.add(instancedGrass);
+                },
+
+                createPig: function () {
+                    const pig = new THREE.Group();
+                    const pink = new THREE.MeshPhongMaterial({ color: 0xffc0cb });
+                    const body = new THREE.Mesh(new THREE.SphereGeometry(0.25, 16, 16), pink);
+                    body.scale.set(1, 0.8, 1.4); pig.add(body);
+                    const head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 16), pink);
+                    head.position.set(0, 0.2, 0.35); pig.add(head);
+                    const news = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.01, 0.3), new THREE.MeshPhongMaterial({ color: 0xffffff }));
+                    news.position.set(0, 0.15, 0.65); news.rotation.x = 0.5; pig.add(news);
+                    return pig;
+                },
+
+                createEngine: function () {
+                    const grp = new THREE.Group();
+                    const matFrame = new THREE.MeshPhongMaterial({ color: 0xcc0000 });
+                    for (let i = 0; i < 4; i++) {
+                        const b = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.4, 0.02), matFrame);
+                        b.position.set((i < 2 ? 0.18 : -0.18), 0, (i % 2 == 0 ? 0.18 : -0.18)); grp.add(b);
+                    }
+                    grp.add(new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.25, 0.2), new THREE.MeshPhongMaterial({ color: 0x777 })));
+                    const pul = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.06, 16), new THREE.MeshPhongMaterial({ color: 0x222 }));
+                    pul.rotation.z = Math.PI / 2; pul.position.set(0.22, -0.05, 0); pul.name = "engPulley"; grp.add(pul);
+                    this.belt = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.015, 8, 32), new THREE.MeshPhongMaterial({ color: 0x111 }));
+                    this.belt.position.set(0.22, -0.3, 0); this.belt.scale.set(0.1, 1.2, 1); grp.add(this.belt);
+                    this.engineModule = grp; this.scene.add(grp);
+                },
+
+                createTrike: function () {
+                    const grp = new THREE.Group();
+                    const fork = new THREE.Group(); fork.name = "fork"; grp.add(fork);
+                    const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.15, 32), new THREE.MeshPhongMaterial({ color: 0x111 }));
+                    wheel.rotation.z = Math.PI / 2; wheel.position.y = 0.35; wheel.name = "wheel"; fork.add(wheel);
+                    const yel = new THREE.MeshPhongMaterial({ color: 0xFFD700 });
+                    const l1 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.1, 0.06), yel); l1.position.set(-0.15, 0.7, 0); fork.add(l1);
+                    const l2 = l1.clone(); l2.position.set(0.15, 0.7, 0); fork.add(l2);
+                    const rear = new THREE.Group(); rear.position.set(0, 0, -1.5); grp.add(rear);
+                    const seat = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.15, 0.8), new THREE.MeshPhongMaterial({ color: 0x5d4037 }));
+                    seat.position.set(0, 0.5, 0); rear.add(seat);
+                    const rw = wheel.clone(); rw.position.set(-0.55, 0.35, 0); rear.add(rw);
+                    const rw2 = wheel.clone(); rw2.position.set(0.55, 0.35, 0); rear.add(rw2);
+                    const pig = this.createPig(); pig.position.set(0, 0.65, 0); rear.add(pig);
+                    grp.visible = false; this.scene.add(grp); return grp;
+                },
+
+                createMower: function () {
+                    const grp = new THREE.Group();
+                    grp.add(new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.15, 1.0), new THREE.MeshPhongMaterial({ color: 0xcc0000 })));
+                    const blade = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.02, 0.08), new THREE.MeshPhongMaterial({ color: 0x333 }));
+                    blade.position.y = 0.2; blade.name = "blade"; grp.add(blade);
+                    const pul = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.08, 32), new THREE.MeshPhongMaterial({ color: 0x111 }));
+                    pul.rotation.z = Math.PI / 2; pul.position.set(0, 0.45, 0.3); pul.name = "pulley"; grp.add(pul);
+                    const geo = new THREE.BufferGeometry();
+                    const pos = new Float32Array(400 * 3).fill(-50); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+                    this.cutGrass = new THREE.Points(geo, new THREE.PointsMaterial({ size: 0.06, color: 0x6dbf6d })); grp.add(this.cutGrass);
+                    grp.visible = false; this.scene.add(grp); return grp;
+                },
+
+                createMiller: function () {
+                    const grp = new THREE.Group();
+                    grp.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1.2, 1), new THREE.MeshPhongMaterial({ color: 0x999 })));
+                    const pul = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.08, 32), new THREE.MeshPhongMaterial({ color: 0x111 }));
+                    pul.rotation.z = Math.PI / 2; pul.position.set(0, 0.6, 0.5); pul.name = "pulley"; grp.add(pul);
+                    const geo = new THREE.BufferGeometry();
+                    const pos = new Float32Array(300 * 3).fill(-50); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+                    this.rice = new THREE.Points(geo, new THREE.PointsMaterial({ size: 0.05, color: 0xffffff })); grp.add(this.rice);
+                    grp.visible = false; this.scene.add(grp); return grp;
+                },
+
+                createPump: function () {
+                    const grp = new THREE.Group();
+                    const pump = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.25, 32), new THREE.MeshPhongMaterial({ color: 0x1e88e5 }));
+                    pump.rotation.x = Math.PI / 2; pump.position.y = 0.4; grp.add(pump);
+                    const pul = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.06, 32), new THREE.MeshPhongMaterial({ color: 0x111 }));
+                    pul.rotation.z = Math.PI / 2; pul.position.set(0, 0.4, 0.25); pul.name = "pulley"; grp.add(pul);
+                    const geo = new THREE.BufferGeometry();
+                    const pos = new Float32Array(500 * 3).fill(-50); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+                    this.water = new THREE.Points(geo, new THREE.PointsMaterial({ size: 0.07, color: 0x4fc3f7, transparent: true, opacity: 0.8 })); grp.add(this.water);
+                    grp.visible = false; this.scene.add(grp); return grp;
+                },
+
+                createGen: function () {
+                    const grp = new THREE.Group();
+                    const alt = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.7, 32), new THREE.MeshPhongMaterial({ color: 0x444 }));
+                    alt.rotation.z = Math.PI / 2; alt.position.y = 0.4; grp.add(alt);
+                    const pul = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.06, 32), new THREE.MeshPhongMaterial({ color: 0x111 }));
+                    pul.rotation.z = Math.PI / 2; pul.position.set(0.4, 0.4, 0); pul.name = "pulley"; grp.add(pul);
+                    this.bulbs = [];
+                    for (let i = 0; i < 5; i++) {
+                        const b = new THREE.Mesh(new THREE.SphereGeometry(0.12), new THREE.MeshPhongMaterial({ color: 0x333, emissive: 0x000 }));
+                        b.position.set(-0.7, 0.2 + i * 0.35, 0); grp.add(b); this.bulbs.push(b);
+                    }
+                    grp.visible = false; this.scene.add(grp); return grp;
+                },
+
+                toggleGovernor: function () {
+                    if (!this.engineAttached) return;
+                    this.isGovActive = !this.isGovActive;
+                    if (this.isGovActive) {
+                        this.lockedThrottle = this.throttle > 0.1 ? this.throttle : 0.5;
+                        this.throttle = this.lockedThrottle;
+                    }
+                    this.updateUI();
+                },
+
+                toggleAutoPilot: function () {
+                    this.isAutoPilot = !this.isAutoPilot;
+                    if (this.isAutoPilot) {
+                        this.autoSteerState = 'straight';
+                        this.cardinalIndex = 0;
+                        this.targetAutoRotation = 0;
+                        if (this.machines['trike']) this.machines['trike'].rotation.y = 0;
+                        this.throttle = 0.6;
+                    } else {
+                        this.throttle = 0;
+                        this.steering = 0;
+                    }
+                    this.updateUI();
+                },
+
+                toggleEngine: function () {
+                    this.engineAttached = !this.engineAttached;
+                    this.throttle = 0; this.rpm = 0;
+                    if (this.engineAttached) {
+                        this.attachEngine();
+                    } else {
+                        this.scene.add(this.engineModule);
+                        this.engineModule.position.set(2, 0.22, 2);
+                        this.belt.visible = false;
+                        this.isGovActive = false; this.isAutoPilot = false;
+                    }
+                    this.updateUI();
+                },
+
+                handleSwitch: function (e, key) {
+                    document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+                    if (e) e.currentTarget.classList.add('active');
+                    this.switchMachine(key);
+                    this.initAudio();
+                },
+
+                switchMachine: function (key) {
+                    Object.values(this.machines).forEach(m => { if (m) m.visible = false; });
+                    if (this.machines[key]) this.machines[key].visible = true;
+
+                    this.currentMachine = key;
+                    this.throttle = 0;
+                    if (this.engineAttached) this.attachEngine();
+
+                    const names = { 'trike': 'รถสามล้อคุณหมู', 'mower': 'เครื่องตัดหญ้า', 'miller': 'เครื่องสีข้าว', 'pump': 'เครื่องสูบน้ำ', 'gen': 'เครื่องปั่นไฟ' };
+                    const labels = { 'trike': 'ความเร็ว:', 'mower': 'อัตราการตัด:', 'miller': 'การผลิต:', 'pump': 'การสูบ:', 'gen': 'กระแสไฟ:' };
+                    const units = { 'trike': 'กม./ชม.', 'mower': 'ตร.ม./ชม.', 'miller': 'ลิตร/ชม.', 'pump': 'ลิตร/ชม.', 'gen': 'มิลลิแอมป์' };
+
+                    const machineNameEl = document.getElementById('machineName');
+                    const perfLabelEl = document.getElementById('perfLabel');
+                    const outputUnitEl = document.getElementById('outputUnit');
+                    const graphPanelEl = document.getElementById('graph-panel');
+
+                    if (machineNameEl) machineNameEl.innerText = names[key];
+                    if (perfLabelEl) perfLabelEl.innerText = labels[key];
+                    if (outputUnitEl) outputUnitEl.innerText = units[key];
+                    if (graphPanelEl) graphPanelEl.style.display = (key === 'gen') ? 'block' : 'none';
+                },
+
+                attachEngine: function () {
+                    const m = this.machines[this.currentMachine];
+                    if (!m) return;
+                    const off = { 'trike': [0, 1.2, 0.55, 0, 0, 0], 'mower': [0, 0.85, 0.3, 0, 0, 0], 'miller': [0.65, 0.45, 0, 0, -Math.PI / 2, 0], 'pump': [0.55, 0.4, 0, 0, -Math.PI / 2, 0], 'gen': [0.55, 0.4, 0, 0, -Math.PI / 2, 0] };
+                    const v = off[this.currentMachine];
+                    const fork = m.getObjectByName('fork');
+                    if (fork && (this.currentMachine === 'trike')) fork.add(this.engineModule); else m.add(this.engineModule);
+                    this.engineModule.position.set(v[0], v[1], v[2]);
+                    this.engineModule.rotation.set(v[3], v[4], v[5]);
+                    if (this.belt) {
+                        this.belt.visible = true;
+                        this.belt.scale.set(0.1, (this.currentMachine === 'trike' || this.currentMachine === 'mower' ? 1.2 : 0.95), 1);
+                    }
+                },
+
+                updateUI: function () {
+                    const gBadge = document.getElementById('govBadge');
+                    if (gBadge) {
+                        gBadge.innerText = this.isGovActive ? "Governor ON" : "Manual";
+                        gBadge.className = "badge " + (this.isGovActive ? "badge-on" : "badge-off");
+                    }
+                    const govBtnEl = document.getElementById('govBtn');
+                    if (govBtnEl) govBtnEl.classList.toggle('active', this.isGovActive);
+
+                    const aBadge = document.getElementById('autoBadge');
+                    if (aBadge) {
+                        aBadge.innerText = this.isAutoPilot ? "Auto Pilot" : "Manual Drive";
+                        aBadge.className = "badge " + (this.isAutoPilot ? "badge-auto" : "badge-off");
+                    }
+                    const autoBtnEl = document.getElementById('autoBtn');
+                    if (autoBtnEl) autoBtnEl.classList.toggle('active', this.isAutoPilot);
+                },
+
+                initAudio: function () {
+                    if (this.audioCtx && this.audioCtx.state === 'suspended') this.audioCtx.resume();
+                    if (this.audioStarted) return;
+                    const AC = window.AudioContext || window.webkitAudioContext;
+                    if (!AC) return;
+                    this.audioCtx = new AC();
+                    this.osc = this.audioCtx.createOscillator(); this.osc.type = 'sawtooth';
+                    this.gain = this.audioCtx.createGain(); this.gain.gain.value = 0;
+                    this.osc.connect(this.gain); this.gain.connect(this.audioCtx.destination);
+                    this.osc.start(); this.audioStarted = true;
+                    const hintEl = document.getElementById('hint');
+                    if (hintEl) hintEl.classList.add('fade-out');
+                },
+
+                animate: function () {
+                    requestAnimationFrame(() => this.animate());
+
+                    if (this.engineAttached) {
+                        if (this.isAutoPilot) {
+                            this.throttle = 0.6;
+                        } else if (this.isGovActive) {
+                            this.throttle = this.lockedThrottle;
+                            if (this.keys.w) this.throttle = Math.min(this.throttle + 0.02, 1.0);
+                        } else {
+                            if (this.keys.w || this.keys.s) this.throttle = Math.min(this.throttle + 0.02, 1.0);
+                            else this.throttle = Math.max(this.throttle - 0.03, 0);
+                        }
+                        this.targetRpm = this.IDLE_RPM + (this.throttle * (this.MAX_RPM - this.IDLE_RPM));
+                        this.rpm += (this.targetRpm - this.rpm) * 0.1;
+                    } else {
+                        this.throttle = 0; this.rpm *= 0.9;
+                    }
+
+                    if (this.audioStarted && this.audioCtx.state === 'running') {
+                        const vol = this.engineAttached ? (0.05 + this.throttle * 0.15) : 0;
+                        this.gain.gain.setTargetAtTime(vol, this.audioCtx.currentTime, 0.05);
+                        this.osc.frequency.setTargetAtTime(60 + (this.rpm / 100) * 1.8, this.audioCtx.currentTime, 0.05);
+                    }
+
+                    const rpmValEl = document.getElementById('rpmVal');
+                    const rpmBarEl = document.getElementById('rpmBar');
+                    const fuelValEl = document.getElementById('fuelVal');
+                    if (rpmValEl) rpmValEl.innerText = Math.round(this.rpm);
+                    if (rpmBarEl) rpmBarEl.style.width = (this.rpm / this.MAX_RPM * 100) + "%";
+                    if (fuelValEl) fuelValEl.innerText = (this.rpm > 500 ? (0.2 + (this.rpm / this.MAX_RPM) * 0.9) : 0).toFixed(2);
+
+                    if (this.rpm > 100 && this.engineModule) {
+                        const ep = this.engineModule.getObjectByName('engPulley');
+                        if (ep) ep.rotation.x -= this.rpm * 0.0015;
+                        if (this.machines[this.currentMachine]) {
+                            const mp = this.machines[this.currentMachine].getObjectByName('pulley');
+                            if (mp) mp.rotation.x -= this.rpm * 0.001;
+                        }
+                    }
+
+                    if (this.currentMachine === 'trike') this.updateTrike();
+                    else if (this.currentMachine === 'mower') this.updateMower();
+                    else if (this.currentMachine === 'miller') this.updateMiller();
+                    else if (this.currentMachine === 'pump') this.updatePump();
+                    else if (this.currentMachine === 'gen') this.updateGen();
+
+                    const cx = this.targetLook.x + this.cam.r * Math.sin(this.cam.phi) * Math.sin(this.cam.theta);
+                    const cy = this.targetLook.y + this.cam.r * Math.cos(this.cam.phi);
+                    const cz = this.targetLook.z + this.cam.r * Math.sin(this.cam.phi) * Math.cos(this.cam.theta);
+                    this.camera.position.set(cx, cy, cz);
+                    this.camera.lookAt(this.targetLook);
+                    this.renderer.render(this.scene, this.camera);
+                },
+
+                updateTrike: function () {
+                    const tr = this.machines['trike'];
+                    if (!tr) return;
+                    let tSpeed = 0;
+                    if (this.engineAttached && this.rpm > 2200) {
+                        const pwr = (this.rpm - 2200) / 6000 * 0.6;
+                        if (this.keys.w || this.isAutoPilot) tSpeed = pwr;
+                        if (this.keys.s) tSpeed = -pwr * 0.5;
+                    }
+                    this.speed += (tSpeed - this.speed) * 0.05;
+
+                    if (this.isAutoPilot) {
+                        const dist = Math.sqrt(tr.position.x ** 2 + tr.position.z ** 2);
+                        const cardinals = [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2];
+                        if (dist > this.GRASS_LIMIT && this.autoSteerState === 'straight') {
+                            this.autoSteerState = 'turning';
+                            this.cardinalIndex = (this.cardinalIndex + 1) % 4;
+                            this.targetAutoRotation = cardinals[this.cardinalIndex];
+                        }
+                        if (this.autoSteerState === 'turning') {
+                            this.steering = 0.7;
+                            let diff = this.targetAutoRotation - tr.rotation.y;
+                            while (diff < -Math.PI) diff += Math.PI * 2;
+                            while (diff > Math.PI) diff -= Math.PI * 2;
+                            if (Math.abs(diff) < 0.1) {
+                                tr.rotation.y = this.targetAutoRotation;
+                                this.autoSteerState = 'straight';
+                                this.steering = 0;
+                            }
+                        } else {
+                            let diff = this.targetAutoRotation - tr.rotation.y;
+                            while (diff < -Math.PI) diff += Math.PI * 2;
+                            while (diff > Math.PI) diff -= Math.PI * 2;
+                            this.steering = diff * 5;
+                        }
+                        const autoDirEl = document.getElementById('autoDir');
+                        if (autoDirEl) autoDirEl.innerText = Math.round(tr.rotation.y * 180 / Math.PI) % 360 + "° (Auto)";
+                    } else {
+                        if (this.keys.a) this.steering += 0.05;
+                        if (this.keys.d) this.steering -= 0.05;
+                        if (!this.keys.a && !this.keys.d) this.steering *= 0.9;
+                        const autoDirEl = document.getElementById('autoDir');
+                        if (autoDirEl) autoDirEl.innerText = "อิสระ (Manual)";
+                    }
+
+                    this.steering = Math.max(-0.7, Math.min(0.7, this.steering));
+                    tr.rotation.y += this.speed * Math.sin(this.steering) * 1.5;
+                    tr.translateZ(this.speed);
+                    const fork = tr.getObjectByName('fork');
+                    if (fork) {
+                        fork.rotation.y = this.steering;
+                        const w = fork.getObjectByName('wheel');
+                        if (w) w.rotation.x += this.speed * 6;
+                    }
+                    const outputValEl = document.getElementById('outputVal');
+                    if (outputValEl) outputValEl.innerText = Math.round(Math.abs(this.speed * 150));
+                    this.targetLook.lerp(tr.position.clone().add(new THREE.Vector3(0, 0.8, 0)), 0.1);
+                },
+
+                updateMower: function () {
+                    const mower = this.machines['mower'];
+                    if (!mower) return;
+                    const active = this.rpm > 2500;
+                    const blade = mower.getObjectByName('blade');
+                    if (blade) blade.rotation.y += (this.rpm / 100) * 0.5;
+                    const outputValEl = document.getElementById('outputVal');
+                    if (outputValEl) outputValEl.innerText = active ? Math.round((this.rpm - 2500) / 6000 * 1500) : 0;
+                    if (this.cutGrass) {
+                        const pos = this.cutGrass.geometry.attributes.position.array;
+                        for (let i = 0; i < 400; i++) {
+                            if (pos[i * 3 + 1] < 0) {
+                                if (active && Math.random() < 0.4) { pos[i * 3] = 0.5; pos[i * 3 + 1] = 0.3; pos[i * 3 + 2] = (Math.random() - 0.5) * 0.5; }
+                                else pos[i * 3 + 1] = -50;
+                            } else { pos[i * 3 + 1] += 0.05; pos[i * 3] += 0.08; if (pos[i * 3 + 1] > 1.5) pos[i * 3 + 1] = -1; }
+                        }
+                        this.cutGrass.geometry.attributes.position.needsUpdate = true;
+                    }
+                },
+
+                updateMiller: function () {
+                    const active = this.rpm > 2500;
+                    const outputValEl = document.getElementById('outputVal');
+                    if (outputValEl) outputValEl.innerText = active ? Math.round((this.rpm - 2500) / 6000 * 300) : 0;
+                    if (this.rice) {
+                        const pos = this.rice.geometry.attributes.position.array;
+                        for (let i = 0; i < 300; i++) {
+                            if (pos[i * 3 + 1] < 0) {
+                                if (active && Math.random() < 0.3) { pos[i * 3] = (Math.random() - 0.5) * 0.1; pos[i * 3 + 1] = 1.1; pos[i * 3 + 2] = (Math.random() - 0.5) * 0.1; }
+                                else pos[i * 3 + 1] = -50;
+                            } else { pos[i * 3 + 1] -= 0.08; if (pos[i * 3 + 1] < 0.5) pos[i * 3] += 0.05; }
+                        }
+                        this.rice.geometry.attributes.position.needsUpdate = true;
+                    }
+                },
+
+                updatePump: function () {
+                    const active = this.rpm > 2500;
+                    const outputValEl = document.getElementById('outputVal');
+                    if (outputValEl) outputValEl.innerText = active ? Math.round((this.rpm - 2500) / 6000 * 6000) : 0;
+                    if (this.water) {
+                        const pos = this.water.geometry.attributes.position.array;
+                        for (let i = 0; i < 500; i++) {
+                            if (pos[i * 3 + 1] < 0 || pos[i * 3 + 1] > 4) {
+                                if (active) { pos[i * 3] = 0.1; pos[i * 3 + 1] = 0.5; pos[i * 3 + 2] = 0; }
+                                else pos[i * 3 + 1] = -50;
+                            } else { pos[i * 3 + 1] += 0.12; pos[i * 3] += (Math.random() - 0.5) * 0.1; }
+                        }
+                        this.water.geometry.attributes.position.needsUpdate = true;
+                    }
+                },
+
+                updateGen: function () {
+                    const active = this.rpm > 2000;
+                    let amps = active ? ((this.rpm - 2000) / 6500 * 7000) : 0;
+                    const outputValEl = document.getElementById('outputVal');
+                    if (outputValEl) outputValEl.innerText = Math.round(amps);
+                    this.bulbs.forEach((b, i) => b.material.emissive.setHex((amps / 1400) > i ? 0xffff00 : 0x000));
+                    const pgEl = document.getElementById('powerGraph');
+                    if (pgEl) {
+                        const ctx = pgEl.getContext('2d');
+                        ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(0, 0, 250, 100);
+                        this.powerData.push(amps); if (this.powerData.length > 50) this.powerData.shift();
+                        ctx.strokeStyle = '#00ff00'; ctx.lineWidth = 2; ctx.beginPath();
+                        for (let i = 0; i < this.powerData.length; i++) {
+                            const h = 100 - (this.powerData[i] / 7000 * 90);
+                            if (i === 0) ctx.moveTo(0, h); else ctx.lineTo(i * 5, h);
+                        }
+                        ctx.stroke();
+                    }
+                },
+
+                onResize: function () {
+                    this.camera.aspect = window.innerWidth / window.innerHeight;
+                    this.camera.updateProjectionMatrix();
+                    this.renderer.setSize(window.innerWidth, window.innerHeight);
+                },
+                onKey: function (e, down) {
+                    const k = e.key.toLowerCase();
+                    if (this.keys.hasOwnProperty(k)) this.keys[k] = down;
+                    if (k === 'l' && down) this.toggleGovernor();
+                    if (k === 'p' && down) this.toggleAutoPilot();
+                    this.initAudio();
+                },
+                onMouseDown: function (e) {
+                    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') { this.mouse.down = true; this.mouse.x = e.clientX; this.initAudio(); }
+                },
+                onMouseMove: function (e) {
+                    if (this.mouse.down) { this.cam.theta -= (e.clientX - this.mouse.x) * 0.007; this.mouse.x = e.clientX; }
+                }
+            };
+
+            window.onload = () => app.init();
+        </script>
+</body>
+
+</html>
