@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GISTDA Proposal: RESP-01 Solar Sail Mission</title>
+    <!-- Favicon: Thai Flag -->
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/a/a9/Flag_of_Thailand.svg"
+        type="image/svg+xml">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;800&family=Rajdhani:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #0b0f19;
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.05) 0%, transparent 25%);
+            color: #e2e8f0;
+        }
+
+        h1,
+        h2,
+        h3,
+        .tech-font {
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .gold-gradient {
+            background: linear-gradient(135deg, #FFD700, #B8860B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card-glass {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .grid-bg {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+
+        .success-step {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .success-step::before {
+            content: '';
+            position: absolute;
+            left: 0.4rem;
+            top: 0.5rem;
+            width: 2px;
+            height: 100%;
+            background-color: #374151;
+        }
+
+        .success-step:last-child::before {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen p-4 md:p-8 grid-bg">
+
+    <!-- Official Proposal Header -->
+    <header class="mb-10 border-b border-gray-800 pb-8 relative">
+        <div class="flex flex-col md:flex-row justify-between items-end">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Flag_of_Thailand.svg"
+                        class="w-8 h-auto rounded shadow-lg border border-white/10" alt="Thailand Flag">
+                    <span
+                        class="px-2 py-1 bg-blue-900/30 border border-blue-500/30 text-blue-400 text-xs font-bold tracking-widest uppercase rounded">GISTDA
+                        Grant Proposal</span>
+                    <span
+                        class="px-2 py-1 bg-purple-900/30 border border-purple-500/30 text-purple-400 text-xs font-bold tracking-widest uppercase rounded">THAI
+                        PRIDE MISSION</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-bold text-white mb-1 tracking-tight">
+                    RESP-01 <span class="text-gray-500 font-light">LUNAR EYE</span>
+                </h1>
+                <h2 class="text-xl md:text-2xl text-blue-300 font-light tech-font tracking-wide">
+                    PATHWAY TO LUNAR SETTLEMENT & THAI SPACE ECONOMY
+                </h2>
+            </div>
+            <div class="text-right mt-4 md:mt-0">
+                <div class="text-gray-400 text-xs uppercase tracking-wider mb-1">Principal Investigator</div>
+                <div class="text-xl font-bold text-white border-l-4 border-yellow-500 pl-3">
+                    Mr. Winai Phanarkat
+                </div>
+                <div class="text-yellow-500 text-sm">Roi-Et Space Program</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Project Goals & "The Cool Factor" -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Project Goals -->
+        <div class="lg:col-span-2 card-glass p-6 rounded-lg border-l-4 border-blue-500">
+            <h3 class="text-xl font-bold mb-4 flex items-center text-blue-400">
+                <i class="fas fa-bullseye mr-2"></i> เป้าหมายโครงการ (Mission Goals)
+            </h3>
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <div class="bg-blue-900/50 p-2 rounded mr-3 mt-1"><i class="fas fa-flag text-blue-400"></i></div>
+                    <div>
+                        <h4 class="font-bold text-white">เป้าหมายหลัก (Primary)</h4>
+                        <p class="text-sm text-gray-400">ถ่ายภาพดวงจันทร์เพื่อการพาณิชย์
+                            และเก็บข้อมูลสภาพแวดล้อมเพื่อต่อยอดโครงการ <strong>"ตั้งถิ่นฐานบนดวงจันทร์ (Lunar
+                                Settlement)"</strong> ในอนาคต</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-yellow-900/50 p-2 rounded mr-3 mt-1"><i class="fas fa-lightbulb text-yellow-400"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white">เป้าหมายรอง (Impact)</h4>
+                        <p class="text-sm text-gray-400">แสดงศักยภาพคนไทย สร้างแรงบันดาลใจให้เยาวชน
+                            และส่งเสริมการเรียนรู้วิทยาศาสตร์อวกาศนอกห้องเรียน</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-green-900/50 p-2 rounded mr-3 mt-1"><i class="fas fa-chart-line text-green-400"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white">เศรษฐกิจ (Economy)</h4>
+                        <p class="text-sm text-gray-400">กระตุ้นการจ้างงานและเศรษฐกิจไทยตลอดระยะเวลาโครงการ (R&D,
+                            Operation, Marketing)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Cool Factor (USPs) -->
+        <div
+            class="card-glass p-6 rounded-lg bg-gradient-to-b from-gray-900 to-gray-800 border border-yellow-500/30 relative overflow-hidden">
+            <div class="absolute -right-6 -top-6 text-yellow-500/10 text-9xl transform rotate-12"><i
+                    class="fas fa-trophy"></i></div>
+            <h3
+                class="text-xl font-bold mb-4 text-yellow-500 text-center uppercase tracking-wider border-b border-yellow-500/30 pb-2">
+                ความเจ๋งของโครงการ
+            </h3>
+            <ul class="space-y-4 relative z-10">
+                <li class="flex items-center text-sm text-white">
+                    <span
+                        class="w-8 h-8 rounded-full bg-yellow-500 text-black flex items-center justify-center font-bold mr-3 text-xs">1ST</span>
+                    <span>ดาวเทียมสัญชาติไทยดวงแรก ที่ไปถึงดวงจันทร์</span>
+                </li>
+                <li class="flex items-center text-sm text-white">
+                    <span
+                        class="w-8 h-8 rounded-full bg-green-500 text-black flex items-center justify-center font-bold mr-3 text-xs">$</span>
+                    <span>ทำลายสถิติ "ดาวเทียมราคาถูกที่สุด" ที่ใช้งานได้จริง</span>
+                </li>
+                <li class="flex items-center text-sm text-white">
+                    <span
+                        class="w-8 h-8 rounded-full bg-blue-500 text-black flex items-center justify-center font-bold mr-3 text-xs"><i
+                            class="fas fa-rocket"></i></span>
+                    <span>เทคโนโลยี Solar Sail 100% ไม่ใช้เชื้อเพลิงเคมี</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Advanced Engineering Section (NEW) -->
+    <div class="mb-8">
+        <div class="flex items-center mb-4">
+            <div class="h-px bg-gray-700 flex-grow"></div>
+            <span class="px-4 text-red-400 text-sm font-bold uppercase tracking-widest"><i
+                    class="fas fa-microchip mr-2"></i>Critical Challenges & Mitigation</span>
+            <div class="h-px bg-gray-700 flex-grow"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Problem 1: Radiation -->
+            <div class="card-glass p-5 rounded-lg border-t-4 border-red-500">
+                <h4 class="text-white font-bold mb-2 flex items-center">
+                    <i class="fas fa-radiation text-red-500 mr-2"></i> Deep Space Radiation
+                </h4>
+                <div class="text-xs text-gray-400 mb-2 font-bold uppercase">The Problem:</div>
+                <p class="text-xs text-gray-300 mb-3">รังสี Van Allen Belt และ Solar Flares อาจทำให้คอมพิวเตอร์ (COTS)
+                    เสียหายหรือเกิด Bit Flip (SEU).</p>
+                <div class="text-xs text-green-400 mb-2 font-bold uppercase">Our Solution:</div>
+                <ul class="text-xs text-gray-300 list-disc list-inside">
+                    <li>ใช้ <strong>Spot Shielding</strong> (อลูมิเนียม/ทองแดง) หุ้มเฉพาะชิปสำคัญ</li>
+                    <li>ระบบ <strong>Hardware Watchdog</strong> รีเซ็ตตัวเองอัตโนมัติเมื่อค้าง</li>
+                    <li>ใช้ <strong>Triple Modular Redundancy</strong> ในซอฟต์แวร์</li>
+                </ul>
+            </div>
+
+            <!-- Problem 2: Thermal -->
+            <div class="card-glass p-5 rounded-lg border-t-4 border-orange-500">
+                <h4 class="text-white font-bold mb-2 flex items-center">
+                    <i class="fas fa-temperature-high text-orange-500 mr-2"></i> Extreme Thermal
+                </h4>
+                <div class="text-xs text-gray-400 mb-2 font-bold uppercase">The Problem:</div>
+                <p class="text-xs text-gray-300 mb-3">อุณหภูมิบนดวงจันทร์แกว่งระหว่าง -170°C ถึง +120°C
+                    แบตเตอรี่อาจหยุดทำงาน.</p>
+                <div class="text-xs text-green-400 mb-2 font-bold uppercase">Our Solution:</div>
+                <ul class="text-xs text-gray-300 list-disc list-inside">
+                    <li>ใช้ <strong>Kapton MLI</strong> (ฉนวนหลายชั้น) ห่อหุ้มตัวเครื่อง</li>
+                    <li>ติดตั้ง <strong>Heater Strips</strong> เลี้ยงอุณหภูมิแบตเตอรี่</li>
+                    <li>ออกแบบให้หมุนตัว (Barbecue Roll) เพื่อกระจายความร้อน</li>
+                </ul>
+            </div>
+
+            <!-- Problem 3: Mechanics (Auto-Nav Focus) -->
+            <div class="card-glass p-5 rounded-lg border-t-4 border-blue-500">
+                <h4 class="text-white font-bold mb-2 flex items-center">
+                    <i class="fas fa-robot text-blue-500 mr-2"></i> Loss of Signal (Failsafe)
+                </h4>
+                <div class="text-xs text-gray-400 mb-2 font-bold uppercase">The Problem:</div>
+                <p class="text-xs text-gray-300 mb-3">หากขาดการติดต่อ (Loss of Signal) หรือถูกดวงจันทร์บัง (Occultation)
+                    ดาวเทียมอาจหลุดวงโคจร.</p>
+                <div class="text-xs text-green-400 mb-2 font-bold uppercase">Our Solution:</div>
+                <ul class="text-xs text-gray-300 list-disc list-inside">
+                    <li><strong>On-board Propagator:</strong> คำนวณตำแหน่งตัวเองได้โดยไม่ต้องพึ่ง Ground Station</li>
+                    <li><strong>Sun Sensors & Star Tracker:</strong> หาระนาบการบินจากตำแหน่งดาวฤกษ์</li>
+                    <li><strong>Safe Mode:</strong> หันแผงโซล่าหาแสงอัตโนมัติเพื่อเลี้ยงไฟรอการติดต่อ</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical Specs (Expanded) -->
+    <div class="mb-8 card-glass p-4 rounded-lg">
+        <div class="flex justify-between items-center mb-4">
+            <h4 class="text-gray-400 text-sm font-bold uppercase tracking-widest">Technical Overview & Specs</h4>
+            <span class="text-xs bg-gray-700 px-2 py-1 rounded text-white">TRL 4-5 Achieved</span>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div class="p-2 border border-gray-700 rounded bg-gray-800/50">
+                <div class="text-yellow-400 font-bold text-sm">Delta-V Budget</div>
+                <div class="text-xs text-gray-400">Unlimited (Solar)</div>
+            </div>
+            <div class="p-2 border border-gray-700 rounded bg-gray-800/50">
+                <div class="text-yellow-400 font-bold text-sm">Link Budget</div>
+                <div class="text-xs text-gray-400">-120 dBm Margin</div>
+            </div>
+            <div class="p-2 border border-gray-700 rounded bg-gray-800/50">
+                <div class="text-yellow-400 font-bold text-sm">Attitude Control</div>
+                <div class="text-xs text-gray-400">Active Vanes + RW</div>
+            </div>
+            <div class="p-2 border border-gray-700 rounded bg-gray-800/50">
+                <div class="text-yellow-400 font-bold text-sm">Control Center</div>
+                <div class="text-xs text-gray-400">GISTDA Sriracha</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Business Model & Break-even -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div class="card-glass p-6 rounded-lg border-l-4 border-green-500">
+            <h3 class="text-lg font-bold mb-4 text-white"><i class="fas fa-coins mr-2 text-green-400"></i> Revenue
+                Streams (ที่มาของรายได้)</h3>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center bg-gray-800/50 p-3 rounded">
+                    <div>
+                        <div class="text-sm font-bold text-white">รายได้หลัก (Main)</div>
+                        <ul class="text-xs text-gray-400 list-disc list-inside">
+                            <li>ขายภาพถ่าย (Stock Photo)</li>
+                            <li>รับจ้างถ่ายตามสั่ง (Commission)</li>
+                            <li>ประมูลภาพ NFT (Auction)</li>
+                        </ul>
+                    </div>
+                    <i class="fas fa-images text-2xl text-green-500 opacity-50"></i>
+                </div>
+                <div class="flex justify-between items-center bg-gray-800/50 p-3 rounded">
+                    <div>
+                        <div class="text-sm font-bold text-white">รายได้เสริม (Supplementary)</div>
+                        <ul class="text-xs text-gray-400 list-disc list-inside">
+                            <li>ขายลิขสิทธิ์การถ่ายทอดสด (Live Rights)</li>
+                            <li>ลิขสิทธิ์สื่อดิจิตอล (Publishing Rights)</li>
+                        </ul>
+                    </div>
+                    <i class="fas fa-broadcast-tower text-2xl text-yellow-500 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="card-glass p-6 rounded-lg flex flex-col justify-center items-center bg-green-900/10 border border-green-500/30">
+            <h3 class="text-lg font-bold mb-2 text-white">จุดคืนทุน (Break-even Point)</h3>
+            <div class="text-4xl font-bold text-green-400 mb-2">ทันที! (Instant)</div>
+            <p class="text-sm text-center text-gray-300">
+                เมื่อขายลิขสิทธิ์การถ่ายทอดสด (Media Rights) ได้สำเร็จ <br>
+                เนื่องจากต้นทุนโครงการต่ำมากเมื่อเทียบกับมูลค่าสื่อ
+            </p>
+            <div class="mt-4 w-full bg-gray-700 h-2 rounded-full overflow-hidden">
+                <div class="bg-green-500 h-full w-[100%] animate-pulse"></div>
+            </div>
+            <div class="text-xs text-green-400 mt-1 w-full text-right">Profit Zone</div>
+        </div>
+    </div>
+
+    <!-- Success Roadmap (Checklist Style) -->
+    <div class="card-glass p-8 rounded-lg mb-8 border-t-4 border-purple-500">
+        <h3 class="text-xl font-bold mb-6 text-white text-center">ลำดับความสำเร็จ (Success Milestones)</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Phase 1: Preparation -->
+            <div class="space-y-0">
+                <div class="success-step flex items-start mb-4">
+                    <div class="absolute left-0 w-4 h-4 rounded-full bg-green-500 border-2 border-white"></div>
+                    <div>
+                        <h4 class="text-sm font-bold text-green-400">คิดและสร้างสรรค์โครงการ</h4>
+                        <span class="text-xs bg-green-900/50 text-green-300 px-2 py-0.5 rounded">สำเร็จ</span>
+                    </div>
+                </div>
+                <div class="success-step flex items-start mb-4">
+                    <div class="absolute left-0 w-4 h-4 rounded-full bg-green-500 border-2 border-white"></div>
+                    <div>
+                        <h4 class="text-sm font-bold text-green-400">นำเสนอและผ่านการทดสอบ</h4>
+                        <span class="text-xs bg-green-900/50 text-green-300 px-2 py-0.5 rounded">สำเร็จ</span>
+                    </div>
+                </div>
+                <div class="success-step flex items-start mb-4">
+                    <div class="absolute left-0 w-4 h-4 rounded-full bg-green-500 border-2 border-white"></div>
+                    <div>
+                        <h4 class="text-sm font-bold text-green-400">องค์ประกอบครบถ้วนพร้อมนำสู่อวกาศ</h4>
+                        <span class="text-xs bg-green-900/50 text-green-300 px-2 py-0.5 rounded">สำเร็จ</span>
+                    </div>
+                </div>
+                <div class="success-step flex items-start mb-4">
+                    <div class="absolute left-0 w-4 h-4 rounded-full bg-yellow-500 border-2 border-white animate-pulse">
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-yellow-400">สมัครขอทุนส่งขึ้นอวกาศ (GISTDA)</h4>
+                        <p class="text-xs text-gray-400 mt-1">
+                            <span class="text-red-400">ถ้าไม่ได้:</span> รอรอบหน้า <br>
+                            <span class="text-green-400">ถ้าได้:</span> ไปต่อ (สำเร็จ)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 2: Execution & Future -->
+            <div class="space-y-0">
+                <div class="success-step flex items-start mb-4">
+                    <div class="absolute left-0 w-4 h-4 rounded-full bg-gray-600 border-2 border-gray-400"></div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-300">ได้รับทุนส่งดาวเทียม</h4>
+                        <p class="text-xs text-gray-500 mt-1">
+                            • ส่ง GEO (ไปต่อเอง): เรตติ้งสูง น่าสนใจมาก<br>
+                            • ส่งวงโคจรดวงจันทร์: ลดความเสี่ยง
+                        </p>
+                    </div>
+                </div>
+                <div class="success-step flex items-start mb-4">
+                    <div class="absolute left-0 w-4 h-4 rounded-full bg-gray-600 border-2 border-gray-400"></div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-300">เชื่อมต่อฐานควบคุมภาคพื้น</h4>
+                        <span class="text-xs text-gray-500">GISTDA Sriracha <-> Roi-Et HQ</span>
+                    </div>
+                </div>
+                <div class="success-step flex items-start mb-4">
+                    <div class="absolute left-0 w-4 h-4 rounded-full bg-gray-600 border-2 border-gray-400"></div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-300">สรุปรายได้ & คืนทุน</h4>
+                        <span class="text-xs text-gray-500">ขายลิขสิทธิ์ถ่ายทอดสด</span>
+                    </div>
+                </div>
+                <div class="success-step flex items-start mb-4">
+                    <div class="absolute left-0 w-4 h-4 rounded-full bg-gray-600 border-2 border-gray-400"></div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-300">ดาวเทียมไทยดวงแรกออกนอกวงโคจรโลก</h4>
+                        <span class="text-xs text-gray-500">Mission Accomplished</span>
+                    </div>
+                </div>
+                <div class="success-step flex items-start">
+                    <div class="absolute left-0 w-4 h-4 rounded-full bg-gray-600 border-2 border-gray-400"></div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-300">ต่อยอดโครงการตั้งถิ่นฐาน</h4>
+                        <span class="text-xs text-gray-500">Future Expansion</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logic Section -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Logic 1: Camera Control -->
+        <div class="bg-black/40 rounded-2xl p-6 border border-blue-500/30 font-mono text-sm relative">
+            <div
+                class="absolute top-0 right-0 px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-bl-xl rounded-tr-xl">
+                LOGIC_CAM.PY
+            </div>
+            <p class="text-gray-400 mb-2"># 1. ระบบสั่งการกล้อง</p>
+            <div class="text-blue-300">
+                <span class="text-purple-400">def</span> <span class="text-blue-400">execute_cmd</span>(cmd):<br>
+                &nbsp;&nbsp;<span class="text-purple-400">if</span> cmd == "SNAP":<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;Camera.<span class="text-yellow-400">capture</span>()<br>
+                &nbsp;&nbsp;<span class="text-purple-400">elif</span> cmd == "PAN":<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;ADCS.<span class="text-yellow-400">rotate</span>(30)
+            </div>
+        </div>
+
+        <!-- Logic 2: Data Link -->
+        <div class="bg-black/40 rounded-2xl p-6 border border-green-500/30 font-mono text-sm relative">
+            <div
+                class="absolute top-0 right-0 px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-bl-xl rounded-tr-xl">
+                LOGIC_LINK.PY
+            </div>
+            <p class="text-gray-400 mb-2"># 2. ส่งไฟล์กลับไทย</p>
+            <div class="text-green-300">
+                <span class="text-purple-400">def</span> <span class="text-blue-400">downlink</span>(file):<br>
+                &nbsp;&nbsp;<span class="text-yellow-400">check_gs_lock</span>("GISTDA")<br>
+                &nbsp;&nbsp;<span class="text-purple-400">for</span> pkt <span class="text-purple-400">in</span>
+                chunks(file):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;Radio.<span class="text-yellow-400">send</span>(pkt)
+            </div>
+        </div>
+
+        <!-- Logic 3: Auto-Nav (NEW) -->
+        <div class="bg-black/40 rounded-2xl p-6 border border-red-500/30 font-mono text-sm relative">
+            <div
+                class="absolute top-0 right-0 px-3 py-1 bg-red-500/20 text-red-400 text-xs rounded-bl-xl rounded-tr-xl">
+                LOGIC_NAV.PY
+            </div>
+            <p class="text-gray-400 mb-2"># 3. ระบบนำร่องอัตโนมัติ (AI)</p>
+            <div class="text-red-300">
+                <span class="text-purple-400">def</span> <span class="text-blue-400">auto_pilot_loop</span>():<br>
+                &nbsp;&nbsp;<span class="text-purple-400">if not</span> Comms.is_connected():<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;pos = Nav.<span class="text-yellow-400">get_star_tracker</span>()<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;ADCS.<span class="text-yellow-400">point_to_sun</span>() <span
+                    class="text-gray-500"># Safe Mode</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;Beacon.<span class="text-yellow-400">broadcast</span>("ALIVE")
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact / Footer -->
+    <footer class="text-center border-t border-gray-800 pt-8 text-gray-500 text-sm">
+        <p class="mb-2">
+            <span class="text-white font-bold">RESP-01 "Lunar Eye" Mission Proposal</span> prepared for GISTDA
+            Consideration
+        </p>
+        <p>
+            Developed by <span class="text-yellow-500">Roi-Et Space Program</span> Laboratory
+        </p>
+        <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 border border-gray-700 rounded text-xs font-mono">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Flag_of_Thailand.svg"
+                class="w-4 h-auto rounded-[1px]" alt="TH">
+            <span>PI Contact: Winai Phanarkat | Location: Roi-Et, Thailand</span>
+        </div>
+    </footer>
+
+</body>
+
+</html>
