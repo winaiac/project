@@ -182,6 +182,33 @@
             margin-top: auto;
         }
 
+        .btn-pause {
+            background: #64748b;
+            color: white;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .btn-pause.active {
+            background: #f59e0b;
+            color: black;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
         .btn-main:hover {
             filter: brightness(1.2);
             transform: translateY(-1px);
@@ -254,6 +281,36 @@
             max-width: 80%;
         }
 
+        .credits-box {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            text-align: right;
+            font-size: 10px;
+            color: #64748b;
+            pointer-events: auto;
+        }
+
+        .credits-box a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+
+        .credits-box a:hover {
+            text-decoration: underline;
+        }
+
+        .disclaimer {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
         .thrust-meter {
             width: 100%;
             height: 10px;
@@ -308,6 +365,7 @@
 <body>
 
     <div id="ui-layer">
+        <div class="disclaimer">ภาพจำลองเพื่อการสาธิตเท่านั้น (Visual Simulation Only)</div>
         <div class="header">
             <h1>ศูนย์ควบคุมภารกิจ RESP-01<br><span style="font-size: 16px;">Mission Control Center</span></h1>
             <div class="sub-header">ROI-ET SPACE PROGRAM</div>
@@ -361,6 +419,10 @@
                     <button class="btn-small" onclick="setTimeWarp(5, this)">5x</button>
                     <button class="btn-small" onclick="setTimeWarp(20, this)">20x</button>
                 </div>
+                <button id="btn-pause" class="btn-main btn-pause" onclick="togglePause()">
+                    <div><i class="fas fa-pause"></i> หยุดชั่วคราว (เพื่อบันทึกภาพ)<br><span class="en-text">Pause
+                            (Snapshot Mode)</span></div>
+                </button>
 
                 <div class="slider-container" id="control-panel" style="opacity: 0.5; pointer-events: none;">
                     <div class="text-xs text-yellow-500 mb-1 uppercase font-bold flex justify-between">
@@ -424,6 +486,11 @@
                 <span class="en-text">Left Click: Rotate | Scroll: Zoom</span>
             </div>
         </div>
+
+        <div class="credits-box">
+            Developed by: Mr. Winai Phanarkat<br>
+            Facebook: <a href="https://www.facebook.com/winayo1" target="_blank">https://www.facebook.com/winayo1</a>
+        </div>
     </div>
 
     <script>
@@ -441,7 +508,7 @@
         const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 50000);
         camera.position.set(0, 300, 800);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.physicallyCorrectLights = true;
         renderer.outputEncoding = THREE.sRGBEncoding;
@@ -505,12 +572,11 @@
         sunGroup.add(sunGlow);
         scene.add(sunGroup);
 
-        // Lighting (ระบบแสง) - ปรับปรุงให้โลกสว่างขึ้น
+        // Lighting (ระบบแสง)
         const sunLight = new THREE.DirectionalLight(0xffffff, 2.0);
         sunLight.position.set(-1, 0, 0);
         scene.add(sunLight);
 
-        // เพิ่ม Ambient Light ให้สว่างขึ้น เพื่อแก้ปัญหาโลกด้านเงาเป็นสีดำสนิท/เทา
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
         scene.add(ambientLight);
 
@@ -541,21 +607,37 @@
         const stars = new THREE.Points(starsGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 1.5, transparent: true, opacity: 0.8 }));
         scene.add(stars);
 
-        // --- SPACECRAFT RESP-01 ---
+        // --- SPACECRAFT RESP-01 (UPDATED MODEL) ---
         const shipContainer = new THREE.Group();
         scene.add(shipContainer);
 
+        // 1. Bus (ตัวยาน)
         const bus = new THREE.Mesh(
             new THREE.BoxGeometry(2, 2, 2),
             new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.3, metalness: 0.8 })
         );
         shipContainer.add(bus);
 
+        // 2. Connecting Boom (ท่อเชื่อมยาว)
+        // เพื่อให้เห็นชัดเจนใน Sim นี้ จะใช้ความยาวประมาณ 10 หน่วย (Visual Representation of 5m in this scale context)
+        const boomLen = 15;
+        const connectBoom = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.2, 0.2, boomLen),
+            new THREE.MeshStandardMaterial({ color: 0x888888 })
+        );
+        // หมุน Boom ให้นอนตามแกน X (ชี้ไปทางใบเรือ)
+        connectBoom.rotation.z = Math.PI / 2;
+        // ขยับ Boom ไปทางขวาครึ่งหนึ่งของความยาว
+        connectBoom.position.x = boomLen / 2;
+        shipContainer.add(connectBoom);
+
+        // 3. Sail Pivot (จุดยึดใบเรือ)
         const sailPivot = new THREE.Group();
+        // ย้ายใบเรือไปที่ปลาย Boom
+        sailPivot.position.x = boomLen;
         shipContainer.add(sailPivot);
 
-        // Sail Mesh - RESIZED (Smaller)
-        // ลดขนาดจาก 60 เป็น 25 เพื่อให้ดูสมจริงขึ้นเมื่อเทียบกับหน้าจอ
+        // Sail Mesh
         const sailGeo = new THREE.PlaneGeometry(25, 25);
         const sailMat = new THREE.MeshStandardMaterial({
             color: 0xffd700,
@@ -570,19 +652,21 @@
         sail.rotation.y = -Math.PI / 2;
         sailPivot.add(sail);
 
-        // Booms (ย่อขนาดตามใบเรือ)
+        // Booms (Structure holding the sail)
         const boomMat = new THREE.MeshBasicMaterial({ color: 0x333333 });
-        const boom1 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 35), boomMat); // ลดความยาว
+        const boom1 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 35), boomMat);
         boom1.rotation.z = Math.PI / 4; boom1.rotation.y = -Math.PI / 2;
         sailPivot.add(boom1);
-        const boom2 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 35), boomMat); // ลดความยาว
+        const boom2 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 35), boomMat);
         boom2.rotation.z = -Math.PI / 4; boom2.rotation.y = -Math.PI / 2;
         sailPivot.add(boom2);
 
         sailPivot.visible = false;
+        connectBoom.visible = false; // ซ่อน Boom ตอนแรกด้วย
 
+        // Arrow
         const arrowDir = new THREE.Vector3(1, 0, 0);
-        const arrowOrigin = new THREE.Vector3(0, 0, 0);
+        const arrowOrigin = new THREE.Vector3(boomLen, 0, 0); // Arrow starts at sail
         const arrowHelper = new THREE.ArrowHelper(arrowDir, arrowOrigin, 20, 0x00ff00, 5, 3);
         shipContainer.add(arrowHelper);
         arrowHelper.visible = false;
@@ -598,6 +682,7 @@
         let timeWarp = 1;
         let isAutoPilot = false;
         let moonCamActive = false;
+        let isPaused = false;
 
         const trailPoints = [];
         const trailGeo = new THREE.BufferGeometry();
@@ -607,6 +692,7 @@
 
         // UI Refs
         const btnAction = document.getElementById('btn-action');
+        const btnPause = document.getElementById('btn-pause');
         const msgLog = document.getElementById('msg-log');
         const slider = document.getElementById('sail-slider');
         const angleDisplay = document.getElementById('angle-val');
@@ -656,6 +742,17 @@
             }
         }
 
+        function togglePause() {
+            isPaused = !isPaused;
+            if (isPaused) {
+                btnPause.classList.add('active');
+                btnPause.innerHTML = '<div><i class="fas fa-play"></i> เล่นต่อ (Resume)<br><span class="en-text">Resume Simulation</span></div>';
+            } else {
+                btnPause.classList.remove('active');
+                btnPause.innerHTML = '<div><i class="fas fa-pause"></i> หยุดชั่วคราว (เพื่อบันทึกภาพ)<br><span class="en-text">Pause (Snapshot Mode)</span></div>';
+            }
+        }
+
         function toggleMoonCam() {
             moonCamActive = !moonCamActive;
             if (moonCamActive) {
@@ -693,6 +790,7 @@
                 // DEPLOY
                 msgLog.innerHTML = "<div>กำลังสั่งการกางใบเรือสุริยะ...<br><span class='en-text'>Deploying Solar Sail...</span></div>";
                 sailPivot.visible = true;
+                connectBoom.visible = true; // Show boom
                 sailPivot.scale.set(0.01, 0.01, 0.01);
 
                 let s = 0;
@@ -724,6 +822,7 @@
             trailGeo.setFromPoints([]);
             shipContainer.position.set(distance, 0, 0);
             sailPivot.visible = false;
+            connectBoom.visible = false;
             arrowHelper.visible = false;
             controlPanel.style.opacity = 0.5;
             controlPanel.style.pointerEvents = 'none';
@@ -742,6 +841,10 @@
             controls.target.set(0, 0, 0);
 
             isAutoPilot = false;
+            isPaused = false;
+            btnPause.classList.remove('active');
+            btnPause.innerHTML = '<div><i class="fas fa-pause"></i> หยุดชั่วคราว (เพื่อบันทึกภาพ)<br><span class="en-text">Pause (Snapshot Mode)</span></div>';
+
             btnAuto.classList.remove('active');
             autoBadge.classList.add('hidden');
             slider.disabled = false;
@@ -750,10 +853,18 @@
 
             moonCamActive = false;
             btnMoonCam.style.display = 'none';
+
+            trailLine.visible = true; // Show line again on reset
         }
 
         function animate() {
             requestAnimationFrame(animate);
+            controls.update();
+
+            if (isPaused) {
+                renderer.render(scene, camera);
+                return; // Stop logic, just render
+            }
 
             earthGroup.rotation.y += 0.0005;
 
@@ -826,6 +937,7 @@
                     btnAction.className = "btn-main btn-orbit";
 
                     btnMoonCam.style.display = 'block';
+                    trailLine.visible = false; // REMOVE LINE
                     toggleMoonCam();
                 }
             }
@@ -838,6 +950,7 @@
                 shipContainer.position.z = Math.sin(moonOrbitAngle) * orbitRadius;
 
                 shipContainer.lookAt(D_MOON, 0, 0);
+                // Adjust sail angle relative to lookAt
                 sailPivot.rotation.z += 0.01;
 
                 if (moonCamActive) {
@@ -861,8 +974,6 @@
             }
 
             updateHUD();
-
-            controls.update();
             renderer.render(scene, camera);
             frameCount++;
         }
