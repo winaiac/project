@@ -302,13 +302,13 @@
 
         .disclaimer {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 5px;
+            width: 100%;
+            text-align: center;
             font-size: 10px;
             color: rgba(255, 255, 255, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2px 5px;
-            border-radius: 4px;
+            pointer-events: none;
+            z-index: 5;
         }
 
         .thrust-meter {
@@ -351,6 +351,30 @@
             background: rgba(56, 189, 248, 0.2);
         }
 
+        /* Back Button */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #38bdf8;
+            color: #38bdf8;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            pointer-events: auto;
+            font-family: 'Sarabun', sans-serif;
+            font-weight: bold;
+            z-index: 20;
+            text-decoration: none;
+            display: block;
+        }
+
+        .back-btn:hover {
+            background: rgba(56, 189, 248, 0.2);
+        }
+
         .en-text {
             font-size: 10px;
             opacity: 0.7;
@@ -366,6 +390,11 @@
 
     <div id="ui-layer">
         <div class="disclaimer">ภาพจำลองเพื่อการสาธิตเท่านั้น (Visual Simulation Only)</div>
+
+        <a href="thaisat.html" class="back-btn">
+            <i class="fas fa-arrow-left mr-2"></i> กลับหน้าหลัก<br><span class="en-text">Back to Main</span>
+        </a>
+
         <div class="header">
             <h1>ศูนย์ควบคุมภารกิจ RESP-01<br><span style="font-size: 16px;">Mission Control Center</span></h1>
             <div class="sub-header">ROI-ET SPACE PROGRAM</div>
