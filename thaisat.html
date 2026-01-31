@@ -58,10 +58,15 @@
             display: none;
         }
 
-        .chart-container {
-            position: relative;
-            height: 250px;
-            width: 100%;
+        .btn-glow-purple {
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-glow-purple:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(124, 58, 237, 0.6);
         }
     </style>
 </head>
@@ -736,17 +741,27 @@
                     GISTDA
                 </p>
                 <div class="text-xs text-gray-400">
-                    <p class="mb-2">เพื่อรับรองคุณภาพสูงสุด เรากำหนดเงื่อนไขการเปิดตลาดเมื่อผ่านเกณฑ์ทดสอบ
+                    <p class="mb-4">เพื่อรับรองคุณภาพสูงสุด เรากำหนดเงื่อนไขการเปิดตลาดเมื่อผ่านเกณฑ์ทดสอบ
                         (Requirements) ดังนี้:</p>
-                    <ul class="grid grid-cols-1 gap-1 ml-2 mt-2">
-                        <li class="flex items-center"><i class="fas fa-check-circle text-gray-500 mr-2"></i> Vibration
-                            Test (แรงสั่นสะเทือน)</li>
-                        <li class="flex items-center"><i class="fas fa-check-circle text-gray-500 mr-2"></i> Thermal
-                            Vacuum (สุญญากาศ/อุณหภูมิ)</li>
-                        <li class="flex items-center"><i class="fas fa-check-circle text-gray-500 mr-2"></i> Debris
-                            Mitigation (กำจัดขยะอวกาศ)</li>
-                        <li class="flex items-center"><i class="fas fa-check-circle text-gray-500 mr-2"></i> Frequency
-                            Licensing (ขอใช้คลื่นความถี่)</li>
+
+                    <div class="grid grid-cols-1 gap-4 mb-6">
+                        <div class="flex items-center text-green-400"><i class="fas fa-check-circle mr-2"></i> Vibration
+                            Test</div>
+                        <div class="flex items-center text-green-400"><i class="fas fa-check-circle mr-2"></i> TVAC Test
+                        </div>
+                    </div>
+
+                    <!-- RE4CAST REDIRECT BUTTON -->
+                    <a href="re4cast.html"
+                        class="block w-full text-center btn-glow-purple text-white font-bold py-4 px-4 rounded-xl text-lg mb-4">
+                        <i class="fas fa-satellite-dish mr-2"></i> ขอสิทธิ์เผยแพร่ / ถ่ายทอดสด (RE4CAST)
+                    </a>
+
+                    <ul class="grid grid-cols-1 gap-1 ml-2 text-[10px] opacity-50">
+                        <li class="flex items-center"><i class="fas fa-info-circle mr-2"></i> Debris Mitigation
+                            Compliance</li>
+                        <li class="flex items-center"><i class="fas fa-info-circle mr-2"></i> ITU Frequency Coordination
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -764,15 +779,6 @@
             <span>PI Contact: Winai Phanarkat | Location: Roi-Et, Thailand</span>
         </div>
     </footer>
-
-    <!-- CHARTS SCRIPT -->
-    <script>
-        // Tech Radar Chart
-        const radarCtx = document.createElement('canvas');
-        radarCtx.id = 'techRadarChart';
-        // Note: In a real implementation, you would place this canvas inside the "Technical Performance Profile" section. 
-        // For this infographic, we are focusing on the visual layout provided by CSS/HTML structure.
-    </script>
 
 </body>
 
