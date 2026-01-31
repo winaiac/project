@@ -10,6 +10,7 @@
         type="image/svg+xml">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link
         href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;800&family=Rajdhani:wght@500;700&display=swap"
@@ -31,23 +32,11 @@
             font-family: 'Rajdhani', sans-serif;
         }
 
-        .gold-gradient {
-            background: linear-gradient(135deg, #FFD700, #B8860B);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
         .card-glass {
             background: rgba(17, 24, 39, 0.7);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .grid-bg {
-            background-size: 40px 40px;
-            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
         }
 
         .success-step {
@@ -68,12 +57,18 @@
         .success-step:last-child::before {
             display: none;
         }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
     </style>
 </head>
 
-<body class="min-h-screen p-4 md:p-8 grid-bg">
+<body class="min-h-screen p-4 md:p-8">
 
-    <!-- Official Proposal Header -->
+    <!-- 1. HEADER -->
     <header class="mb-10 border-b border-gray-800 pb-8 relative">
         <div class="flex flex-col md:flex-row justify-between items-end">
             <div>
@@ -96,17 +91,14 @@
             </div>
             <div class="text-right mt-4 md:mt-0">
                 <div class="text-gray-400 text-xs uppercase tracking-wider mb-1">Principal Investigator</div>
-                <div class="text-xl font-bold text-white border-l-4 border-yellow-500 pl-3">
-                    Mr. Winai Phanarkat
-                </div>
+                <div class="text-xl font-bold text-white border-l-4 border-yellow-500 pl-3">Mr. Winai Phanarkat</div>
                 <div class="text-yellow-500 text-sm">Roi-Et Space Program</div>
             </div>
         </div>
     </header>
 
-    <!-- Project Goals & "The Cool Factor" -->
+    <!-- 2. PROJECT GOALS & COOL FACTOR -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <!-- Project Goals -->
         <div class="lg:col-span-2 card-glass p-6 rounded-lg border-l-4 border-blue-500">
             <h3 class="text-xl font-bold mb-4 flex items-center text-blue-400">
                 <i class="fas fa-bullseye mr-2"></i> เป้าหมายโครงการ (Mission Goals)
@@ -117,8 +109,8 @@
                     <div>
                         <h4 class="font-bold text-white">เป้าหมายหลัก (Primary)</h4>
                         <p class="text-sm text-gray-400">ถ่ายภาพดวงจันทร์เพื่อการพาณิชย์
-                            และเก็บข้อมูลสภาพแวดล้อมเพื่อต่อยอดโครงการ <strong>"ตั้งถิ่นฐานบนดวงจันทร์ (Lunar
-                                Settlement)"</strong> ในอนาคต</p>
+                            และเก็บข้อมูลสภาพแวดล้อมเพื่อต่อยอดโครงการ <strong>"ตั้งถิ่นฐานบนดวงจันทร์"</strong> ในอนาคต
+                        </p>
                     </div>
                 </div>
                 <div class="flex items-start">
@@ -142,15 +134,13 @@
             </div>
         </div>
 
-        <!-- The Cool Factor (USPs) -->
         <div
             class="card-glass p-6 rounded-lg bg-gradient-to-b from-gray-900 to-gray-800 border border-yellow-500/30 relative overflow-hidden">
             <div class="absolute -right-6 -top-6 text-yellow-500/10 text-9xl transform rotate-12"><i
                     class="fas fa-trophy"></i></div>
             <h3
                 class="text-xl font-bold mb-4 text-yellow-500 text-center uppercase tracking-wider border-b border-yellow-500/30 pb-2">
-                ความเจ๋งของโครงการ
-            </h3>
+                ความเจ๋งของโครงการ</h3>
             <ul class="space-y-4 relative z-10">
                 <li class="flex items-center text-sm text-white">
                     <span
@@ -172,137 +162,300 @@
         </div>
     </div>
 
-    <!-- Launch Strategy & Cost Analysis (New Section) -->
+    <!-- 3. LAUNCH STRATEGY & COST ANALYSIS -->
     <div class="mb-8 card-glass p-6 rounded-lg border-t-4 border-green-500">
         <h3 class="text-xl font-bold mb-6 text-white text-center">
-            <i class="fas fa-map-signs mr-2 text-green-400"></i> ทางเลือกในการเดินทาง: กลยุทธ์การลดต้นทุนนำส่ง (Travel
-            Options)
+            <i class="fas fa-map-signs mr-2 text-green-400"></i> ทางเลือกในการเดินทาง: กลยุทธ์การลดต้นทุนนำส่ง
         </h3>
         <p class="text-gray-400 text-center mb-8 max-w-3xl mx-auto">
-            เปรียบเทียบต้นทุนรวม (Total Cost Impact) ระหว่าง "วิธีดั้งเดิม" กับ "RESP-01"
-            โดยผสานข้อมูลค่าตั๋วนำส่งและค่าระบบขับเคลื่อนเข้าด้วยกัน
+            เปรียบเทียบทางเลือก (Options) ในการส่งดาวเทียมไปดวงจันทร์ ระหว่าง "บินตรง (Direct)" กับ "เรือใบสุริยะ
+            (RESP-01)" ในรูปแบบเหมาลำและฝากส่ง
         </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Option 1: Traditional -->
-            <div
-                class="p-6 rounded-2xl border border-red-500/30 bg-red-900/10 relative overflow-hidden group hover:bg-red-900/20 transition duration-300">
-                <!-- Header -->
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <h4 class="text-red-400 font-bold text-xl mb-1">OPTION 1: บินตรง (Direct Lunar)</h4>
-                        <p class="text-gray-400 text-xs">วิธีดั้งเดิม: เน้นความชัวร์ จ่ายหนัก</p>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Option 1: Direct Lunar -->
+            <div class="p-4 bg-red-900/10 rounded-xl border border-red-500/20">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs font-bold text-red-300 uppercase"><i class="fas fa-moon mr-2"></i>Option 1:
+                        ส่งตรงไปดวงจันทร์</span>
+                    <span
+                        class="text-[10px] bg-red-500/20 text-red-200 px-2 py-0.5 rounded border border-red-500/30 flex items-center">
+                        <i class="fas fa-stopwatch mr-1"></i> 3-5 วัน (เร็วแต่แพง)
+                    </span>
+                </div>
+
+                <div class="mb-3 relative group">
+                    <div class="flex justify-between text-[10px] mb-1 text-gray-400">
+                        <span><i class="fas fa-rocket mr-1"></i>แบบเหมาเดี่ยว (Dedicated)</span>
+                        <span>฿ 1,500M+ / ภารกิจ</span>
                     </div>
-                    <div
-                        class="bg-red-500/20 text-red-300 px-3 py-1 rounded text-xs font-bold border border-red-500/30 whitespace-nowrap">
-                        <i class="fas fa-stopwatch mr-1"></i> 3-5 วัน
+                    <div class="w-full bg-gray-800 rounded-full h-2">
+                        <div class="bg-red-800 h-2 rounded-full" style="width: 100%"></div>
                     </div>
                 </div>
 
-                <!-- Costs Merged -->
-                <div class="space-y-4">
-                    <!-- Launch Cost -->
-                    <div class="bg-black/30 p-3 rounded-lg border border-red-500/10">
-                        <div class="flex justify-between text-xs text-gray-400 mb-1">
-                            <span><i class="fas fa-ticket-alt mr-2"></i>ค่าตั๋วนำส่ง (Launch Ticket)</span>
-                        </div>
-                        <div class="flex justify-between items-end">
-                            <span class="text-white text-sm">แบบเหมา/Direct</span>
-                            <span class="text-red-400 font-bold text-lg">฿ 3.5M+ <span
-                                    class="text-xs text-gray-500">/กก.</span></span>
-                        </div>
-                        <div class="w-full bg-gray-700 h-1.5 mt-2 rounded-full overflow-hidden">
-                            <div class="bg-red-600 h-full w-full"></div>
-                        </div>
+                <div class="relative group">
+                    <div class="flex justify-between text-[10px] mb-1 text-gray-300">
+                        <span><i class="fas fa-users mr-1"></i>แบบฝากไป (Rideshare/CLPS)</span>
+                        <span class="text-red-400 font-bold">฿ 3.5M+ / กก.</span>
                     </div>
-
-                    <!-- Propulsion Cost -->
-                    <div class="bg-black/30 p-3 rounded-lg border border-red-500/10">
-                        <div class="flex justify-between text-xs text-gray-400 mb-1">
-                            <span><i class="fas fa-gas-pump mr-2"></i>ค่าระบบขับเคลื่อน (Propulsion)</span>
-                        </div>
-                        <div class="flex justify-between items-end">
-                            <span class="text-white text-sm">Chemical/Ion</span>
-                            <span class="text-red-400 font-bold text-lg">฿ 175k - 350k+</span>
-                        </div>
-                        <div class="w-full bg-gray-700 h-1.5 mt-2 rounded-full overflow-hidden">
-                            <div class="bg-orange-500 h-full w-3/4"></div>
-                        </div>
+                    <div class="w-full bg-gray-800 rounded-full h-4">
+                        <div class="bg-red-500 h-4 rounded-full flex items-center justify-end px-2 text-[9px] text-white"
+                            style="width: 75%">Still Expensive</div>
                     </div>
-                </div>
-
-                <!-- Verdict -->
-                <div class="mt-6 pt-4 border-t border-red-500/20">
-                    <div class="flex items-center justify-between text-red-300 text-sm">
-                        <span><i class="fas fa-wallet mr-2"></i>งบประมาณรวม: <strong>สูงมาก (High)</strong></span>
-                        <span class="text-xs opacity-70"><i class="fas fa-shield-alt mr-1"></i>ความเสี่ยงต่ำ</span>
-                    </div>
+                    <div class="text-[9px] text-red-300 mt-1 text-right"><i
+                            class="fas fa-shield-alt mr-1"></i>ลดความเสี่ยงการเดินทาง</div>
                 </div>
             </div>
 
-            <!-- Option 2: RESP-01 -->
-            <div
-                class="p-6 rounded-2xl border-2 border-green-500 bg-green-900/10 relative overflow-hidden group hover:bg-green-900/20 transition duration-300 shadow-[0_0_30px_rgba(34,197,94,0.1)]">
-                <div class="absolute top-0 right-0 bg-green-500 text-black text-[10px] font-bold px-3 py-1 rounded-bl">
-                    RECOMMENDED</div>
+            <!-- Option 2: LEO -->
+            <div class="p-4 bg-green-900/10 rounded-xl border border-green-500/20 relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-green-500 text-black text-[9px] font-bold px-2 py-0.5 rounded-bl">
+                    RESP-01 CHOICE</div>
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs font-bold text-green-300 uppercase"><i class="fas fa-globe mr-2"></i>Option 2:
+                        ส่งไป LEO (ต่อรถ Solar Sail)</span>
+                    <span
+                        class="text-[10px] bg-yellow-500/20 text-yellow-200 px-2 py-0.5 rounded border border-yellow-500/30 flex items-center">
+                        <i class="fas fa-history mr-1"></i> 4-6 เดือน (ประหยัด 95%)
+                    </span>
+                </div>
 
-                <!-- Header -->
-                <div class="flex justify-between items-start mb-6">
+                <div class="mb-3 relative group opacity-60">
+                    <div class="flex justify-between text-[10px] mb-1 text-gray-400">
+                        <span><i class="fas fa-rocket mr-1"></i>แบบเหมาเดี่ยว (Dedicated LEO)</span>
+                        <span>฿ 200M+ / ภารกิจ</span>
+                    </div>
+                    <div class="w-full bg-gray-800 rounded-full h-2">
+                        <div class="bg-green-800 h-2 rounded-full" style="width: 30%"></div>
+                    </div>
+                </div>
+
+                <div class="relative group">
+                    <div class="flex justify-between text-[10px] mb-1 text-white">
+                        <span><i class="fas fa-bus mr-1"></i><strong class="text-green-400">แบบฝากไป (Rideshare
+                                LEO)</strong></span>
+                        <span class="text-green-400 font-bold">฿ 175,000 / กก.</span>
+                    </div>
+                    <div class="w-full bg-gray-800 rounded-full h-6 relative">
+                        <div class="bg-green-500 h-6 rounded-full flex items-center justify-end px-2 text-[10px] text-black font-bold animate-pulse"
+                            style="width: 5%">Save 95%</div>
+                    </div>
+                    <div class="text-[9px] text-green-400 mt-1 text-right"><i
+                            class="fas fa-flag-checkered mr-1"></i>ท้าทายขีดความสามารถ (High Challenge)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. PROPULSION COST COMPARISON CHART -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div class="card-glass p-6 rounded-lg border-l-4 border-green-500">
+            <h3 class="text-xl font-bold mb-6 flex items-center text-green-400">
+                <i class="fas fa-chart-pie mr-2"></i> การเปรียบเทียบค่าระบบขับเคลื่อน
+            </h3>
+            <div class="space-y-6">
+                <div>
+                    <div class="flex justify-between text-sm mb-2 text-gray-300">
+                        <span>เครื่องยนต์เคมี (Chemical)</span>
+                        <span class="font-mono text-red-400">฿350,000+ / ชุด</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-4 relative overflow-hidden">
+                        <div class="bg-red-500 h-4 rounded-full" style="width: 100%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-sm mb-2 text-gray-300">
+                        <span>เครื่องยนต์ไฟฟ้า (Ion)</span>
+                        <span class="font-mono text-blue-400">฿175,000+ / ชุด</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-4 relative overflow-hidden">
+                        <div class="bg-blue-500 h-4 rounded-full" style="width: 50%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-sm mb-2 text-white font-bold">
+                        <span>RESP-01 Solar Sail (วัสดุ)</span>
+                        <span class="font-mono text-green-400">&lt; ฿17,500</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-4 relative overflow-hidden">
+                        <div class="bg-green-500 h-4 rounded-full animate-pulse" style="width: 5%"></div>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-400 mt-2 text-right pt-2 border-t border-gray-700">
+                    *เปรียบเทียบต้นทุนเฉพาะระบบขับเคลื่อนสำหรับภารกิจระยะไกล</p>
+            </div>
+        </div>
+
+        <div class="card-glass p-6 rounded-lg border-r-4 border-yellow-500 flex flex-col justify-center">
+            <h3 class="text-xl font-bold mb-4 flex items-center text-yellow-400">
+                <i class="fas fa-wallet mr-2"></i> ความคุ้มค่าทางเศรษฐกิจ (ROI)
+            </h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-gray-800/50 p-4 rounded text-center border border-gray-700 hover:bg-gray-800 transition">
+                    <div class="text-3xl font-bold text-white mb-1">95%</div>
+                    <div class="text-xs text-gray-400">ลดต้นทุนรวมภารกิจ</div>
+                </div>
+                <div class="bg-gray-800/50 p-4 rounded text-center border border-gray-700 hover:bg-gray-800 transition">
+                    <div class="text-3xl font-bold text-green-400 mb-1">High ROI</div>
+                    <div class="text-xs text-gray-400">จุดคุ้มทุนเร็วขึ้น</div>
+                </div>
+                <div class="col-span-2 bg-green-900/20 p-4 rounded border border-green-500/30">
+                    <p class="text-sm text-green-200 font-light italic">
+                        "การใช้เทคโนโลยี Solar Sail ช่วยลดภาระงบประมาณภาครัฐอย่างมีนัยสำคัญ
+                        และเปิดโอกาสให้ภาคการศึกษาและ SME ของไทยเข้าถึงกิจการอวกาศได้จริง"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. RISK MANAGEMENT & HERITAGE (THEOS-2A LESSONS) -->
+    <div class="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="card-glass p-6 rounded-lg border-t-4 border-red-500 relative overflow-hidden">
+            <div class="absolute -right-4 -top-4 text-red-500/10 text-8xl"><i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-4 text-white flex items-center relative z-10">
+                <i class="fas fa-book-dead mr-2 text-red-400"></i> ถอดบทเรียนจาก THEOS-2A
+            </h3>
+            <div class="space-y-4 relative z-10">
+                <div class="bg-red-900/20 p-3 rounded border border-red-500/20">
+                    <h4 class="text-sm font-bold text-red-200 mb-1">กรณีศึกษา: เหตุขัดข้อง PSLV-C62 (ม.ค. 2569)</h4>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        จากการแถลงการณ์ของ GISTDA การนำส่งดาวเทียม THEOS-2A แบบ <strong
+                            class="text-red-300">"เหมาลำ"</strong> ด้วยจรวด PSLV-C62 ประสบปัญหาการควบคุมการทรงตัว
+                        ทำให้ไม่สามารถเข้าสู่วงโคจรได้ แม้จะมีประกันภัยครอบคลุมการสร้างใหม่ แต่สิ่งที่เสียไปคือ
+                        <strong>"เวลาและโอกาส"</strong>
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-green-400 mb-2">✅ กลยุทธ์รับมือของ RESP-01:</h4>
+                    <ul class="text-xs text-gray-300 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-0.5 mr-2"></i>
+                            <span><strong>Low-Cost Redundancy:</strong> ต้นทุนที่ต่ำมาก (หลักหมื่นบาท)
+                                ทำให้เราสามารถสร้าง <strong>"ตัวสำรอง (Flight Spare)"</strong> รอไว้ได้ทันที
+                                หากการนำส่งล้มเหลว
+                                เราสามารถส่งตัวใหม่ได้ในเที่ยวบินถัดไปโดยไม่ต้องเริ่มนับหนึ่งใหม่</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-0.5 mr-2"></i>
+                            <span><strong>Rideshare Agility:</strong> ไม่ผูกติดกับจรวดรุ่นใดรุ่นหนึ่ง
+                                สามารถฝากไปกับเที่ยวบินใดก็ได้ (SpaceX, Rocket Lab)
+                                ลดความเสี่ยงจากการพึ่งพาผู้ให้บริการรายเดียว</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-file-contract text-green-500 mt-0.5 mr-2"></i>
+                            <span><strong>Full Launch Insurance:</strong> เรามีแนวทางทำประกันภัยวงเงินเต็มจำนวน (100%
+                                Coverage) เพื่อรับการชดเชยทันทีหากเกิดเหตุขัดข้อง
+                                ทำให้โครงการเดินหน้าต่อได้โดยไม่กระทบงบประมาณ</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-glass p-6 rounded-lg border-t-4 border-amber-400 relative overflow-hidden">
+            <div class="absolute -right-4 -top-4 text-amber-500/10 text-8xl"><i class="fas fa-sun"></i></div>
+            <h3 class="text-xl font-bold mb-4 text-white flex items-center relative z-10">
+                <i class="fas fa-history mr-2 text-amber-400"></i> ความสำเร็จของ Solar Sail ในอดีต
+            </h3>
+            <div class="space-y-4 relative z-10">
+                <p class="text-xs text-gray-400 mb-2">
+                    เทคโนโลยี "เรือใบสุริยะ" ไม่ใช่เรื่องเพ้อฝัน
+                    แต่ได้รับการพิสูจน์แล้วว่าใช้งานได้จริงโดยหน่วยงานระดับโลก:
+                </p>
+                <div class="flex items-center bg-gray-800/50 p-3 rounded border-l-4 border-amber-500">
+                    <div class="mr-3 text-2xl">🇯🇵</div>
                     <div>
-                        <h4 class="text-green-400 font-bold text-xl mb-1">OPTION 2: RESP-01 (LEO + Sail)</h4>
-                        <p class="text-gray-400 text-xs">วิธีนวัตกรรม: ประหยัด 95% ท้าทาย</p>
-                    </div>
-                    <div
-                        class="bg-green-500/20 text-green-300 px-3 py-1 rounded text-xs font-bold border border-green-500/30 whitespace-nowrap">
-                        <i class="fas fa-history mr-1"></i> 4-6 เดือน
+                        <div class="text-sm font-bold text-white">IKAROS (2010) - JAXA</div>
+                        <div class="text-xs text-gray-400">เรือใบสุริยะลำแรกของโลกที่เดินทางข้ามดาวเคราะห์
+                            (Interplanetary) ได้สำเร็จ</div>
                     </div>
                 </div>
-
-                <!-- Costs Merged -->
-                <div class="space-y-4">
-                    <!-- Launch Cost -->
-                    <div class="bg-black/30 p-3 rounded-lg border border-green-500/30">
-                        <div class="flex justify-between text-xs text-green-200 mb-1">
-                            <span><i class="fas fa-ticket-alt mr-2"></i>ค่าตั๋วนำส่ง (Launch Ticket)</span>
-                        </div>
-                        <div class="flex justify-between items-end">
-                            <span class="text-white text-sm">Rideshare to LEO</span>
-                            <span class="text-green-400 font-bold text-lg">฿ 175,000 <span
-                                    class="text-xs text-gray-500">/กก.</span></span>
-                        </div>
-                        <div class="w-full bg-gray-700 h-1.5 mt-2 rounded-full overflow-hidden">
-                            <div class="bg-green-500 h-full w-[5%] animate-pulse"></div>
-                        </div>
-                    </div>
-
-                    <!-- Propulsion Cost -->
-                    <div class="bg-black/30 p-3 rounded-lg border border-green-500/30">
-                        <div class="flex justify-between text-xs text-green-200 mb-1">
-                            <span><i class="fas fa-sun mr-2"></i>ค่าระบบขับเคลื่อน (Propulsion)</span>
-                        </div>
-                        <div class="flex justify-between items-end">
-                            <span class="text-white text-sm">Solar Sail (วัสดุ)</span>
-                            <span class="text-green-400 font-bold text-lg">&lt; ฿ 17,500</span>
-                        </div>
-                        <div class="w-full bg-gray-700 h-1.5 mt-2 rounded-full overflow-hidden">
-                            <div class="bg-green-400 h-full w-[1%]"></div>
+                <div class="flex items-center bg-gray-800/50 p-3 rounded border-l-4 border-blue-500">
+                    <div class="mr-3 text-2xl">🇺🇸</div>
+                    <div>
+                        <div class="text-sm font-bold text-white">LightSail 2 (2019) - The Planetary Society</div>
+                        <div class="text-xs text-gray-400">พิสูจน์การปรับระดับวงโคจรด้วยแสงอาทิตย์ล้วนๆ ในวงโคจรโลก
                         </div>
                     </div>
                 </div>
-
-                <!-- Verdict -->
-                <div class="mt-6 pt-4 border-t border-green-500/20">
-                    <div class="flex items-center justify-between text-green-300 text-sm">
-                        <span><i class="fas fa-wallet mr-2"></i>งบประมาณรวม: <strong>ต่ำมาก (Low)</strong></span>
-                        <span class="text-xs opacity-70"><i
-                                class="fas fa-flag-checkered mr-1"></i>โอกาสทางเทคโนโลยี</span>
+                <div
+                    class="flex items-center bg-green-900/30 p-3 rounded border border-green-500/50 mt-4 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-green-500/10 animate-pulse"></div>
+                    <div class="mr-3 text-3xl z-10">🇹🇭</div>
+                    <div class="z-10">
+                        <div class="text-sm font-bold text-green-300">RESP-01 (2026) - Thailand</div>
+                        <div class="text-xs text-white">"ถึงเวลาของคนไทย" ที่จะนำเทคโนโลยีที่ผ่านการพิสูจน์แล้ว
+                            มาประยุกต์ใช้เพื่อไปดวงจันทร์เป็นชาติแรกในอาเซียน</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Advanced Engineering Section (NEW) -->
+    <!-- 6. GISTDA STANDARDS COMPLIANCE -->
+    <div class="mb-8 card-glass p-6 rounded-lg border-t-4 border-blue-500">
+        <h3 class="text-xl font-bold mb-4 text-white text-center">
+            <i class="fas fa-clipboard-check mr-2 text-blue-400"></i> มาตรฐาน GISTDA และการตรวจสอบความพร้อม (Standards)
+        </h3>
+        <p class="text-gray-400 text-center mb-8 max-w-3xl mx-auto">
+            RESP-01 ยึดถือมาตรฐานการออกแบบและทดสอบตามข้อกำหนดของ <strong>"ศูนย์ประกอบและทดสอบดาวเทียมแห่งชาติ
+                (AIT)"</strong> ณ อุทยานรังสรรค์นวัตกรรมอวกาศ (SKP) ศรีราชา
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-blue-900/20 p-4 rounded-lg border border-blue-500/30 flex items-start">
+                <div class="bg-blue-500/20 p-3 rounded-full mr-4 text-blue-400"><i
+                        class="fas fa-wave-square text-xl"></i></div>
+                <div>
+                    <h4 class="font-bold text-white mb-1">1. การทดสอบสั่นสะเทือน (Vibration Test)</h4>
+                    <p class="text-xs text-gray-400 mb-2">จำลองแรง G และการสั่นสะเทือนรุนแรงขณะนำส่ง
+                        เพื่อความปลอดภัยของจรวด</p>
+                    <div class="text-xs text-green-400 bg-green-900/30 px-2 py-1 rounded inline-block"><i
+                            class="fas fa-check-circle mr-1"></i><strong>Action:</strong> ทดสอบด้วยเครื่อง Shaker
+                        Vibration (180 kN) ที่ AIT ศรีราชา</div>
+                </div>
+            </div>
+            <div class="bg-orange-900/20 p-4 rounded-lg border border-orange-500/30 flex items-start">
+                <div class="bg-orange-500/20 p-3 rounded-full mr-4 text-orange-400"><i
+                        class="fas fa-thermometer-half text-xl"></i></div>
+                <div>
+                    <h4 class="font-bold text-white mb-1">2. สภาวะสูญญากาศ (TVAC Test)</h4>
+                    <p class="text-xs text-gray-400 mb-2">ทนต่อสภาวะอวกาศจริงที่อุณหภูมิแกว่งระหว่าง -150°C ถึง +150°C
+                    </p>
+                    <div class="text-xs text-green-400 bg-green-900/30 px-2 py-1 rounded inline-block"><i
+                            class="fas fa-check-circle mr-1"></i><strong>Action:</strong> ทดสอบระบบในถัง Thermal Vacuum
+                        Chamber ของ GISTDA</div>
+                </div>
+            </div>
+            <div class="bg-purple-900/20 p-4 rounded-lg border border-purple-500/30 flex items-start">
+                <div class="bg-purple-500/20 p-3 rounded-full mr-4 text-purple-400"><i
+                        class="fas fa-trash-restore text-xl"></i></div>
+                <div>
+                    <h4 class="font-bold text-white mb-1">3. การจัดการขยะอวกาศ (Debris Mitigation)</h4>
+                    <p class="text-xs text-gray-400 mb-2">ตามข้อกำหนด IADC/UNOOSA ต้องกำจัดออกจากวงโคจรภายใน 25 ปี</p>
+                    <div class="text-xs text-green-400 bg-green-900/30 px-2 py-1 rounded inline-block"><i
+                            class="fas fa-check-circle mr-1"></i><strong>Action:</strong> ใช้ Solar Sail เป็น
+                        "เบรกอากาศ" (Drag Sail) เพื่อลดระดับวงโคจร</div>
+                </div>
+            </div>
+            <div class="bg-green-900/20 p-4 rounded-lg border border-green-500/30 flex items-start">
+                <div class="bg-green-500/20 p-3 rounded-full mr-4 text-green-400"><i
+                        class="fas fa-broadcast-tower text-xl"></i></div>
+                <div>
+                    <h4 class="font-bold text-white mb-1">4. การอนุญาตความถี่ (Licensing)</h4>
+                    <p class="text-xs text-gray-400 mb-2">การใช้งานคลื่นความถี่วิทยุ S-Band/UHF ต้องไม่รบกวนกิจการอื่น
+                    </p>
+                    <div class="text-xs text-green-400 bg-green-900/30 px-2 py-1 rounded inline-block"><i
+                            class="fas fa-check-circle mr-1"></i><strong>Action:</strong> ยื่นขออนุญาตผ่าน กสทช.
+                        และประสานงาน ITU</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. ADVANCED ENGINEERING (CHALLENGES & MITIGATION) -->
     <div class="mb-8">
         <div class="flex items-center mb-4">
             <div class="h-px bg-gray-700 flex-grow"></div>
@@ -310,59 +463,48 @@
                     class="fas fa-microchip mr-2"></i>Critical Challenges & Mitigation</span>
             <div class="h-px bg-gray-700 flex-grow"></div>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Problem 1: Radiation -->
             <div class="card-glass p-5 rounded-lg border-t-4 border-red-500">
-                <h4 class="text-white font-bold mb-2 flex items-center">
-                    <i class="fas fa-radiation text-red-500 mr-2"></i> Deep Space Radiation
-                </h4>
+                <h4 class="text-white font-bold mb-2 flex items-center"><i
+                        class="fas fa-radiation text-red-500 mr-2"></i> Deep Space Radiation</h4>
                 <div class="text-xs text-gray-400 mb-2 font-bold uppercase">The Problem:</div>
-                <p class="text-xs text-gray-300 mb-3">รังสี Van Allen Belt และ Solar Flares อาจทำให้คอมพิวเตอร์ (COTS)
-                    เสียหายหรือเกิด Bit Flip (SEU).</p>
+                <p class="text-xs text-gray-300 mb-3">รังสี Van Allen Belt อาจทำให้คอมพิวเตอร์เสียหายหรือเกิด Bit Flip
+                </p>
                 <div class="text-xs text-green-400 mb-2 font-bold uppercase">Our Solution:</div>
                 <ul class="text-xs text-gray-300 list-disc list-inside">
-                    <li>ใช้ <strong>Spot Shielding</strong> (อลูมิเนียม/ทองแดง) หุ้มเฉพาะชิปสำคัญ</li>
-                    <li>ระบบ <strong>Hardware Watchdog</strong> รีเซ็ตตัวเองอัตโนมัติเมื่อค้าง</li>
+                    <li>ใช้ <strong>Spot Shielding</strong> หุ้มเฉพาะชิปสำคัญ</li>
+                    <li>ระบบ <strong>Hardware Watchdog</strong> รีเซ็ตตัวเองอัตโนมัติ</li>
                     <li>ใช้ <strong>Triple Modular Redundancy</strong> ในซอฟต์แวร์</li>
                 </ul>
             </div>
-
-            <!-- Problem 2: Thermal -->
             <div class="card-glass p-5 rounded-lg border-t-4 border-orange-500">
-                <h4 class="text-white font-bold mb-2 flex items-center">
-                    <i class="fas fa-temperature-high text-orange-500 mr-2"></i> Extreme Thermal
-                </h4>
+                <h4 class="text-white font-bold mb-2 flex items-center"><i
+                        class="fas fa-temperature-high text-orange-500 mr-2"></i> Extreme Thermal</h4>
                 <div class="text-xs text-gray-400 mb-2 font-bold uppercase">The Problem:</div>
-                <p class="text-xs text-gray-300 mb-3">อุณหภูมิบนดวงจันทร์แกว่งระหว่าง -170°C ถึง +120°C
-                    แบตเตอรี่อาจหยุดทำงาน.</p>
+                <p class="text-xs text-gray-300 mb-3">อุณหภูมิบนดวงจันทร์แกว่งระหว่าง -170°C ถึง +120°C</p>
                 <div class="text-xs text-green-400 mb-2 font-bold uppercase">Our Solution:</div>
                 <ul class="text-xs text-gray-300 list-disc list-inside">
-                    <li>ใช้ <strong>Kapton MLI</strong> (ฉนวนหลายชั้น) ห่อหุ้มตัวเครื่อง</li>
+                    <li>ใช้ <strong>Kapton MLI</strong> ห่อหุ้มตัวเครื่อง</li>
                     <li>ติดตั้ง <strong>Heater Strips</strong> เลี้ยงอุณหภูมิแบตเตอรี่</li>
                     <li>ออกแบบให้หมุนตัว (Barbecue Roll) เพื่อกระจายความร้อน</li>
                 </ul>
             </div>
-
-            <!-- Problem 3: Mechanics (Auto-Nav Focus) -->
             <div class="card-glass p-5 rounded-lg border-t-4 border-blue-500">
-                <h4 class="text-white font-bold mb-2 flex items-center">
-                    <i class="fas fa-robot text-blue-500 mr-2"></i> Loss of Signal (Failsafe)
-                </h4>
+                <h4 class="text-white font-bold mb-2 flex items-center"><i class="fas fa-robot text-blue-500 mr-2"></i>
+                    Loss of Signal (Failsafe)</h4>
                 <div class="text-xs text-gray-400 mb-2 font-bold uppercase">The Problem:</div>
-                <p class="text-xs text-gray-300 mb-3">หากขาดการติดต่อ (Loss of Signal) หรือถูกดวงจันทร์บัง (Occultation)
-                    ดาวเทียมอาจหลุดวงโคจร.</p>
+                <p class="text-xs text-gray-300 mb-3">หากขาดการติดต่อหรือถูกดวงจันทร์บัง ดาวเทียมอาจหลุดวงโคจร</p>
                 <div class="text-xs text-green-400 mb-2 font-bold uppercase">Our Solution:</div>
                 <ul class="text-xs text-gray-300 list-disc list-inside">
-                    <li><strong>On-board Propagator:</strong> คำนวณตำแหน่งตัวเองได้โดยไม่ต้องพึ่ง Ground Station</li>
-                    <li><strong>Sun Sensors & Star Tracker:</strong> หาระนาบการบินจากตำแหน่งดาวฤกษ์</li>
-                    <li><strong>Safe Mode:</strong> หันแผงโซล่าหาแสงอัตโนมัติเพื่อเลี้ยงไฟรอการติดต่อ</li>
+                    <li><strong>On-board Propagator:</strong> คำนวณตำแหน่งตัวเองได้</li>
+                    <li><strong>Sun/Star Sensors:</strong> หาระนาบการบินเอง</li>
+                    <li><strong>Safe Mode:</strong> หันแผงโซล่าหาแสงอัตโนมัติ</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <!-- Technical Specs (Expanded) -->
+    <!-- 8. TECHNICAL SPECS -->
     <div class="mb-8 card-glass p-4 rounded-lg">
         <div class="flex justify-between items-center mb-4">
             <h4 class="text-gray-400 text-sm font-bold uppercase tracking-widest">Technical Overview & Specs</h4>
@@ -388,7 +530,7 @@
         </div>
     </div>
 
-    <!-- Business Model & Break-even -->
+    <!-- 9. BUSINESS MODEL & REVENUE -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <div class="card-glass p-6 rounded-lg border-l-4 border-green-500">
             <h3 class="text-lg font-bold mb-4 text-white"><i class="fas fa-coins mr-2 text-green-400"></i> Revenue
@@ -433,32 +575,31 @@
         </div>
     </div>
 
-    <!-- Success Roadmap (Checklist Style) -->
+    <!-- 10. SUCCESS ROADMAP -->
     <div class="card-glass p-8 rounded-lg mb-8 border-t-4 border-purple-500">
         <h3 class="text-xl font-bold mb-6 text-white text-center">ลำดับความสำเร็จ (Success Milestones)</h3>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Phase 1: Preparation -->
             <div class="space-y-0">
                 <div class="success-step flex items-start mb-4">
                     <div class="absolute left-0 w-4 h-4 rounded-full bg-green-500 border-2 border-white"></div>
                     <div>
-                        <h4 class="text-sm font-bold text-green-400">คิดและสร้างสรรค์โครงการ</h4>
-                        <span class="text-xs bg-green-900/50 text-green-300 px-2 py-0.5 rounded">สำเร็จ</span>
+                        <h4 class="text-sm font-bold text-green-400">คิดและสร้างสรรค์โครงการ</h4><span
+                            class="text-xs bg-green-900/50 text-green-300 px-2 py-0.5 rounded">สำเร็จ</span>
                     </div>
                 </div>
                 <div class="success-step flex items-start mb-4">
                     <div class="absolute left-0 w-4 h-4 rounded-full bg-green-500 border-2 border-white"></div>
                     <div>
-                        <h4 class="text-sm font-bold text-green-400">นำเสนอและผ่านการทดสอบ</h4>
-                        <span class="text-xs bg-green-900/50 text-green-300 px-2 py-0.5 rounded">สำเร็จ</span>
+                        <h4 class="text-sm font-bold text-green-400">นำเสนอและผ่านการทดสอบ</h4><span
+                            class="text-xs bg-green-900/50 text-green-300 px-2 py-0.5 rounded">สำเร็จ</span>
                     </div>
                 </div>
                 <div class="success-step flex items-start mb-4">
                     <div class="absolute left-0 w-4 h-4 rounded-full bg-green-500 border-2 border-white"></div>
                     <div>
-                        <h4 class="text-sm font-bold text-green-400">องค์ประกอบครบถ้วนพร้อมนำสู่อวกาศ</h4>
-                        <span class="text-xs bg-green-900/50 text-green-300 px-2 py-0.5 rounded">สำเร็จ</span>
+                        <h4 class="text-sm font-bold text-green-400">องค์ประกอบครบถ้วนพร้อมนำสู่อวกาศ</h4><span
+                            class="text-xs bg-green-900/50 text-green-300 px-2 py-0.5 rounded">สำเร็จ</span>
                     </div>
                 </div>
                 <div class="success-step flex items-start mb-4">
@@ -466,66 +607,59 @@
                     </div>
                     <div>
                         <h4 class="text-sm font-bold text-yellow-400">สมัครขอทุนส่งขึ้นอวกาศ (GISTDA)</h4>
-                        <p class="text-xs text-gray-400 mt-1">
-                            <span class="text-red-400">ถ้าไม่ได้:</span> รอรอบหน้า <br>
-                            <span class="text-green-400">ถ้าได้:</span> ไปต่อ (สำเร็จ)
-                        </p>
+                        <p class="text-xs text-gray-400 mt-1"><span class="text-red-400">ถ้าไม่ได้:</span> รอรอบหน้า
+                            <br><span class="text-green-400">ถ้าได้:</span> ไปต่อ (สำเร็จ)</p>
                     </div>
                 </div>
             </div>
-
             <!-- Phase 2: Execution & Future -->
             <div class="space-y-0">
                 <div class="success-step flex items-start mb-4">
                     <div class="absolute left-0 w-4 h-4 rounded-full bg-gray-600 border-2 border-gray-400"></div>
                     <div>
                         <h4 class="text-sm font-bold text-gray-300">ได้รับทุนส่งดาวเทียม</h4>
-                        <p class="text-xs text-gray-500 mt-1">
-                            • ส่ง GEO (ไปต่อเอง): เรตติ้งสูง น่าสนใจมาก<br>
-                            • ส่งวงโคจรดวงจันทร์: ลดความเสี่ยง
-                        </p>
+                        <p class="text-xs text-gray-500 mt-1">• ส่ง GEO (ไปต่อเอง): เรตติ้งสูง<br>• ส่งวงโคจรดวงจันทร์:
+                            ลดความเสี่ยง</p>
                     </div>
                 </div>
                 <div class="success-step flex items-start mb-4">
                     <div class="absolute left-0 w-4 h-4 rounded-full bg-gray-600 border-2 border-gray-400"></div>
                     <div>
-                        <h4 class="text-sm font-bold text-gray-300">เชื่อมต่อฐานควบคุมภาคพื้น</h4>
-                        <span class="text-xs text-gray-500">GISTDA Sriracha <-> Roi-Et HQ</span>
+                        <h4 class="text-sm font-bold text-gray-300">เชื่อมต่อฐานควบคุมภาคพื้น</h4><span
+                            class="text-xs text-gray-500">GISTDA Sriracha <-> Roi-Et HQ</span>
                     </div>
                 </div>
                 <div class="success-step flex items-start mb-4">
                     <div class="absolute left-0 w-4 h-4 rounded-full bg-gray-600 border-2 border-gray-400"></div>
                     <div>
-                        <h4 class="text-sm font-bold text-gray-300">สรุปรายได้ & คืนทุน</h4>
-                        <span class="text-xs text-gray-500">ขายลิขสิทธิ์ถ่ายทอดสด</span>
+                        <h4 class="text-sm font-bold text-gray-300">สรุปรายได้ & คืนทุน</h4><span
+                            class="text-xs text-gray-500">ขายลิขสิทธิ์ถ่ายทอดสด</span>
                     </div>
                 </div>
                 <div class="success-step flex items-start mb-4">
                     <div class="absolute left-0 w-4 h-4 rounded-full bg-gray-600 border-2 border-gray-400"></div>
                     <div>
-                        <h4 class="text-sm font-bold text-gray-300">ดาวเทียมไทยดวงแรกออกนอกวงโคจรโลก</h4>
-                        <span class="text-xs text-gray-500">Mission Accomplished</span>
+                        <h4 class="text-sm font-bold text-gray-300">ดาวเทียมไทยดวงแรกออกนอกวงโคจรโลก</h4><span
+                            class="text-xs text-gray-500">Mission Accomplished</span>
                     </div>
                 </div>
                 <div class="success-step flex items-start">
                     <div class="absolute left-0 w-4 h-4 rounded-full bg-gray-600 border-2 border-gray-400"></div>
                     <div>
-                        <h4 class="text-sm font-bold text-gray-300">ต่อยอดโครงการตั้งถิ่นฐาน</h4>
-                        <span class="text-xs text-gray-500">Future Expansion</span>
+                        <h4 class="text-sm font-bold text-gray-300">ต่อยอดโครงการตั้งถิ่นฐาน</h4><span
+                            class="text-xs text-gray-500">Future Expansion</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Logic Section -->
+    <!-- 11. LOGIC SYSTEM CODE -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <!-- Logic 1: Camera Control -->
         <div class="bg-black/40 rounded-2xl p-6 border border-blue-500/30 font-mono text-sm relative">
             <div
                 class="absolute top-0 right-0 px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-bl-xl rounded-tr-xl">
-                LOGIC_CAM.PY
-            </div>
+                LOGIC_CAM.PY</div>
             <p class="text-gray-400 mb-2"># 1. ระบบสั่งการกล้อง</p>
             <div class="text-blue-300">
                 <span class="text-purple-400">def</span> <span class="text-blue-400">execute_cmd</span>(cmd):<br>
@@ -535,13 +669,10 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;ADCS.<span class="text-yellow-400">rotate</span>(30)
             </div>
         </div>
-
-        <!-- Logic 2: Data Link -->
         <div class="bg-black/40 rounded-2xl p-6 border border-green-500/30 font-mono text-sm relative">
             <div
                 class="absolute top-0 right-0 px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-bl-xl rounded-tr-xl">
-                LOGIC_LINK.PY
-            </div>
+                LOGIC_LINK.PY</div>
             <p class="text-gray-400 mb-2"># 2. ส่งไฟล์กลับไทย</p>
             <div class="text-green-300">
                 <span class="text-purple-400">def</span> <span class="text-blue-400">downlink</span>(file):<br>
@@ -551,13 +682,10 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;Radio.<span class="text-yellow-400">send</span>(pkt)
             </div>
         </div>
-
-        <!-- Logic 3: Auto-Nav (NEW) -->
         <div class="bg-black/40 rounded-2xl p-6 border border-red-500/30 font-mono text-sm relative">
             <div
                 class="absolute top-0 right-0 px-3 py-1 bg-red-500/20 text-red-400 text-xs rounded-bl-xl rounded-tr-xl">
-                LOGIC_NAV.PY
-            </div>
+                LOGIC_NAV.PY</div>
             <p class="text-gray-400 mb-2"># 3. ระบบนำร่องอัตโนมัติ (AI)</p>
             <div class="text-red-300">
                 <span class="text-purple-400">def</span> <span class="text-blue-400">auto_pilot_loop</span>():<br>
@@ -570,21 +698,26 @@
         </div>
     </div>
 
-    <!-- Contact / Footer -->
+    <!-- 12. FOOTER -->
     <footer class="text-center border-t border-gray-800 pt-8 text-gray-500 text-sm">
-        <p class="mb-2">
-            <span class="text-white font-bold">RESP-01 "Lunar Eye" Mission Proposal</span> prepared for GISTDA
-            Consideration
-        </p>
-        <p>
-            Developed by <span class="text-yellow-500">Roi-Et Space Program</span> Laboratory
-        </p>
+        <p class="mb-2"><span class="text-white font-bold">RESP-01 "Lunar Eye" Mission Proposal</span> prepared for
+            GISTDA Consideration</p>
+        <p>Developed by <span class="text-yellow-500">Roi-Et Space Program</span> Laboratory</p>
         <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 border border-gray-700 rounded text-xs font-mono">
             <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Flag_of_Thailand.svg"
                 class="w-4 h-auto rounded-[1px]" alt="TH">
             <span>PI Contact: Winai Phanarkat | Location: Roi-Et, Thailand</span>
         </div>
     </footer>
+
+    <!-- CHARTS SCRIPT -->
+    <script>
+        // Tech Radar Chart
+        const radarCtx = document.createElement('canvas');
+        radarCtx.id = 'techRadarChart';
+        // Note: In a real implementation, you would place this canvas inside the "Technical Performance Profile" section. 
+        // For this infographic, we are focusing on the visual layout provided by CSS/HTML structure.
+    </script>
 
 </body>
 
