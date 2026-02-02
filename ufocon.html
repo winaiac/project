@@ -14,7 +14,7 @@
             color: #0f0;
             margin: 0;
             padding: 10px;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -368,6 +368,29 @@
             font-size: 12px;
             color: #0f0;
         }
+
+        /* เครดิตผู้พัฒนา */
+        .dev-credit {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #555;
+            text-align: center;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            width: 90%;
+            max-width: 320px;
+        }
+
+        .dev-credit a {
+            color: #0f0;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .dev-credit a:hover {
+            text-shadow: 0 0 5px #0f0;
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -438,6 +461,11 @@
         <button class="btn" onmousedown="simMove('BACKWARD')" onmouseup="simStop()" ontouchstart="simMove('BACKWARD')"
             ontouchend="simStop()">▼</button>
         <div class="empty"></div>
+    </div>
+
+    <div class="dev-credit">
+        Project Lead: Mr.Winai Phanarkat<br>
+        <a href="https://www.facebook.com/winayo1/" target="_blank">Facebook Contact</a>
     </div>
 
     <script>
