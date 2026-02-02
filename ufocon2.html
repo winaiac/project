@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>UFO Mission Control (MAP SYSTEM)</title>
+
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&family=Courier+Prime:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* สไตล์ Cyberpunk สำหรับหน้าปัด UFO */
+        body {
+            font-family: 'Courier Prime', monospace;
+            text-align: center;
+            background-color: #0f172a;
+            color: #10b981;
+            margin: 0;
+            padding: 10px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            text-shadow: 0 0 10px #10b981;
+            margin: 10px 0;
+            font-size: 1.5em;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+
+        /* กล่องแสดงแผนที่ */
+        .map-container {
+            width: 90%;
+            max-width: 350px;
+            height: 280px;
+            background: #000;
+            border: 2px solid #334155;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .map-active {
+            border-color: #10b981;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        /* ตัวแผนที่ Leaflet */
+        #ufoMap {
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background: #0f172a;
+        }
+
+        /* Crosshair */
+        .crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            pointer-events: none;
+            z-index: 400;
+            display: none;
+        }
+
+        .crosshair::before,
+        .crosshair::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 0, 0, 0.8);
+        }
+
+        .crosshair::before {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .crosshair::after {
+            height: 2px;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .cam-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(220, 38, 38, 0.9);
+            color: white;
+            padding: 2px 8px;
+            font-size: 10px;
+            border-radius: 3px;
+            display: none;
+            animation: blink 1s infinite;
+            z-index: 400;
+            font-family: sans-serif;
+            font-weight: bold;
+        }
+
+        /* GPS Coordinates Display */
+        .gps-display {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #10b981;
+            padding: 2px 6px;
+            font-size: 10px;
+            border: 1px solid #10b981;
+            border-radius: 4px;
+            z-index: 400;
+            display: none;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Flash Effect */
+        .flash-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes shutter-snap {
+            0% {
+                opacity: 0.8;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* Zoom Slider */
+        .zoom-slider-container {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            z-index: 400;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 5px 10px;
+            border-radius: 20px;
+            border: 1px solid #334155;
+        }
+
+        input[type=range].zoom-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range].zoom-slider:focus {
+            outline: none;
+        }
+
+        input[type=range].zoom-slider::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #334155;
+            border-radius: 2px;
+        }
+
+        input[type=range].zoom-slider::-webkit-slider-thumb {
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #10b981;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+        }
+
+        .cam-message {
+            color: #94a3b8;
+            font-size: 1.2em;
+            position: absolute;
+            z-index: 5;
+            text-align: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+        }
+
+        .static-noise {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif');
+            background-size: cover;
+            opacity: 0.05;
+            display: none;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Data Box */
+        .data-box {
+            border: 1px solid #10b981;
+            padding: 10px;
+            margin-bottom: 15px;
+            width: 90%;
+            max-width: 350px;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+        }
+
+        .telemetry-label {
+            font-size: 0.7em;
+            color: #94a3b8;
+            letter-spacing: 1px;
+        }
+
+        .telemetry-value {
+            font-size: 1.4em;
+            font-weight: bold;
+            text-shadow: 0 0 5px #10b981;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .empty {
+            visibility: hidden;
+        }
+
+        /* Buttons */
+        .btn {
+            background-color: #1e293b;
+            border: 1px solid #10b981;
+            color: #10b981;
+            padding: 15px 0;
+            font-size: 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            touch-action: manipulation;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            transition: all 0.1s;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .btn:active {
+            background-color: #10b981;
+            color: #0f172a;
+            transform: scale(0.95);
+            box-shadow: 0 0 15px #10b981;
+        }
+
+        /* STOP Button */
+        .stop {
+            border-color: #ef4444;
+            color: #ef4444;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stop:active {
+            background-color: #ef4444;
+            color: white;
+            box-shadow: 0 0 15px #ef4444;
+        }
+
+        /* Function Buttons */
+        .func-btn {
+            border-color: #0ea5e9;
+            color: #0ea5e9;
+            font-size: 14px;
+            border-radius: 8px;
+        }
+
+        .func-active {
+            background-color: #0ea5e9;
+            color: white;
+            box-shadow: 0 0 15px #0ea5e9;
+        }
+
+        /* Snap Button */
+        .snap-btn {
+            border-color: #eab308;
+            color: #eab308;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+
+        .snap-btn:active {
+            background-color: #eab308;
+            color: black;
+            box-shadow: 0 0 15px #eab308;
+        }
+
+        @keyframes pulse {
+            0% {
+                text-shadow: 0 0 10px #10b981;
+                opacity: 1;
+            }
+
+            50% {
+                text-shadow: 0 0 20px #10b981;
+                opacity: 0.8;
+            }
+
+            100% {
+                text-shadow: 0 0 10px #10b981;
+                opacity: 1;
+            }
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .wifi-status {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 12px;
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* MISSION CONFIG MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: #0f172a;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 20px;
+            width: 85%;
+            max-width: 350px;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+            font-family: 'Sarabun', sans-serif;
+        }
+
+        .modal-header {
+            color: #10b981;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 0 0 5px #10b981;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            color: #94a3b8;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .form-select {
+            width: 100%;
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: 'Sarabun', sans-serif;
+            outline: none;
+        }
+
+        .form-select:focus {
+            border-color: #10b981;
+        }
+
+        .modal-btn {
+            width: 100%;
+            background: #10b981;
+            color: #0f172a;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .modal-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Credit */
+        .dev-credit {
+            margin-top: 30px;
+            font-size: 11px;
+            color: #64748b;
+            text-align: center;
+            border-top: 1px solid #334155;
+            padding-top: 10px;
+            width: 90%;
+            max-width: 350px;
+        }
+
+        .dev-credit a {
+            color: #10b981;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .dev-credit a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wifi-status">
+        <div style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 5px #10b981;">
+        </div>
+        SYSTEM ONLINE
+    </div>
+
+    <h1>👽 UFO SAT-LINK</h1>
+
+    <!-- MAP CONTAINER -->
+    <div id="camBox" class="map-container">
+        <div id="camRec" class="cam-overlay">SATELLITE LINK</div>
+        <div id="gpsCoords" class="gps-display">Initializing...</div>
+
+        <div id="cameraFlash" class="flash-effect"></div>
+        <div id="ufoMap"></div>
+        <div id="crosshair" class="crosshair"></div>
+
+        <div id="zoomControls" class="zoom-slider-container">
+            <input type="range" id="zoomSlider" class="zoom-slider" min="3" max="18" step="1" value="13"
+                oninput="slideZoom(this.value)">
+        </div>
+
+        <div id="camStatic" class="static-noise"></div>
+        <div id="camMsg" class="cam-message"></div>
+    </div>
+
+    <div class="data-box">
+        <div style="display: flex; justify-content: space-between;">
+            <div>
+                <span class="telemetry-label">HARVESTED ENERGY</span><br>
+                <span id="volts" class="telemetry-value">0.00</span> <span style="font-size:1em">kV</span>
+            </div>
+            <div style="text-align: right;">
+                <span class="telemetry-label">ALTITUDE</span><br>
+                <span id="altitude" class="telemetry-value">1,000</span> <span style="font-size:1em">m</span>
+            </div>
+        </div>
+        <div style="margin-top: 10px; border-top: 1px solid #334155; padding-top: 8px;">
+            <span class="telemetry-label">LOCATION</span><br>
+            <span id="locationName" style="color:#0ea5e9; font-weight:bold;">ROI ET, THAILAND</span>
+        </div>
+    </div>
+
+    <div class="control-panel">
+        <!-- ปุ่ม MAP Config -->
+        <button id="btnConfig" class="btn func-btn" onclick="openConfig()">⚙️ TARGET</button>
+        <button class="btn" onmousedown="simMove('FORWARD')" onmouseup="simStop()" ontouchstart="simMove('FORWARD')"
+            ontouchend="simStop()">▲</button>
+        <button id="btnAuto" class="btn func-btn" onclick="toggleAuto()">🤖 AUTO</button>
+
+        <button class="btn" onmousedown="simMove('LEFT')" onmouseup="simStop()" ontouchstart="simMove('LEFT')"
+            ontouchend="simStop()">◀</button>
+        <button class="btn stop" onclick="simStop()">STOP</button>
+        <button class="btn" onmousedown="simMove('RIGHT')" onmouseup="simStop()" ontouchstart="simMove('RIGHT')"
+            ontouchend="simStop()">▶</button>
+
+        <button class="btn snap-btn" onclick="takeSnapshot()">📸 SNAP</button>
+        <button class="btn" onmousedown="simMove('BACKWARD')" onmouseup="simStop()" ontouchstart="simMove('BACKWARD')"
+            ontouchend="simStop()">▼</button>
+        <div class="empty"></div>
+    </div>
+
+    <!-- MISSION CONFIG MODAL -->
+    <div id="configModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">MISSION TARGET SETUP</div>
+
+            <div class="form-group">
+                <label class="form-label">COUNTRY (ประเทศ)</label>
+                <select id="selCountry" class="form-select" onchange="handleCountryChange()">
+                    <!-- Populated by JS -->
+                </select>
+            </div>
+
+            <div id="groupThai" style="display:block;">
+                <div class="form-group">
+                    <label class="form-label">REGION (ภูมิภาค)</label>
+                    <select id="selRegion" class="form-select" onchange="handleRegionChange()">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">PROVINCE (จังหวัด)</label>
+                    <select id="selProvince" class="form-select">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+            </div>
+
+            <button class="modal-btn" onclick="saveConfig()">CONFIRM LOCATION</button>
+            <button class="modal-btn" style="background:#334155; margin-top:5px;"
+                onclick="closeConfig()">CANCEL</button>
+        </div>
+    </div>
+
+    <div class="dev-credit">
+        Innovation Project Lead: Mr.Winai Phanarkat<br>
+        <a href="https://www.facebook.com/winayo1/" target="_blank">Facebook Contact</a>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-image@latest/leaflet-image.js"></script>
+
+    <script>
+        // --- 🌍 GEO DATABASE (ฐานข้อมูลพิกัด) ---
+        const countries = [
+            { name: "Thailand", lat: 13.7563, lon: 100.5018 },
+            { name: "United States", lat: 37.0902, lon: -95.7129 },
+            { name: "Japan", lat: 36.2048, lon: 138.2529 },
+            { name: "China", lat: 35.8617, lon: 104.1954 },
+            { name: "Russia", lat: 61.5240, lon: 105.3188 },
+            { name: "United Kingdom", lat: 55.3781, lon: -3.4360 }
+        ];
+
+        const thaiRegions = {
+            "Northeast": [
+                { name: "Roi Et", lat: 16.0538, lon: 103.6520 },
+                { name: "Khon Kaen", lat: 16.4322, lon: 102.8236 },
+                { name: "Nakhon Ratchasima", lat: 14.9751, lon: 102.1000 },
+                { name: "Ubon Ratchathani", lat: 15.2448, lon: 104.8473 }
+            ],
+            "Central": [
+                { name: "Bangkok", lat: 13.7563, lon: 100.5018 },
+                { name: "Ayutthaya", lat: 14.3532, lon: 100.5684 },
+                { name: "Nonthaburi", lat: 13.8589, lon: 100.5274 }
+            ],
+            "North": [
+                { name: "Chiang Mai", lat: 18.7883, lon: 98.9853 },
+                { name: "Chiang Rai", lat: 19.9105, lon: 99.8406 }
+            ],
+            "South": [
+                { name: "Phuket", lat: 7.8804, lon: 98.3923 },
+                { name: "Songkhla", lat: 7.1756, lon: 100.6143 }
+            ]
+        };
+
+        // --- STATE VARIABLES ---
+        let isAuto = false;
+        let isSystemOn = true;
+        let voltage = 12.5;
+        let map = null;
+        let ufoMarker = null;
+        let currentLat = 16.0538;
+        let currentLng = 103.6520;
+        let moveInterval = null;
+
+        // --- INIT ---
+        // ย้ายโค้ดทั้งหมดไปไว้ใน DOMContentLoaded เพื่อให้มั่นใจว่า Elements พร้อมแล้ว
+        window.addEventListener('DOMContentLoaded', (event) => {
+            initUI();
+            initMap();
+            toggleSystem();
+
+            // จำลองค่าไฟ
+            setInterval(() => {
+                let noise = (Math.random() - 0.5) * 2.0;
+                voltage = 20.0 + noise;
+                let volEl = document.getElementById('volts');
+                if (volEl) volEl.innerText = voltage.toFixed(2);
+            }, 800);
+        });
+
+        function initUI() {
+            let cSelect = document.getElementById('selCountry');
+            if (!cSelect) return; // Null Check
+
+            countries.forEach(c => {
+                let opt = document.createElement('option');
+                opt.value = c.name;
+                opt.innerText = c.name;
+                if (c.name === "Thailand") opt.selected = true;
+                cSelect.appendChild(opt);
+            });
+
+            handleCountryChange();
+        }
+
+        function handleCountryChange() {
+            let el = document.getElementById('selCountry');
+            if (!el) return;
+            let country = el.value;
+            let groupThai = document.getElementById('groupThai');
+
+            if (country === "Thailand") {
+                if (groupThai) groupThai.style.display = "block";
+                let rSelect = document.getElementById('selRegion');
+                if (rSelect) {
+                    rSelect.innerHTML = "";
+                    Object.keys(thaiRegions).forEach(r => {
+                        let opt = document.createElement('option');
+                        opt.value = r;
+                        opt.innerText = r;
+                        if (r === "Northeast") opt.selected = true;
+                        rSelect.appendChild(opt);
+                    });
+                    handleRegionChange();
+                }
+            } else {
+                if (groupThai) groupThai.style.display = "none";
+            }
+        }
+
+        function handleRegionChange() {
+            let regEl = document.getElementById('selRegion');
+            let pSelect = document.getElementById('selProvince');
+            if (!regEl || !pSelect) return;
+
+            let region = regEl.value;
+            pSelect.innerHTML = "";
+
+            if (thaiRegions[region]) {
+                thaiRegions[region].forEach(p => {
+                    let opt = document.createElement('option');
+                    opt.value = JSON.stringify({ lat: p.lat, lon: p.lon, name: p.name });
+                    opt.innerText = p.name;
+                    if (p.name === "Roi Et") opt.selected = true;
+                    pSelect.appendChild(opt);
+                });
+            }
+        }
+
+        // --- MODAL CONTROL ---
+        function openConfig() {
+            let m = document.getElementById('configModal');
+            if (m) m.style.display = "flex";
+        }
+        function closeConfig() {
+            let m = document.getElementById('configModal');
+            if (m) m.style.display = "none";
+        }
+
+        function saveConfig() {
+            let cEl = document.getElementById('selCountry');
+            if (!cEl) return;
+            let country = cEl.value;
+            let targetLat, targetLon, targetName;
+
+            if (country === "Thailand") {
+                let pEl = document.getElementById('selProvince');
+                if (pEl) {
+                    let provData = JSON.parse(pEl.value);
+                    targetLat = provData.lat;
+                    targetLon = provData.lon;
+                    targetName = provData.name.toUpperCase() + ", THAILAND";
+                }
+            } else {
+                let cData = countries.find(c => c.name === country);
+                if (cData) {
+                    targetLat = cData.lat;
+                    targetLon = cData.lon;
+                    targetName = country.toUpperCase();
+                }
+            }
+
+            if (targetLat && targetLon) {
+                currentLat = targetLat;
+                currentLng = targetLon;
+
+                if (map && ufoMarker) {
+                    let newPos = new L.LatLng(currentLat, currentLng);
+                    ufoMarker.setLatLng(newPos);
+                    map.flyTo(newPos, 10);
+                }
+
+                let locEl = document.getElementById('locationName');
+                if (locEl) locEl.innerText = targetName;
+            }
+            closeConfig();
+        }
+
+        // --- MAP LOGIC ---
+        function initMap() {
+            if (map) return;
+
+            // เช็คว่ามี div map หรือไม่ และ L โหลดเสร็จหรือยัง
+            if (!document.getElementById('ufoMap') || typeof L === 'undefined') return;
+
+            try {
+                map = L.map('ufoMap', {
+                    zoomControl: false,
+                    attributionControl: false
+                }).setView([currentLat, currentLng], 10);
+
+                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    maxZoom: 19,
+                    attribution: 'Esri'
+                }).addTo(map);
+
+                var ufoIcon = L.divIcon({
+                    className: 'custom-ufo-icon',
+                    html: '<div style="width: 20px; height: 20px; background: rgba(16, 185, 129, 0.5); border: 2px solid #10b981; border-radius: 50%; box-shadow: 0 0 10px #10b981;"></div>',
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                });
+
+                ufoMarker = L.marker([currentLat, currentLng], { icon: ufoIcon }).addTo(map);
+                updatePosition();
+            } catch (e) {
+                console.log("Map init failed (likely loading):", e);
+            }
+        }
+
+        function toggleSystem() {
+            let box = document.getElementById('camBox');
+            let rec = document.getElementById('camRec');
+            let controls = document.getElementById('zoomControls');
+            let crosshair = document.getElementById('crosshair');
+            let gps = document.getElementById('gpsCoords');
+            let msg = document.getElementById('camMsg');
+            let noise = document.getElementById('camStatic');
+            let btn = document.getElementById('btnCam');
+
+            // Safety check: ถ้าหา Element ไม่เจอสักตัว ให้หยุดทำงาน
+            if (!box || !btn) return;
+
+            if (isSystemOn) {
+                btn.classList.add('func-active');
+                box.classList.add('map-active');
+
+                if (msg) msg.innerText = "";
+                if (noise) noise.style.display = 'block';
+
+                setTimeout(() => {
+                    if (msg) msg.innerText = "";
+                    if (noise) noise.style.display = 'none';
+                    if (rec) rec.style.display = 'block';
+                    if (controls) controls.style.display = 'flex';
+                    if (crosshair) crosshair.style.display = 'block';
+                    if (gps) gps.style.display = 'block';
+
+                    initMap();
+                    setTimeout(() => { if (map) map.invalidateSize(); }, 100);
+                }, 800);
+
+            } else {
+                btn.classList.remove('func-active');
+                box.classList.remove('map-active');
+                if (rec) rec.style.display = 'none';
+                if (controls) controls.style.display = 'none';
+                if (crosshair) crosshair.style.display = 'none';
+                if (gps) gps.style.display = 'none';
+
+                if (noise) noise.style.display = 'none';
+                if (msg) {
+                    msg.style.color = "#94a3b8";
+                    msg.innerText = "";
+                }
+            }
+        }
+
+        // --- MOVEMENT LOGIC ---
+        function simMove(direction) {
+            if (isAuto) return;
+            updateStatus("THRUST: " + direction, "#0ea5e9");
+
+            if (moveInterval) clearInterval(moveInterval);
+            moveInterval = setInterval(() => {
+                let step = 0.0005;
+                if (direction === 'FORWARD') currentLat += step;
+                if (direction === 'BACKWARD') currentLat -= step;
+                if (direction === 'LEFT') currentLng -= step;
+                if (direction === 'RIGHT') currentLng += step;
+                updatePosition();
+            }, 50);
+        }
+
+        function simStop() {
+            if (isAuto) return;
+            updateStatus("HOVERING", "#fff");
+            if (moveInterval) {
+                clearInterval(moveInterval);
+                moveInterval = null;
+            }
+        }
+
+        function updatePosition() {
+            if (!map || !ufoMarker) return;
+            let newLatLng = new L.LatLng(currentLat, currentLng);
+            ufoMarker.setLatLng(newLatLng);
+            map.panTo(newLatLng);
+
+            let gpsEl = document.getElementById('gpsCoords');
+            if (gpsEl) gpsEl.innerText = `LAT: ${currentLat.toFixed(4)} LON: ${currentLng.toFixed(4)}`;
+        }
+
+        function slideZoom(val) {
+            if (!map) return;
+            map.setZoom(parseInt(val));
+        }
+
+        function takeSnapshot() {
+            let flash = document.getElementById('cameraFlash');
+            if (flash) {
+                flash.style.animation = 'none';
+                flash.offsetHeight;
+                flash.style.animation = 'shutter-snap 0.2s linear';
+            }
+
+            if (typeof leafletImage !== 'undefined' && map) {
+                leafletImage(map, function (err, canvas) {
+                    if (err) return;
+                    let imgUrl = canvas.toDataURL();
+                    let now = new Date();
+                    let filename = `UFO_MISSION_${now.toISOString().replace(/[:.]/g, '-')}.png`;
+                    let a = document.createElement('a');
+                    a.href = imgUrl; a.download = filename;
+                    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                    updateStatus("TARGET CAPTURED!", "#eab308");
+                });
+            }
+        }
+
+        function toggleAuto() {
+            isAuto = !isAuto;
+            let btn = document.getElementById('btnAuto');
+            if (!btn) return;
+
+            if (isAuto) {
+                btn.classList.add('func-active');
+                updateStatus("⚠️ AUTO PILOT ENGAGED", "orange");
+                simulateAI();
+            } else {
+                btn.classList.remove('func-active');
+                updateStatus("MANUAL CONTROL", "#fff");
+                clearTimeout(aiTimer);
+            }
+        }
+
+        function updateStatus(text, color) {
+            let el = document.getElementById('status');
+            if (el) {
+                el.innerText = text;
+                el.style.color = color;
+                el.style.textShadow = "0 0 10px " + color;
+            }
+        }
+
+        let aiTimer;
+        function simulateAI() {
+            if (!isAuto) return;
+            const actions = ["SCANNING AREA..", "HOLDING ALTITUDE", "DATA LINK STABLE"];
+            const randomAction = actions[Math.floor(Math.random() * actions.length)];
+            updateStatus("🤖 " + randomAction, "orange");
+            currentLat += (Math.random() - 0.5) * 0.0005;
+            currentLng += (Math.random() - 0.5) * 0.0005;
+            updatePosition();
+            aiTimer = setTimeout(simulateAI, 2000);
+        }
+    </script>
+</body>
+
+</html>
