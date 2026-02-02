@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>UFO Mission Control (SIMULATION)</title>
+    <style>
+        /* สไตล์ Cyberpunk สำหรับหน้าปัด UFO */
+        body {
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            background-color: #000;
+            color: #0f0;
+            margin: 0;
+            padding: 10px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            text-shadow: 0 0 10px #0f0;
+            margin: 10px 0;
+            font-size: 1.5em;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+
+        /* กล่องแสดงภาพกล้อง */
+        .camera-box {
+            width: 90%;
+            max-width: 320px;
+            height: 240px;
+            background: #050505;
+            border: 2px solid #333;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+        }
+
+        .camera-active {
+            border-color: #0f0;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+
+        /* ภาพวิดีโอจากกล้อง (img tag) */
+        #camStream {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            z-index: 3;
+            position: relative;
+            /* เอา transition ออกเพื่อให้ Pan ได้ลื่นไหลไม่หน่วง */
+            /* transition: transform 0.1s linear; */
+            transform-origin: center center;
+        }
+
+        .cam-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: red;
+            color: white;
+            padding: 2px 5px;
+            font-size: 10px;
+            border-radius: 3px;
+            display: none;
+            animation: blink 1s infinite;
+            z-index: 10;
+        }
+
+        /* เอฟเฟกต์แฟลชถ่ายรูป (เพิ่มใหม่) */
+        .flash-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        @keyframes shutter-snap {
+            0% {
+                opacity: 0.8;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* แสดงระดับซูม */
+        .zoom-display {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #0f0;
+            font-weight: bold;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: none;
+            /* ซ่อนก่อน */
+            z-index: 15;
+            border: 1px solid #0f0;
+        }
+
+        /* สไตล์สำหรับ Slider Bar (Scale Bar) */
+        .zoom-slider-container {
+            position: absolute;
+            bottom: 15px;
+            left: 5%;
+            width: 90%;
+            z-index: 20;
+            display: none;
+            /* ซ่อนก่อนเปิดกล้อง */
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 5px;
+            border-radius: 15px;
+            border: 1px solid #333;
+        }
+
+        input[type=range].zoom-slider {
+            -webkit-appearance: none;
+            /* Override default CSS styles */
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range].zoom-slider:focus {
+            outline: none;
+        }
+
+        /* Track (รางเลื่อน) */
+        input[type=range].zoom-slider::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: rgba(0, 50, 0, 0.8);
+            border-radius: 3px;
+            border: 1px solid #0f0;
+        }
+
+        /* Thumb (หัวเลื่อน) */
+        input[type=range].zoom-slider::-webkit-slider-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #000;
+            border: 2px solid #0f0;
+            box-shadow: 0 0 5px #0f0;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -8px;
+            /* จัดกึ่งกลางแนวตั้ง */
+        }
+
+        .cam-message {
+            color: #333;
+            font-size: 1.2em;
+            position: absolute;
+            z-index: 5;
+            text-align: center;
+        }
+
+        /* ช่องใส่ URL กล้อง */
+        .cam-config {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 5px;
+            width: 90%;
+            max-width: 320px;
+        }
+
+        .cam-input {
+            flex-grow: 1;
+            background: #111;
+            border: 1px solid #333;
+            color: #0f0;
+            padding: 5px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+
+        /* ปุ่ม Test */
+        .test-btn {
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* จำลองภาพซ่าๆ (Static Noise) */
+        .static-noise {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif');
+            background-size: cover;
+            opacity: 0.1;
+            display: none;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* กล่องแสดงข้อมูล */
+        .data-box {
+            border: 1px dashed #0f0;
+            padding: 10px;
+            margin-bottom: 15px;
+            width: 90%;
+            max-width: 320px;
+            border-radius: 10px;
+            background: #050505;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+        }
+
+        .telemetry-label {
+            font-size: 0.8em;
+            color: #888;
+        }
+
+        .telemetry-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-shadow: 0 0 5px #0f0;
+        }
+
+        /* แผงควบคุม */
+        .control-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .empty {
+            visibility: hidden;
+        }
+
+        /* ปุ่มกด */
+        .btn {
+            background-color: #111;
+            border: 2px solid #0f0;
+            color: #0f0;
+            padding: 15px 0;
+            font-size: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            touch-action: manipulation;
+            box-shadow: 0 0 10px #0f0 inset;
+            transition: all 0.1s;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .btn:active {
+            background-color: #0f0;
+            color: #000;
+            transform: scale(0.95);
+            box-shadow: 0 0 20px #0f0;
+        }
+
+        /* ปุ่ม STOP */
+        .stop {
+            border-color: #f00;
+            color: #f00;
+            box-shadow: 0 0 10px #f00 inset;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stop:active {
+            background-color: #f00;
+            color: #fff;
+            box-shadow: 0 0 20px #f00;
+        }
+
+        /* ปุ่มฟังก์ชันพิเศษ (Auto / Cam) */
+        .func-btn {
+            border-color: #0ff;
+            color: #0ff;
+            box-shadow: 0 0 10px #0ff inset;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .func-active {
+            background-color: #0ff;
+            color: #000;
+            box-shadow: 0 0 20px #0ff;
+        }
+
+        /* ปุ่ม Snap (เพิ่มใหม่) */
+        .snap-btn {
+            border-color: #ff0;
+            color: #ff0;
+            box-shadow: 0 0 10px #ff0 inset;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .snap-btn:active {
+            background-color: #ff0;
+            color: #000;
+            box-shadow: 0 0 20px #ff0;
+        }
+
+        @keyframes pulse {
+            0% {
+                text-shadow: 0 0 10px #0f0;
+                opacity: 1;
+            }
+
+            50% {
+                text-shadow: 0 0 20px #0f0;
+                opacity: 0.8;
+            }
+
+            100% {
+                text-shadow: 0 0 10px #0f0;
+                opacity: 1;
+            }
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .wifi-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #0f0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wifi-status">📶 Connected (SIM)</div>
+
+    <h1>👽 UFO LINK 👽</h1>
+
+    <!-- ส่วนแสดงผลกล้อง (Camera Feed) -->
+    <div id="camBox" class="camera-box">
+        <div id="camRec" class="cam-overlay">LIVE</div>
+        <!-- แสดงระดับการซูม -->
+        <div id="zoomDisplay" class="zoom-display">ZOOM x1.3</div>
+
+        <!-- แฟลชถ่ายรูป -->
+        <div id="cameraFlash" class="flash-effect"></div>
+
+        <!-- ใช้วิธีโหลดรูปภาพ (เอา onerror/onload ออกจากตรงนี้เพื่อแก้บั๊ก) -->
+        <!-- ใส่ src เป็น base64 pixel ว่างๆ เพื่อไม่ให้ขึ้น broken image -->
+        <img id="camStream" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Camera Feed">
+
+        <!-- สเกลบาร์สำหรับซูม (Zoom Slider) -->
+        <div id="zoomControls" class="zoom-slider-container">
+            <input type="range" id="zoomSlider" class="zoom-slider" min="1.3" max="50" step="0.1" value="1.3"
+                oninput="slideZoom(this.value)">
+        </div>
+
+        <div id="camStatic" class="static-noise"></div>
+        <div id="camMsg" class="cam-message">CAMERA OFFLINE</div>
+    </div>
+
+    <!-- ช่องใส่ URL ของกล้องสำหรับทดสอบ -->
+    <div class="cam-config">
+        <!-- ใส่ลิงก์ออนไลน์เป็นค่าเริ่มต้น -->
+        <input type="text" id="camUrlInput" class="cam-input" placeholder="ใส่ชื่อไฟล์ภาพ หรือ URL"
+            value="https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/fireo%2Fufo_cam_view.jpg?alt=media&token=0306c0d9-06ca-4844-8114-f07952d4abce">
+        <button class="test-btn" onclick="loadDemoImage()">TEST</button>
+    </div>
+
+    <div class="data-box">
+        <div>
+            <span class="telemetry-label">HARVESTED ENERGY</span><br>
+            <span id="volts" class="telemetry-value">0.00</span> <span style="font-size:1em">kV</span>
+        </div>
+        <div style="margin-top: 10px; border-top: 1px solid #333; padding-top: 5px;">
+            <span class="telemetry-label">STATUS</span><br>
+            <span id="status" class="telemetry-value" style="color: #fff; font-size: 1em;">READY</span>
+        </div>
+    </div>
+
+    <div class="control-panel">
+        <!-- แถวบน -->
+        <button id="btnCam" class="btn func-btn" onclick="toggleCamera()">📷 CAM</button>
+        <button class="btn" onmousedown="simMove('FORWARD')" onmouseup="simStop()" ontouchstart="simMove('FORWARD')"
+            ontouchend="simStop()">▲</button>
+        <button id="btnAuto" class="btn func-btn" onclick="toggleAuto()">🤖 AUTO</button>
+
+        <!-- แถวกลาง -->
+        <button class="btn" onmousedown="simMove('LEFT')" onmouseup="simStop()" ontouchstart="simMove('LEFT')"
+            ontouchend="simStop()">◀</button>
+        <button class="btn stop" onclick="simStop()">STOP</button>
+        <button class="btn" onmousedown="simMove('RIGHT')" onmouseup="simStop()" ontouchstart="simMove('RIGHT')"
+            ontouchend="simStop()">▶</button>
+
+        <!-- แถวล่าง -->
+        <button class="btn snap-btn" onclick="takeSnapshot()">📸 SNAP</button>
+        <button class="btn" onmousedown="simMove('BACKWARD')" onmouseup="simStop()" ontouchstart="simMove('BACKWARD')"
+            ontouchend="simStop()">▼</button>
+        <div class="empty"></div>
+    </div>
+
+    <script>
+        // --- ส่วนจำลองการทำงาน (MOCK LOGIC) ---
+
+        const ONLINE_URL = "https://firebasestorage.googleapis.com/v0/b/susanonline-9ccbb.firebasestorage.app/o/fireo%2Fufo_cam_view.jpg?alt=media&token=0306c0d9-06ca-4844-8114-f07952d4abce";
+        const LOCAL_URL = "http://127.0.0.1:5500/ufo_cam_view.jpg";
+
+        let isAuto = false;
+        let isCamOn = false;
+        let voltage = 12.5;
+        let currentZoom = 1.3; // เริ่มต้นที่ 1.3x ตามคำขอ
+
+        // ตั้งค่าขีดจำกัดการซูม
+        const MIN_ZOOM = 1.3;
+        const MAX_ZOOM = 50.0;
+
+        // ตัวแปรสำหรับ Pan (เลื่อนภาพ)
+        let panX = 0;
+        let panY = 0;
+        let panInterval = null;
+
+        // --- การตั้งค่า Event Handler สำหรับกล้อง ---
+        window.onload = function () {
+            let img = document.getElementById('camStream');
+
+            img.onerror = function () {
+                handleCamError(this);
+            };
+
+            img.onload = function () {
+                // เช็คก่อนว่าเป็น Pixel ว่างๆ หรือเปล่า (ถ้าใช่ ไม่ต้องทำอะไร)
+                if (this.src.startsWith("data:image")) return;
+                handleCamSuccess(this);
+            };
+
+            // เปิดกล้องอัตโนมัติเมื่อโหลดหน้าเว็บ
+            toggleCamera();
+        };
+
+        // 1. จำลองการอ่านค่าไฟ
+        setInterval(function () {
+            let noise = (Math.random() - 0.5) * 2.0;
+            voltage = 20.0 + noise;
+            document.getElementById('volts').innerText = voltage.toFixed(2);
+
+            let wifiIcon = document.querySelector('.wifi-status');
+            wifiIcon.style.opacity = wifiIcon.style.opacity === '0.5' ? '1' : '0.5';
+        }, 800);
+
+        // 2. จำลองการส่งคำสั่ง + Pan กล้อง
+        function simMove(direction) {
+            if (isAuto) return;
+            updateStatus("THRUST: " + direction, "#0ff");
+            console.log("CMD: " + direction);
+
+            // ถ้ากล้องเปิดอยู่ ให้เริ่ม Pan ภาพ
+            if (isCamOn) {
+                // เคลียร์ Loop เก่าก่อนกันซ้อน
+                if (panInterval) clearInterval(panInterval);
+
+                // เริ่ม Loop ขยับภาพ (50ms ต่อครั้ง)
+                panInterval = setInterval(() => {
+                    // ปรับความเร็ว Pan ตามระดับซูม (ยิ่งซูมเยอะ ยิ่งต้อง Pan เร็วขึ้นเพื่อให้รู้สึกขยับเท่าเดิม)
+                    let step = 10 * (currentZoom / 2);
+                    if (step < 5) step = 5; // ขั้นต่ำ
+
+                    if (direction === 'FORWARD') panY += step; // กดขึ้น -> ภาพเลื่อนลง (มองขึ้น)
+                    if (direction === 'BACKWARD') panY -= step; // กดลง -> ภาพเลื่อนขึ้น (มองลง)
+                    if (direction === 'LEFT') panX += step; // กดซ้าย -> ภาพเลื่อนขวา (มองซ้าย)
+                    if (direction === 'RIGHT') panX -= step; // กดขวา -> ภาพเลื่อนซ้าย (มองขวา)
+
+                    updateCamTransform();
+                }, 50);
+            }
+        }
+
+        function simStop() {
+            if (isAuto) return;
+            updateStatus("HOVERING", "#fff");
+
+            // หยุด Pan ภาพ
+            if (panInterval) {
+                clearInterval(panInterval);
+                panInterval = null;
+            }
+        }
+
+        // 3. จำลองโหมด Auto Pilot
+        function toggleAuto() {
+            isAuto = !isAuto;
+            let btn = document.getElementById('btnAuto');
+
+            if (isAuto) {
+                btn.classList.add('func-active');
+                updateStatus("⚠️ AUTO PILOT", "orange");
+                simulateAI();
+            } else {
+                btn.classList.remove('func-active');
+                updateStatus("MANUAL CONTROL", "#fff");
+                clearTimeout(aiTimer);
+            }
+        }
+
+        // 4. จัดการเรื่องกล้อง (Camera Handling)
+        function toggleCamera() {
+            isCamOn = !isCamOn;
+            let btn = document.getElementById('btnCam');
+            let box = document.getElementById('camBox');
+            let rec = document.getElementById('camRec');
+            let msg = document.getElementById('camMsg');
+            let noise = document.getElementById('camStatic');
+            let stream = document.getElementById('camStream');
+            let zoomCtrls = document.getElementById('zoomControls');
+            let zoomDisplay = document.getElementById('zoomDisplay');
+            let inputUrl = document.getElementById('camUrlInput').value;
+
+            if (isCamOn) {
+                btn.classList.add('func-active');
+                box.classList.add('camera-active');
+                rec.style.display = 'block';
+                msg.innerText = "CONNECTING...";
+                msg.style.color = "#333";
+
+                // Reset Flag การลอง Fallback
+                stream.dataset.fallbackTried = "";
+
+                // ลองโหลดภาพจาก URL ที่ใส่ (ค่าเริ่มต้นคือ Online)
+                stream.src = inputUrl;
+
+                // ถ้าโหลดไม่ได้ Noise จะบังไว้
+                noise.style.display = 'block';
+
+                // ตั้งค่า Zoom/Pan เริ่มต้น
+                updateCamTransform();
+
+            } else {
+                btn.classList.remove('func-active');
+                box.classList.remove('camera-active');
+                rec.style.display = 'none';
+                noise.style.display = 'none';
+                stream.style.display = 'none';
+                stream.src = ""; // หยุดโหลด
+                msg.style.color = "#333";
+                msg.innerText = "CAMERA OFFLINE";
+                zoomCtrls.style.display = 'none';
+                zoomDisplay.style.display = 'none';
+                resetZoom();
+            }
+        }
+
+        // ฟังก์ชันจัดการซูมด้วย Slider (Slide Zoom Logic)
+        function slideZoom(val) {
+            if (!isCamOn) return;
+            currentZoom = parseFloat(val);
+
+            // จำกัดการซูม (เผื่อไว้)
+            if (currentZoom < MIN_ZOOM) currentZoom = MIN_ZOOM;
+            if (currentZoom > MAX_ZOOM) currentZoom = MAX_ZOOM;
+
+            updateCamTransform();
+        }
+
+        function resetZoom() {
+            currentZoom = MIN_ZOOM; // กลับไปค่าเริ่มต้น 1.3
+            panX = 0;
+            panY = 0;
+
+            // รีเซ็ตค่า Slider กลับไปจุดเริ่มต้นด้วย
+            let slider = document.getElementById('zoomSlider');
+            if (slider) slider.value = MIN_ZOOM;
+
+            updateCamTransform();
+        }
+
+        // อัปเดตตำแหน่งและขนาดภาพ (พร้อมระบบล็อกขอบจอไม่ให้เห็นพื้นหลัง)
+        function updateCamTransform() {
+            let img = document.getElementById('camStream');
+            let box = document.getElementById('camBox');
+            let zoomText = document.getElementById('zoomDisplay');
+
+            if (!img || !box) return;
+
+            // คำนวณขอบเขตที่ยอมให้ Pan ได้ (Boundaries)
+            // สูตร: (ขนาดรูปหลังซูม - ขนาดกล่อง) / 2
+            // เพราะ transform-origin คือ center center
+            let maxPanX = (box.offsetWidth * currentZoom - box.offsetWidth) / 2;
+            let maxPanY = (box.offsetHeight * currentZoom - box.offsetHeight) / 2;
+
+            // ล็อกค่า Pan ไม่ให้เกินขอบเขต (Clamp)
+            // ถ้าซูมน้อย (เช่น 1.0) ค่า maxPan จะเป็น 0 ทำให้ขยับไม่ได้ (ถูกต้อง)
+            if (panX > maxPanX) panX = maxPanX;
+            if (panX < -maxPanX) panX = -maxPanX;
+            if (panY > maxPanY) panY = maxPanY;
+            if (panY < -maxPanY) panY = -maxPanY;
+
+            img.style.transform = `translate(${panX}px, ${panY}px) scale(${currentZoom})`;
+
+            // อัปเดตตัวเลขแสดงระดับซูม
+            if (zoomText) {
+                zoomText.innerText = "ZOOM x" + currentZoom.toFixed(1);
+            }
+        }
+
+        // ฟังก์ชันถ่ายภาพ (Snapshot)
+        function takeSnapshot() {
+            if (!isCamOn) return;
+
+            // 1. เล่นเอฟเฟกต์แฟลช
+            let flash = document.getElementById('cameraFlash');
+            flash.style.animation = 'none'; // reset
+            flash.offsetHeight; // trigger reflow
+            flash.style.animation = 'shutter-snap 0.2s linear';
+
+            // 2. สร้างลิงก์ดาวน์โหลด
+            let img = document.getElementById('camStream');
+            let imgUrl = img.src;
+
+            // สร้างชื่อไฟล์ตามเวลาปัจจุบัน
+            let now = new Date();
+            let timestamp = now.toISOString().replace(/[:.]/g, '-');
+            let filename = `UFO_SNAP_${timestamp}.jpg`;
+
+            // สร้าง Link ชั่วคราวเพื่อดาวน์โหลด
+            let a = document.createElement('a');
+            a.href = imgUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            updateStatus("IMAGE CAPTURED!", "#ff0");
+        }
+
+        // ฟังก์ชันจัดการเมื่อโหลดภาพไม่เจอ (Error Handling + Smart Fallback)
+        function handleCamError(img) {
+            if (!isCamOn) return;
+
+            // ถ้า URL ที่พัง คือ URL ออนไลน์ (หรือมีคำว่า firebasestorage) และยังไม่เคยลอง Fallback
+            if (img.src.includes("firebasestorage") && !img.dataset.fallbackTried) {
+                console.log("Online source failed. Switching to Local backup...");
+                img.src = LOCAL_URL;
+                img.dataset.fallbackTried = "true"; // แปะป้ายว่าลองแล้ว กัน Loop
+
+                // อัปเดตช่อง input ให้รู้ว่าเปลี่ยนเป็น local
+                document.getElementById('camUrlInput').value = LOCAL_URL;
+
+                // แสดงสถานะ
+                let msg = document.getElementById('camMsg');
+                msg.innerText = "RETRYING LOCAL...";
+                return;
+            }
+
+            // ถ้าลองแล้วยังพัง หรือเป็น URL อื่นๆ ให้แสดง Error
+            img.style.display = 'none';
+            document.getElementById('camStatic').style.display = 'block'; // โชว์ Noise
+            document.getElementById('zoomControls').style.display = 'none';
+            document.getElementById('zoomDisplay').style.display = 'none';
+            let msg = document.getElementById('camMsg');
+            msg.innerHTML = '<span style="color:red">CONNECTION FAILED</span><br><span style="font-size:0.6em; color:#888">Offline Mode</span>';
+        }
+
+        // ฟังก์ชันจัดการเมื่อโหลดภาพสำเร็จ
+        function handleCamSuccess(img) {
+            if (!isCamOn) return;
+            document.getElementById('camMsg').innerText = '';
+            img.style.display = 'block';
+            document.getElementById('camStatic').style.display = 'none'; // ซ่อน Noise
+            document.getElementById('zoomControls').style.display = 'flex'; // โชว์ Slider
+            document.getElementById('zoomDisplay').style.display = 'block'; // โชว์เลขซูม
+            updateCamTransform(); // ปรับขนาดภาพทันทีที่โหลดเสร็จ
+        }
+
+        // ฟังก์ชันปุ่ม TEST (โหลดภาพจากเน็ต)
+        function loadDemoImage() {
+            document.getElementById('camUrlInput').value = "https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif";
+            // ถ้ากล้องเปิดอยู่แล้ว ให้ปิดแล้วเปิดใหม่เพื่อรีโหลด
+            if (isCamOn) toggleCamera();
+            setTimeout(toggleCamera, 100);
+        }
+
+        function updateStatus(text, color) {
+            let el = document.getElementById('status');
+            el.innerText = text;
+            el.style.color = color;
+            el.style.textShadow = "0 0 10px " + color;
+        }
+
+        let aiTimer;
+        function simulateAI() {
+            if (!isAuto) return;
+            const actions = ["CORRECTING..", "STABILIZING", "SEEKING..", "HOVERING"];
+            const randomAction = actions[Math.floor(Math.random() * actions.length)];
+            updateStatus("🤖 " + randomAction, "orange");
+            aiTimer = setTimeout(simulateAI, 2000);
+        }
+    </script>
+</body>
+
+</html>
