@@ -59,18 +59,16 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- Retro Casing (Theme applied here) -->
+    <!-- Retro Casing -->
     <div id="casing" class="w-full max-w-6xl retro-casing theme-wood">
-        <!-- Screws -->
         <div class="screw tl"></div><div class="screw tr"></div><div class="screw bl"></div><div class="screw br"></div>
 
-        <!-- Faceplate -->
         <div class="faceplate h-full w-full">
             <!-- Header -->
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-800 pb-4">
                 <div class="flex items-center gap-4">
                     <h1 class="text-3xl font-bold text-gray-400 digital-font tracking-widest" style="text-shadow: 2px 2px 0 #000;">
-                        EQUALIZER <span class="text-amber-600 text-sm font-sans tracking-normal font-bold">PRO 90s</span>
+                        EQUALIZER <span class="text-amber-600 text-sm font-sans tracking-normal font-bold">RADIO ED.</span>
                     </h1>
                 </div>
                 <div class="flex flex-wrap items-center justify-center gap-4 mt-4 md:mt-0">
@@ -91,27 +89,15 @@
                 </div>
             </div>
 
-            <!-- =========================== -->
-            <!-- CONTENT ZONE -->
-            <!-- =========================== -->
-
-            <!-- 1. STANDARD EQ MODE INTERFACE -->
-            <div id="eq-mode-content">
-                <!-- Visualizer -->
+            <!-- Content -->
+            
+            <!-- 1. EQ Interface (Hidden initially in Radio Edition) -->
+            <div id="eq-mode-content" class="hidden">
                 <div class="relative w-full h-56 vfd-screen mb-8 group">
                     <canvas id="visualizer" class="w-full h-full relative z-10 opacity-90"></canvas>
-                    <div id="start-overlay" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 z-20 transition-opacity duration-300">
-                        <p class="text-emerald-500 digital-font text-xl mb-4 tracking-widest border border-emerald-500/30 px-6 py-2 bg-black">SYSTEM STANDBY</p>
-                        <div class="flex flex-wrap justify-center gap-4 px-4">
-                            <button id="radio-btn-overlay" class="btn-retro px-6 py-2 rounded text-xs uppercase tracking-wider font-bold text-amber-500 border-amber-800">RADIO LUANGTA</button>
-                            <button id="demo-btn-overlay" class="btn-retro px-6 py-2 rounded text-xs uppercase tracking-wider font-bold">PLAY DEMO</button>
-                            <button id="mic-btn-overlay" class="btn-retro px-6 py-2 rounded text-xs uppercase tracking-wider font-bold">MIC INPUT</button>
-                            <button id="tab-btn-overlay" class="btn-retro px-6 py-2 rounded text-xs uppercase tracking-wider font-bold">PC AUDIO</button>
-                        </div>
-                    </div>
+                    <div id="start-overlay" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-black/90 z-20"></div>
                 </div>
 
-                <!-- Controls -->
                 <div class="bg-[#222] p-4 rounded border border-gray-800 shadow-inner mb-8">
                     <div class="flex flex-col lg:flex-row gap-6 items-center justify-between">
                         <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-center lg:justify-start">
@@ -122,15 +108,12 @@
                             <button id="demo-btn" class="btn-retro px-4 py-2 rounded text-xs font-bold">DEMO</button>
                             <button id="mic-btn" class="btn-retro px-4 py-2 rounded text-xs font-bold">MIC</button>
                             <button id="tab-btn" class="btn-retro px-4 py-2 rounded text-xs font-bold">PC-IN</button>
-                            <!-- AUDIO PLAYER ELEMENT -->
                             <audio id="audio-player" class="hidden" crossorigin="anonymous"></audio>
                         </div>
                         <div class="flex items-center gap-6 w-full lg:w-auto justify-center bg-[#1a1a1a] px-6 py-2 rounded border border-gray-800">
-                            <!-- Monitor Btn -->
                             <button id="monitor-btn" class="btn-retro-active px-4 py-2 rounded text-xs flex items-center gap-2 font-bold border border-emerald-600/50">
                                 <span class="led-indicator"></span> EQ MONITOR
                             </button>
-                            <!-- Play/Pause -->
                             <button id="play-btn" class="w-10 h-10 bg-gradient-to-br from-gray-700 to-black rounded-full border-2 border-gray-600 flex items-center justify-center shadow-lg active:translate-y-0.5 disabled:opacity-50" disabled>
                                 <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#10b981" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                                 <svg id="pause-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#fbbf24" stroke="none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
@@ -146,33 +129,23 @@
                     </div>
                 </div>
 
-                <!-- Bands -->
                 <div class="bg-[#111] p-6 rounded border-2 border-[#333] shadow-[inset_0_0_20px_#000]">
                     <div class="flex justify-between items-end pb-2 mb-2 border-b border-gray-800">
                         <span class="printed-label text-gray-500">+12dB</span><span class="printed-label text-gray-500">FLAT</span><span class="printed-label text-gray-500">-12dB</span>
                     </div>
                     <div class="flex md:grid md:grid-cols-10 gap-1 md:gap-2 min-w-max md:min-w-0 justify-items-center" id="eq-container"></div>
                 </div>
-                
-                <div class="mt-4 text-center">
-                     <button id="reset-eq-mobile" class="md:hidden text-xs text-gray-500 hover:text-red-400 transition underline">RESET EQ</button>
-                </div>
             </div>
 
-            <!-- 2. FULL RADIO MODE INTERFACE (Replaces everything below header) -->
-            <div id="radio-mode-content" class="hidden w-full h-[600px] relative bg-white border-2 border-gray-700 rounded overflow-hidden">
-                
-                <!-- Simple White Background -->
+            <!-- 2. RADIO MODE INTERFACE (Visible by default in RadioEQ) -->
+            <div id="radio-mode-content" class="w-full h-[600px] relative bg-white border-2 border-gray-700 rounded overflow-hidden">
                 <div class="absolute inset-0 z-0 bg-white"></div>
-
                 <div class="absolute top-0 left-0 w-full bg-[#111] p-2 flex justify-between items-center z-20 border-b border-gray-600">
                     <span class="text-amber-500 font-bold ml-2">RADIO LUANGTA ONLINE</span>
                     <button id="close-radio-btn" class="bg-red-700 hover:bg-red-600 text-white px-4 py-1 rounded text-xs font-bold transition">
                         ❌ CLOSE RADIO (กลับไปหน้า EQ)
                     </button>
                 </div>
-                <!-- Iframe Container -->
-                <!-- Removed mix-blend-mode for standard display -->
                 <iframe 
                     src="" 
                     id="radio-frame-full"
@@ -185,7 +158,7 @@
     </div>
 
     <script>
-        // --- 1. SETUP UI ---
+        // Setup UI
         const freqs = [31, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
         const container = document.getElementById('eq-container');
         freqs.forEach(f => {
@@ -204,24 +177,18 @@
             if(btn) btn.classList.add('theme-active');
         };
 
-        // --- 2. AUDIO ENGINE ---
+        // Audio Vars
         const audioPlayer = document.getElementById('audio-player');
         const eqBands = document.querySelectorAll('.eq-band');
         const canvas = document.getElementById('visualizer');
         const ctx = canvas ? canvas.getContext('2d') : null;
-        
-        // URL SOURCES
         const demoTrackUrl = 'https://upload.wikimedia.org/wikipedia/commons/transcoded/e/eb/Beethoven_Moonlight_1st_movement.ogg/Beethoven_Moonlight_1st_movement.ogg.mp3';
         const radioUrl = 'http://122.155.12.107/luangta/Siangdham-Radio-Live.html';
 
-        let audioContext, analyser, gainNode, eqInputNode;
-        let filters = [], isPlaying = false, animationId;
+        let audioContext, analyser, gainNode, eqInputNode, filters=[], isPlaying=false, animationId;
+        let elementSourceNode=null, streamSourceNode=null, isBypass=false;
         
-        let elementSourceNode = null; 
-        let streamSourceNode = null;
-        let isBypass = false; 
-
-        // Detect if running in pywebview (EXE mode)
+        // Detect EXE
         const isExe = window.pywebview !== undefined;
 
         function safeAddListener(id, event, fn) { const el = document.getElementById(id); if(el) el.addEventListener(event, fn); }
@@ -230,24 +197,14 @@
 
         function initAudio() {
             if (!audioContext) {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioContext = new AudioContext();
-                
-                eqInputNode = audioContext.createGain(); 
-                gainNode = audioContext.createGain();    
-                analyser = audioContext.createAnalyser(); 
-                analyser.fftSize = 2048; 
-                analyser.smoothingTimeConstant = 0.85;
-
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                eqInputNode = audioContext.createGain(); gainNode = audioContext.createGain();
+                analyser = audioContext.createAnalyser(); analyser.fftSize = 2048; analyser.smoothingTimeConstant = 0.85;
                 filters = freqs.map((f, i) => {
-                    const filter = audioContext.createBiquadFilter();
-                    filter.frequency.value = f;
+                    const filter = audioContext.createBiquadFilter(); filter.frequency.value = f;
                     filter.type = (i===0)?'lowshelf':(i===freqs.length-1)?'highshelf':'peaking';
-                    if(filter.type==='peaking') filter.Q.value = 1.4;
-                    filter.gain.value = 0;
-                    return filter;
+                    if(filter.type==='peaking') filter.Q.value = 1.4; filter.gain.value = 0; return filter;
                 });
-
                 setupRouting(false); 
             }
             if(audioContext.state === 'suspended') audioContext.resume();
@@ -255,129 +212,56 @@
 
         function setupRouting(bypass) {
             if(!eqInputNode) return;
-            eqInputNode.disconnect();
-            filters.forEach(f => f.disconnect());
-            
-            if(bypass) {
-                eqInputNode.connect(analyser); 
-                updateMonitorUI(false);
-            } else {
-                let last = eqInputNode;
-                filters.forEach(f => { last.connect(f); last = f; });
-                last.connect(analyser);
-                updateMonitorUI(true);
-            }
-            analyser.connect(gainNode);
-            gainNode.connect(audioContext.destination);
+            eqInputNode.disconnect(); filters.forEach(f => f.disconnect());
+            if(bypass) { eqInputNode.connect(analyser); updateMonitorUI(false); }
+            else { let last = eqInputNode; filters.forEach(f => { last.connect(f); last=f; }); last.connect(analyser); updateMonitorUI(true); }
+            analyser.connect(gainNode); gainNode.connect(audioContext.destination);
         }
 
         function updateMonitorUI(isEQ) {
-            const btn = document.getElementById('monitor-btn');
-            if(!btn) return;
-            if(isEQ) {
-                btn.classList.add('btn-retro-active'); btn.classList.remove('btn-retro');
-                btn.innerHTML = '<span class="led-indicator" style="background-color:#00ff00;box-shadow:0 0 5px #00ff00"></span> EQ MONITOR';
-            } else {
-                btn.classList.remove('btn-retro-active'); btn.classList.add('btn-retro');
-                btn.innerHTML = '<span class="led-indicator" style="background-color:#333;box-shadow:none"></span> RAW BYPASS';
-            }
+            const btn = document.getElementById('monitor-btn'); if(!btn) return;
+            if(isEQ) { btn.classList.add('btn-retro-active'); btn.classList.remove('btn-retro'); btn.innerHTML='<span class="led-indicator" style="background-color:#00ff00;box-shadow:0 0 5px #00ff00"></span> EQ MONITOR'; }
+            else { btn.classList.remove('btn-retro-active'); btn.classList.add('btn-retro'); btn.innerHTML='<span class="led-indicator" style="background-color:#333;box-shadow:none"></span> RAW BYPASS'; }
         }
-
-        // --- Logic & Events ---
 
         function clearActiveModes() {
-            document.getElementById('start-overlay').classList.add('opacity-0', 'pointer-events-none');
-            
-            // UI Toggle: Show EQ Interface, Hide Radio Interface
             document.getElementById('eq-mode-content').classList.remove('hidden');
             document.getElementById('radio-mode-content').classList.add('hidden');
-            document.getElementById('radio-frame-full').src = ""; // Stop Radio
-
+            document.getElementById('radio-frame-full').src = "";
             ['mic-btn','tab-btn','demo-btn', 'radio-btn'].forEach(id=>{ const b=document.getElementById(id); if(b){b.classList.remove('btn-retro-active'); b.classList.add('btn-retro');}});
-            
-            if(streamSourceNode) {
-                try { streamSourceNode.disconnect(); } catch(e){}
-                streamSourceNode = null;
-            }
-            
-            if(audioPlayer.srcObject) {
-                const tracks = audioPlayer.srcObject.getTracks();
-                tracks.forEach(t => t.stop());
-                audioPlayer.srcObject = null;
-            }
-
-            audioPlayer.pause();
-            audioPlayer.removeAttribute('crossorigin');
-            audioPlayer.removeAttribute('src'); 
-            
-            // FIX: DO NOT NULLIFY THE PERSISTENT NODE
-            if(elementSourceNode) {
-                try { elementSourceNode.disconnect(); } catch(e){}
-                // elementSourceNode = null; // REMOVED
-            }
-            
-            isBypass = false;
-            setupRouting(false);
+            if(streamSourceNode){ try{streamSourceNode.disconnect();}catch(e){} streamSourceNode=null; }
+            if(audioPlayer.srcObject){ audioPlayer.srcObject.getTracks().forEach(t=>t.stop()); audioPlayer.srcObject=null; }
+            audioPlayer.pause(); audioPlayer.removeAttribute('crossorigin'); audioPlayer.removeAttribute('src'); 
+            if(elementSourceNode){ try{elementSourceNode.disconnect();}catch(e){} }
+            isBypass=false; setupRouting(false);
         }
+
+        // Default Load Radio
+        function loadRadio() {
+            clearActiveModes();
+            document.getElementById('eq-mode-content').classList.add('hidden');
+            document.getElementById('radio-mode-content').classList.remove('hidden');
+            document.getElementById('radio-frame-full').src = radioUrl;
+            document.getElementById('radio-btn').classList.add('btn-retro-active');
+            document.getElementById('track-name').textContent = "RADIO (WEB)";
+        }
+        
+        window.addEventListener('DOMContentLoaded', () => { setTimeout(loadRadio, 100); });
+        safeAddListener('close-radio-btn', 'click', () => { clearActiveModes(); document.getElementById('track-name').textContent = "NO SIGNAL"; });
 
         function switchToFileMode(isRadio) {
             clearActiveModes(); initAudio();
             document.getElementById('play-btn').disabled = false;
-            
-            if(!isRadio) {
-                audioPlayer.setAttribute('crossorigin', 'anonymous');
-            }
-
-            try {
-                elementSourceNode = audioContext.createMediaElementSource(audioPlayer);
-                elementSourceNode.connect(eqInputNode);
-            } catch(e) { 
-                if(elementSourceNode) elementSourceNode.connect(eqInputNode);
-            }
-
-            audioPlayer.muted = false;
-            audioPlayer.volume = 1.0; 
+            if(!isRadio) audioPlayer.setAttribute('crossorigin', 'anonymous');
+            try { elementSourceNode = audioContext.createMediaElementSource(audioPlayer); elementSourceNode.connect(eqInputNode); } catch(e){ if(elementSourceNode) elementSourceNode.connect(eqInputNode); }
+            audioPlayer.muted = false; audioPlayer.volume = 1.0; 
         }
-
-        // FULL RADIO MODE
-        function loadRadio() {
-            clearActiveModes(); // Stop other audio
-            
-            // Toggle UI: Hide EQ, Show Radio
-            document.getElementById('eq-mode-content').classList.add('hidden');
-            document.getElementById('radio-mode-content').classList.remove('hidden');
-            document.getElementById('radio-frame-full').src = radioUrl;
-
-            // Update Header State
-            document.getElementById('radio-btn').classList.add('btn-retro-active'); // This button is hidden but state is kept
-            document.getElementById('track-name').textContent = "RADIO (WEB)";
-        }
-        
-        // Auto-load Radio Mode on Init for RadioEQ.html
-        window.addEventListener('DOMContentLoaded', () => {
-            // Check if we are ready (simple timeout or just call)
-            setTimeout(loadRadio, 100);
-        });
-
-        // Close Radio Button
-        safeAddListener('close-radio-btn', 'click', () => {
-            clearActiveModes();
-            // Reset to default view (maybe reset text)
-            document.getElementById('track-name').textContent = "NO SIGNAL";
-        });
 
         async function startLiveInput(type) {
             try {
                 clearActiveModes(); initAudio();
-                
-                if(elementSourceNode) {
-                    try { elementSourceNode.disconnect(); } catch(e){}
-                }
-
-                isPlaying = false; 
-                updateUI(false);
-                document.getElementById('play-btn').disabled = true; 
-
+                if(elementSourceNode) { try{elementSourceNode.disconnect();}catch(e){} }
+                isPlaying=false; updateUI(false); document.getElementById('play-btn').disabled=true; 
                 let stream;
                 if(type === 'mic') {
                     document.getElementById('mic-btn').classList.add('btn-retro-active');
@@ -388,70 +272,26 @@
                     if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) { alert("Not supported"); return; }
                     document.getElementById('tab-btn').classList.add('btn-retro-active');
                     document.getElementById('track-name').textContent = "PC AUDIO";
-                    
-                    // Logic Separation: Browser vs EXE
-                    const constraints = {
+                    stream = await navigator.mediaDevices.getDisplayMedia({
                         video: { width:1, height:1 },
-                        audio: { 
-                            echoCancellation: false, 
-                            noiseSuppression: false, 
-                            autoGainControl: false,
-                            // Browser: true (Auto Mute Source), EXE: false (Keep source alive)
-                            suppressLocalAudioPlayback: !isExe 
-                        }
-                    };
-                    
-                    stream = await navigator.mediaDevices.getDisplayMedia(constraints);
+                        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, suppressLocalAudioPlayback: !isExe }
+                    });
                     const v = stream.getVideoTracks()[0]; if(v){v.stop(); stream.removeTrack(v);}
                 }
-
                 streamSourceNode = audioContext.createMediaStreamSource(stream);
                 streamSourceNode.connect(eqInputNode);
-
-                // Dummy player to keep stream active
                 audioPlayer.srcObject = stream;
-                
-                if(isExe) {
-                     // EXE Hack: Keep volume tiny (0.0001) but NOT muted to force WebView2 audio processing
-                     // This prevents echo (mostly) but keeps the data flowing to EQ
-                     audioPlayer.muted = false;
-                     audioPlayer.volume = 0.0001;
-                } else {
-                     // Browser: Just mute it, suppressLocalAudioPlayback handles source muting
-                     audioPlayer.muted = true;
-                }
-                
+                if(isExe) { audioPlayer.muted = false; audioPlayer.volume = 0.0001; } else { audioPlayer.muted = true; }
                 audioPlayer.play().catch(e=>{});
-
-                isPlaying = true; updateUI(true);
-
-                stream.getAudioTracks()[0].onended = () => {
-                    alert("Disconnected");
-                    if(streamSourceNode) streamSourceNode.disconnect();
-                    isPlaying=false; updateUI(false); clearActiveModes();
-                };
+                isPlaying=true; updateUI(true);
+                stream.getAudioTracks()[0].onended = () => { alert("Disconnected"); if(streamSourceNode) streamSourceNode.disconnect(); isPlaying=false; updateUI(false); clearActiveModes(); };
             } catch(e) { console.error(e); clearActiveModes(); }
         }
 
-        function loadFile(file) {
-            switchToFileMode(false);
-            audioPlayer.src = URL.createObjectURL(file);
-            document.getElementById('track-name').textContent = file.name.toUpperCase().substring(0, 20);
-            playAudio();
-        }
-        function loadDemo() {
-            switchToFileMode(false);
-            document.getElementById('demo-btn').classList.add('btn-retro-active');
-            audioPlayer.src = demoTrackUrl;
-            document.getElementById('track-name').textContent = "DEMO: MOONLIGHT";
-            playAudio();
-        }
-
-        function playAudio() {
-            audioPlayer.load();
-            const h = ()=>{ togglePlay(true); audioPlayer.removeEventListener('canplay', h); };
-            audioPlayer.addEventListener('canplay', h);
-        }
+        function loadFile(file) { switchToFileMode(false); audioPlayer.src = URL.createObjectURL(file); document.getElementById('track-name').textContent = file.name.toUpperCase().substring(0, 20); playAudio(); }
+        function loadDemo() { switchToFileMode(false); document.getElementById('demo-btn').classList.add('btn-retro-active'); audioPlayer.src = demoTrackUrl; document.getElementById('track-name').textContent = "DEMO: MOONLIGHT"; playAudio(); }
+        function playAudio() { audioPlayer.load(); const h = ()=>{ togglePlay(true); audioPlayer.removeEventListener('canplay', h); }; audioPlayer.addEventListener('canplay', h); }
+        
         function togglePlay(force) {
             if (streamSourceNode) return;
             const shouldPlay = force!==undefined ? force : audioPlayer.paused;
@@ -463,7 +303,6 @@
             if(p){play.classList.add('hidden'); pause.classList.remove('hidden');} else {play.classList.remove('hidden'); pause.classList.add('hidden');}
         }
 
-        // Listeners
         safeAddListener('audio-upload', 'change', e=>loadFile(e.target.files[0]));
         safeAddListener('demo-btn', 'click', loadDemo); safeAddListener('demo-btn-overlay', 'click', loadDemo);
         safeAddListener('radio-btn', 'click', loadRadio); safeAddListener('radio-btn-overlay', 'click', loadRadio);
@@ -475,21 +314,17 @@
         
         const resetFn = ()=>{ eqBands.forEach((b,i)=>{b.value=0; if(filters[i]) filters[i].gain.value=0;}); };
         safeAddListener('reset-eq', 'click', resetFn); safeAddListener('reset-eq-mobile', 'click', resetFn);
-        
         eqBands.forEach((b,i)=> {
             b.addEventListener('input', ()=>{ if(filters[i]) filters[i].gain.value = parseFloat(b.value); });
             b.addEventListener('dblclick', ()=>{ b.value=0; if(filters[i]) filters[i].gain.value=0; });
         });
-        
         audioPlayer.addEventListener('ended', ()=>{isPlaying=false; updateUI(false);});
 
         function visualize() {
             if(analyser && ctx) {
-                const buffer = new Uint8Array(analyser.frequencyBinCount);
-                analyser.getByteFrequencyData(buffer);
+                const buffer = new Uint8Array(analyser.frequencyBinCount); analyser.getByteFrequencyData(buffer);
                 ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
-                const count=64, step=Math.floor(buffer.length/count), w=(canvas.width/count)-2;
-                let x=0;
+                const count=64, step=Math.floor(buffer.length/count), w=(canvas.width/count)-2; let x=0;
                 for(let i=0; i<count; i++) {
                     let sum=0; for(let j=0; j<step; j++) sum+=buffer[(i*step)+j];
                     let v = (sum/step) * (i>count/2 ? 1.5 : 1);
