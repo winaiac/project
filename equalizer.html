@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winai Audio Equalizer - Radio Dharma Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- 90s Retro Texture & Skin --- */
+        body { font-family: 'Kanit', sans-serif; background-color: #0f0f0f; background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000 100%); color: #d1d5db; transition: background 0.5s; }
+        .retro-casing { position: relative; padding: 3rem; border-radius: 12px; box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 30px 60px rgba(0,0,0,0.9), 0 0 0 2px #000; transition: all 0.5s ease; }
+
+        /* Themes */
+        .theme-wood { background-color: #3e2723; background-image: linear-gradient(rgba(255,255,255,0.05), rgba(255,255,255,0) 20%), repeating-linear-gradient(90deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 2px, transparent 2px, transparent 4px), linear-gradient(to bottom, #5D4037 0%, #3E2723 40%, #281812 100%); border-top: 1px solid #795548; border-bottom: 8px solid #150b08; }
+        .theme-metal { background-color: #cfd8dc; background-image: linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.1) 100%), repeating-linear-gradient(0deg, transparent, transparent 2px, #9ca3af 2px, #9ca3af 3px); border-top: 2px solid #fff; border-bottom: 8px solid #546e7a; box-shadow: inset 0 0 20px rgba(0,0,0,0.3), 0 30px 60px rgba(0,0,0,0.9); }
+        .theme-black { background-color: #111; background-image: radial-gradient(circle, #222 1px, transparent 1px); background-size: 4px 4px; border-top: 1px solid #444; border-bottom: 8px solid #000; }
+        .theme-pink { background-color: #f8bbd0; background-image: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.05) 100%), repeating-linear-gradient(0deg, transparent, transparent 2px, #f48fb1 2px, #f48fb1 3px); border-top: 2px solid #ffebee; border-bottom: 8px solid #c2185b; }
+
+        /* Screws */
+        .screw { width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.6); position: absolute; display: flex; align-items: center; justify-content: center; z-index: 10; transition: all 0.5s; }
+        .screw::after { content: ''; width: 10px; height: 2px; transform: rotate(45deg); box-shadow: inset 1px 1px 1px rgba(0,0,0,0.5); }
+        .theme-wood .screw { background: radial-gradient(circle at 30% 30%, #fcd34d, #b45309); } .theme-wood .screw::after { background: #78350f; }
+        .theme-metal .screw { background: radial-gradient(circle at 30% 30%, #ffffff, #64748b); } .theme-metal .screw::after { background: #334155; }
+        .theme-metal h1 { color: #374151 !important; text-shadow: 1px 1px 0 #fff !important; } .theme-metal .text-amber-600 { color: #b91c1c !important; }
+        .theme-black .screw { background: radial-gradient(circle at 30% 30%, #444, #000); box-shadow: 0 1px 1px rgba(255,255,255,0.1); } .theme-black .screw::after { background: #000; box-shadow: 0 0 1px rgba(255,255,255,0.2); }
+        .theme-pink .screw { background: radial-gradient(circle at 30% 30%, #fff, #ec407a); } .theme-pink .screw::after { background: #880e4f; } .theme-pink h1 { color: #880e4f !important; text-shadow: 1px 1px 0 #fff !important; } .theme-pink .text-amber-600 { color: #c2185b !important; }
+        .screw.tl { top: 16px; left: 16px; } .screw.tr { top: 16px; right: 16px; } .screw.bl { bottom: 16px; left: 16px; } .screw.br { bottom: 16px; right: 16px; }
+
+        .vfd-screen { background: #050505; border: 4px solid #111; border-radius: 4px; border-bottom-color: #222; border-right-color: #222; box-shadow: inset 0 5px 20px rgba(0,0,0,1); position: relative; overflow: hidden; }
+        .vfd-screen::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: linear-gradient(rgba(16, 185, 129, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(16, 185, 129, 0.05) 1px, transparent 1px); background-size: 20px 20px; pointer-events: none; z-index: 1; }
+        .digital-font { font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
+
+        /* Buttons & Sliders */
+        .btn-retro { background: linear-gradient(to bottom, #3a3a3a, #222); border: 1px solid #000; border-top: 1px solid #555; box-shadow: 0 2px 4px rgba(0,0,0,0.5); color: #aaa; text-shadow: 0 -1px 0 #000; transition: all 0.1s; }
+        .btn-retro:active { background: #1a1a1a; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8); transform: translateY(1px); color: #888; }
+        .btn-retro-active { background: linear-gradient(to bottom, #333, #222); color: #10b981; text-shadow: 0 0 8px rgba(16, 185, 129, 0.8); border-color: #10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.2), inset 0 1px 0 rgba(255,255,255,0.1); }
+        .theme-btn { width: 24px; height: 24px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.5); box-shadow: 0 2px 4px rgba(0,0,0,0.5); cursor: pointer; transition: transform 0.1s, box-shadow 0.2s; position: relative; }
+        .theme-btn:active { transform: translateY(1px); box-shadow: inset 0 1px 3px rgba(0,0,0,0.8); }
+        .theme-btn::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 8px; height: 8px; border-radius: 50%; background: rgba(0,0,0,0.3); }
+        .theme-btn-wood { background: #5d4037; border-top: 1px solid #8d6e63; } .theme-btn-metal { background: #b0bec5; border-top: 1px solid #eceff1; } .theme-btn-black { background: #212121; border-top: 1px solid #424242; } .theme-btn-pink { background: #f06292; border-top: 1px solid #f8bbd0; }
+        .theme-active::after { background: #00ff00; box-shadow: 0 0 5px #00ff00; }
+
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #000; border-radius: 0; border: 1px solid #333; box-shadow: inset 1px 1px 2px #000; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 14px; background: linear-gradient(to right, #444, #777, #444); cursor: pointer; margin-top: -10px; box-shadow: 1px 2px 4px rgba(0,0,0,0.8); border: 1px solid #111; border-radius: 1px; position: relative; }
+        #master-volume::-webkit-slider-thumb { height: 16px; width: 16px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #ddd, #555); margin-top: -6px; }
+        .slider-vertical-wrapper { display: flex; align-items: center; justify-content: center; height: 250px; width: 40px; background: #151515; border-left: 1px solid #2a2a2a; border-right: 1px solid #2a2a2a; box-shadow: inset 0 0 15px #000; }
+        input[type=range].slider-vertical { transform: rotate(-90deg); width: 250px; max-width: none; }
+        
+        .printed-label { font-family: Arial, sans-serif; font-weight: bold; color: #888; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; }
+        .credit-plate { background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c); color: #3e2723; border: 1px solid #8B4513; box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-family: 'Kanit', sans-serif; font-weight: bold; padding: 4px 16px; border-radius: 2px; text-shadow: 0 1px 0 rgba(255,255,255,0.4); display: inline-block; background-size: 200% auto; transition: 0.5s; }
+        .credit-plate:hover { background-position: right center; }
+        .credit-link { text-decoration: none; color: inherit; }
+        .led-indicator { width: 8px; height: 8px; border-radius: 50%; background: #333; box-shadow: inset 1px 1px 1px #000; display: inline-block; margin-right: 6px; }
+        .btn-retro-active .led-indicator { background: #00ff00; box-shadow: 0 0 5px #00ff00, inset -1px -1px 2px rgba(0,0,0,0.2); }
+        .faceplate { background-color: #1a1a1a; border: 1px solid #333; box-shadow: inset 0 0 20px #000; padding: 20px; border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Retro Casing -->
+    <div id="casing" class="w-full max-w-6xl retro-casing theme-wood">
+        <div class="screw tl"></div><div class="screw tr"></div><div class="screw bl"></div><div class="screw br"></div>
+
+        <div class="faceplate h-full w-full">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-800 pb-4">
+                <div class="flex items-center gap-4">
+                    <h1 class="text-3xl font-bold text-gray-400 digital-font tracking-widest" style="text-shadow: 2px 2px 0 #000;">
+                        EQUALIZER <span class="text-amber-600 text-sm font-sans tracking-normal font-bold">RADIO ED.</span>
+                    </h1>
+                </div>
+                <div class="flex flex-wrap items-center justify-center gap-4 mt-4 md:mt-0">
+                    <div class="flex items-center gap-2 bg-[#111] px-3 py-1 rounded border border-gray-700">
+                        <span class="printed-label text-[9px] mr-1">SKIN:</span>
+                        <div class="theme-btn theme-btn-wood theme-active" onclick="setTheme('wood')" title="Classic Wood"></div>
+                        <div class="theme-btn theme-btn-metal" onclick="setTheme('metal')" title="Brushed Metal"></div>
+                        <div class="theme-btn theme-btn-black" onclick="setTheme('black')" title="Matte Black"></div>
+                        <div class="theme-btn theme-btn-pink" onclick="setTheme('pink')" title="Retro Pink"></div>
+                    </div>
+                    <div class="bg-black border border-gray-700 px-4 py-1 rounded-sm shadow-[inset_0_0_10px_#000] flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-red-600 animate-pulse shadow-[0_0_5px_red]"></div>
+                        <span id="track-name" class="text-xs text-emerald-500 digital-font truncate max-w-[150px] tracking-wide">NO SIGNAL</span>
+                    </div>
+                    <a href="https://facebook.com/winayo1" target="_blank" class="credit-link">
+                        <div class="credit-plate">วินัย ออดิโอ้</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Content -->
+            
+            <!-- 1. EQ Interface (Initially VISIBLE) -->
+            <div id="eq-mode-content">
+                <div class="relative w-full h-56 vfd-screen mb-8 group">
+                    <canvas id="visualizer" class="w-full h-full relative z-10 opacity-90"></canvas>
+                    <div id="start-overlay" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 z-20 transition-opacity duration-300">
+                        <p class="text-emerald-500 digital-font text-xl mb-4 tracking-widest border border-emerald-500/30 px-6 py-2 bg-black">SYSTEM STANDBY</p>
+                        <div class="flex flex-wrap justify-center gap-4 px-4">
+                            <button id="radio-btn-overlay" class="btn-retro px-6 py-2 rounded text-xs uppercase tracking-wider font-bold text-amber-500 border-amber-800">RADIO LUANGTA</button>
+                            <button id="demo-btn-overlay" class="btn-retro px-6 py-2 rounded text-xs uppercase tracking-wider font-bold">PLAY DEMO</button>
+                            <button id="mic-btn-overlay" class="btn-retro px-6 py-2 rounded text-xs uppercase tracking-wider font-bold">MIC INPUT</button>
+                            <button id="tab-btn-overlay" class="btn-retro px-6 py-2 rounded text-xs uppercase tracking-wider font-bold">PC AUDIO</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-[#222] p-4 rounded border border-gray-800 shadow-inner mb-8">
+                    <div class="flex flex-col lg:flex-row gap-6 items-center justify-between">
+                        <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-center lg:justify-start">
+                            <div class="printed-label mr-2">SOURCE:</div>
+                            <button id="radio-btn" class="btn-retro px-4 py-2 rounded text-xs font-bold text-amber-500 border-amber-900 shadow-[0_0_5px_rgba(245,158,11,0.2)]">RADIO</button>
+                            <input type="file" id="audio-upload" accept="audio/*" class="hidden">
+                            <label for="audio-upload" class="btn-retro cursor-pointer px-4 py-2 rounded text-xs flex items-center gap-2 font-bold">FILE</label>
+                            <button id="demo-btn" class="btn-retro px-4 py-2 rounded text-xs font-bold">DEMO</button>
+                            <button id="mic-btn" class="btn-retro px-4 py-2 rounded text-xs font-bold">MIC</button>
+                            <button id="tab-btn" class="btn-retro px-4 py-2 rounded text-xs font-bold">PC-IN</button>
+                            <audio id="audio-player" class="hidden" crossorigin="anonymous"></audio>
+                        </div>
+                        <div class="flex items-center gap-6 w-full lg:w-auto justify-center bg-[#1a1a1a] px-6 py-2 rounded border border-gray-800">
+                            <button id="monitor-btn" class="btn-retro-active px-4 py-2 rounded text-xs flex items-center gap-2 font-bold border border-emerald-600/50">
+                                <span class="led-indicator"></span> EQ MONITOR
+                            </button>
+                            <button id="play-btn" class="w-10 h-10 bg-gradient-to-br from-gray-700 to-black rounded-full border-2 border-gray-600 flex items-center justify-center shadow-lg active:translate-y-0.5 disabled:opacity-50" disabled>
+                                <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#10b981" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                <svg id="pause-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#fbbf24" stroke="none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                            </button>
+                            <div class="flex items-center gap-2">
+                                <span class="printed-label">VOL</span>
+                                <input type="range" id="master-volume" min="0" max="1" step="0.01" value="0.8" class="w-24">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end mt-2">
+                        <button id="reset-eq" class="text-[10px] text-gray-500 hover:text-red-400 uppercase tracking-wider font-mono">[ RESET ALL ]</button>
+                    </div>
+                </div>
+
+                <div class="bg-[#111] p-6 rounded border-2 border-[#333] shadow-[inset_0_0_20px_#000]">
+                    <div class="flex justify-between items-end pb-2 mb-2 border-b border-gray-800">
+                        <span class="printed-label text-gray-500">+12dB</span><span class="printed-label text-gray-500">FLAT</span><span class="printed-label text-gray-500">-12dB</span>
+                    </div>
+                    <div class="flex md:grid md:grid-cols-10 gap-1 md:gap-2 min-w-max md:min-w-0 justify-items-center" id="eq-container"></div>
+                </div>
+            </div>
+
+            <!-- 2. RADIO MODE INTERFACE (Hidden Initially) -->
+            <div id="radio-mode-content" class="hidden w-full h-[650px] relative bg-zinc-900 border-2 border-gray-700 rounded overflow-hidden shadow-2xl">
+                <!-- Top Control Bar -->
+                <div class="absolute top-0 left-0 w-full bg-[#111] p-3 flex justify-between items-center z-30 border-b border-gray-600 shadow-md">
+                    <div class="flex items-center gap-4">
+                        <span class="text-amber-500 font-bold ml-2 tracking-wider flex items-center gap-2">
+                            <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                            LUANGTA YOUTUBE
+                        </span>
+                    </div>
+                    <button id="close-radio-btn" class="bg-red-800 hover:bg-red-600 text-white px-4 py-1.5 rounded text-xs font-bold transition flex items-center gap-2 border border-red-900 shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        CLOSE RADIO
+                    </button>
+                </div>
+
+                <!-- Iframe Container -->
+                <div class="w-full h-full bg-black relative flex items-center justify-center pt-[50px]">
+                    <iframe 
+                        id="radio-frame-youtube"
+                        class="w-full h-full"
+                        src="" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen
+                        referrerpolicy="strict-origin-when-cross-origin">
+                    </iframe>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Setup UI
+        const freqs = [31, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
+        const container = document.getElementById('eq-container');
+        freqs.forEach(f => {
+            const label = f >= 1000 ? (f/1000)+'k' : f;
+            const color = (f === 1000) ? 'text-emerald-500' : 'text-gray-300';
+            const div = document.createElement('div');
+            div.className = 'flex flex-col items-center w-16 md:w-auto';
+            div.innerHTML = `<div class="slider-vertical-wrapper"><input type="range" class="slider-vertical eq-band" data-freq="${f}" min="-12" max="12" value="0" step="0.1"></div><div class="text-center mt-3 border-t border-gray-700 w-full pt-1"><span class="block printed-label ${color}">${label}</span><span class="block text-[8px] text-gray-600 font-mono">Hz</span></div>`;
+            container.appendChild(div);
+        });
+
+        window.setTheme = function(name) {
+            document.getElementById('casing').className = `w-full max-w-6xl retro-casing theme-${name}`;
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('theme-active'));
+            const btn = document.querySelector(`.theme-btn-${name}`);
+            if(btn) btn.classList.add('theme-active');
+        };
+
+        // Audio Vars
+        const audioPlayer = document.getElementById('audio-player');
+        const eqBands = document.querySelectorAll('.eq-band');
+        const canvas = document.getElementById('visualizer');
+        const ctx = canvas ? canvas.getContext('2d') : null;
+        const demoTrackUrl = 'https://upload.wikimedia.org/wikipedia/commons/transcoded/e/eb/Beethoven_Moonlight_1st_movement.ogg/Beethoven_Moonlight_1st_movement.ogg.mp3';
+        
+        // --- Radio Source (Fixed User ID with si parameter and autoplay) ---
+        const radioUrlLive = 'https://www.youtube.com/embed/sYDotmUeJpQ?si=81bB-2JLgXbxl7oK&autoplay=1';
+        
+        let audioContext, analyser, gainNode, eqInputNode, filters=[], isPlaying=false, animationId;
+        let elementSourceNode=null, streamSourceNode=null, isBypass=false;
+        
+        // Detect EXE
+        const isExe = window.pywebview !== undefined;
+
+        function safeAddListener(id, event, fn) { const el = document.getElementById(id); if(el) el.addEventListener(event, fn); }
+        function resizeCanvas() { if(canvas){canvas.width = canvas.parentElement.offsetWidth; canvas.height = canvas.parentElement.offsetHeight;} }
+        window.addEventListener('resize', resizeCanvas); resizeCanvas();
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                eqInputNode = audioContext.createGain(); gainNode = audioContext.createGain();
+                analyser = audioContext.createAnalyser(); analyser.fftSize = 2048; analyser.smoothingTimeConstant = 0.85;
+                filters = freqs.map((f, i) => {
+                    const filter = audioContext.createBiquadFilter(); filter.frequency.value = f;
+                    filter.type = (i===0)?'lowshelf':(i===freqs.length-1)?'highshelf':'peaking';
+                    if(filter.type==='peaking') filter.Q.value = 1.4; filter.gain.value = 0; return filter;
+                });
+                setupRouting(false); 
+            }
+            if(audioContext.state === 'suspended') audioContext.resume();
+        }
+
+        function setupRouting(bypass) {
+            if(!eqInputNode) return;
+            eqInputNode.disconnect(); filters.forEach(f => f.disconnect());
+            if(bypass) { eqInputNode.connect(analyser); updateMonitorUI(false); }
+            else { let last = eqInputNode; filters.forEach(f => { last.connect(f); last=f; }); last.connect(analyser); updateMonitorUI(true); }
+            analyser.connect(gainNode); gainNode.connect(audioContext.destination);
+        }
+
+        function updateMonitorUI(isEQ) {
+            const btn = document.getElementById('monitor-btn'); if(!btn) return;
+            if(isEQ) { btn.classList.add('btn-retro-active'); btn.classList.remove('btn-retro'); btn.innerHTML='<span class="led-indicator" style="background-color:#00ff00;box-shadow:0 0 5px #00ff00"></span> EQ MONITOR'; }
+            else { btn.classList.remove('btn-retro-active'); btn.classList.add('btn-retro'); btn.innerHTML='<span class="led-indicator" style="background-color:#333;box-shadow:none"></span> RAW BYPASS'; }
+        }
+
+        function clearActiveModes() {
+            document.getElementById('eq-mode-content').classList.remove('hidden');
+            document.getElementById('radio-mode-content').classList.add('hidden');
+            
+            // Stop Radio Iframe
+            document.getElementById('radio-frame-youtube').src = "";
+
+            ['mic-btn','tab-btn','demo-btn', 'radio-btn'].forEach(id=>{ const b=document.getElementById(id); if(b){b.classList.remove('btn-retro-active'); b.classList.add('btn-retro');}});
+            if(streamSourceNode){ try{streamSourceNode.disconnect();}catch(e){} streamSourceNode=null; }
+            if(audioPlayer.srcObject){ audioPlayer.srcObject.getTracks().forEach(t=>t.stop()); audioPlayer.srcObject=null; }
+            audioPlayer.pause(); audioPlayer.removeAttribute('crossorigin'); audioPlayer.removeAttribute('src'); 
+            if(elementSourceNode){ try{elementSourceNode.disconnect();}catch(e){} }
+            isBypass=false; setupRouting(false);
+        }
+
+        // Radio Logic
+        function loadRadio() {
+            clearActiveModes();
+            document.getElementById('eq-mode-content').classList.add('hidden');
+            document.getElementById('radio-mode-content').classList.remove('hidden');
+            document.getElementById('radio-btn').classList.add('btn-retro-active');
+            document.getElementById('track-name').textContent = "RADIO MODE";
+            
+            // Force load the specific video
+            const iframe = document.getElementById('radio-frame-youtube');
+            iframe.src = radioUrlLive;
+            document.getElementById('track-name').textContent = "LUANGTA DHARMA";
+        }
+        
+        // REMOVED AUTO LOAD - Start in EQ Mode as requested
+        // window.addEventListener('DOMContentLoaded', () => { setTimeout(loadRadio, 100); });
+
+        // Close Radio Button
+        safeAddListener('close-radio-btn', 'click', () => {
+            clearActiveModes();
+            // Reset to default view (maybe reset text)
+            document.getElementById('track-name').textContent = "NO SIGNAL";
+        });
+
+        function switchToFileMode(isRadio) {
+            clearActiveModes(); initAudio();
+            document.getElementById('play-btn').disabled = false;
+            
+            if(!isRadio) {
+                audioPlayer.setAttribute('crossorigin', 'anonymous');
+            }
+
+            try {
+                elementSourceNode = audioContext.createMediaElementSource(audioPlayer);
+                elementSourceNode.connect(eqInputNode);
+            } catch(e) { 
+                if(elementSourceNode) elementSourceNode.connect(eqInputNode);
+            }
+
+            audioPlayer.muted = false;
+            audioPlayer.volume = 1.0; 
+        }
+
+        async function startLiveInput(type) {
+            try {
+                clearActiveModes(); initAudio();
+                
+                if(elementSourceNode) {
+                    try { elementSourceNode.disconnect(); } catch(e){}
+                }
+
+                isPlaying = false; 
+                updateUI(false);
+                document.getElementById('play-btn').disabled = true; 
+
+                let stream;
+                if(type === 'mic') {
+                    document.getElementById('mic-btn').classList.add('btn-retro-active');
+                    document.getElementById('track-name').textContent = "MIC INPUT";
+                    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    alert("⚠️ Use headphones!");
+                } else {
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) { alert("Not supported"); return; }
+                    document.getElementById('tab-btn').classList.add('btn-retro-active');
+                    document.getElementById('track-name').textContent = "PC AUDIO";
+                    
+                    stream = await navigator.mediaDevices.getDisplayMedia({
+                        video: { width:1, height:1 },
+                        audio: { 
+                            echoCancellation: false, 
+                            noiseSuppression: false, 
+                            autoGainControl: false,
+                            suppressLocalAudioPlayback: true // FIXED: True to mute source, we handle audio below
+                        }
+                    });
+                    const v = stream.getVideoTracks()[0]; if(v){v.stop(); stream.removeTrack(v);}
+                }
+
+                streamSourceNode = audioContext.createMediaStreamSource(stream);
+                streamSourceNode.connect(eqInputNode);
+
+                // Dummy player to keep stream active (muted)
+                audioPlayer.srcObject = stream;
+                // FIX: Use Volume 0 instead of Mute to trick browser into sending audio data
+                // CHANGED: Use 0.001 to be safe against aggressive optimizations
+                audioPlayer.volume = 0.001; 
+                audioPlayer.muted = false; 
+                
+                audioPlayer.play().catch(e=>{});
+
+                isPlaying = true; updateUI(true);
+
+                stream.getAudioTracks()[0].onended = () => {
+                    alert("Disconnected");
+                    if(streamSourceNode) streamSourceNode.disconnect();
+                    isPlaying=false; updateUI(false); clearActiveModes();
+                };
+            } catch(e) { console.error(e); clearActiveModes(); }
+        }
+
+        function loadFile(file) {
+            switchToFileMode(false);
+            audioPlayer.src = URL.createObjectURL(file);
+            document.getElementById('track-name').textContent = file.name.toUpperCase().substring(0, 20);
+            playAudio();
+        }
+        function loadDemo() {
+            switchToFileMode(false);
+            document.getElementById('demo-btn').classList.add('btn-retro-active');
+            audioPlayer.src = demoTrackUrl;
+            document.getElementById('track-name').textContent = "DEMO: MOONLIGHT";
+            playAudio();
+        }
+
+        function playAudio() {
+            audioPlayer.load();
+            const h = ()=>{ togglePlay(true); audioPlayer.removeEventListener('canplay', h); };
+            audioPlayer.addEventListener('canplay', h);
+        }
+        function togglePlay(force) {
+            if (streamSourceNode) return;
+            const shouldPlay = force!==undefined ? force : audioPlayer.paused;
+            if(shouldPlay) { if(audioContext) audioContext.resume(); audioPlayer.play().then(()=>{isPlaying=true; updateUI(true);}).catch(()=>{isPlaying=false; updateUI(false);}); }
+            else { audioPlayer.pause(); isPlaying=false; updateUI(false); }
+        }
+        function updateUI(p) {
+            const play=document.getElementById('play-icon'), pause=document.getElementById('pause-icon');
+            if(p){play.classList.add('hidden'); pause.classList.remove('hidden');} else {play.classList.remove('hidden'); pause.classList.add('hidden');}
+        }
+
+        // Listeners
+        safeAddListener('audio-upload', 'change', e=>loadFile(e.target.files[0]));
+        safeAddListener('demo-btn', 'click', loadDemo); safeAddListener('demo-btn-overlay', 'click', loadDemo);
+        safeAddListener('radio-btn', 'click', loadRadio); safeAddListener('radio-btn-overlay', 'click', loadRadio);
+        safeAddListener('mic-btn', 'click', ()=>startLiveInput('mic')); safeAddListener('mic-btn-overlay', 'click', ()=>startLiveInput('mic'));
+        safeAddListener('tab-btn', 'click', ()=>startLiveInput('tab')); safeAddListener('tab-btn-overlay', 'click', ()=>startLiveInput('tab'));
+        safeAddListener('play-btn', 'click', ()=>{if(!audioContext)initAudio(); togglePlay();});
+        safeAddListener('master-volume', 'input', e=>{ if(gainNode) gainNode.gain.value = e.target.value; });
+        safeAddListener('monitor-btn', 'click', ()=>{ isBypass=!isBypass; setupRouting(isBypass); });
+        
+        const resetFn = ()=>{ eqBands.forEach((b,i)=>{b.value=0; if(filters[i]) filters[i].gain.value=0;}); };
+        safeAddListener('reset-eq', 'click', resetFn); safeAddListener('reset-eq-mobile', 'click', resetFn);
+        eqBands.forEach((b,i)=> {
+            b.addEventListener('input', ()=>{ if(filters[i]) filters[i].gain.value = parseFloat(b.value); });
+            b.addEventListener('dblclick', ()=>{ b.value=0; if(filters[i]) filters[i].gain.value=0; });
+        });
+        
+        audioPlayer.addEventListener('ended', ()=>{isPlaying=false; updateUI(false);});
+
+        function visualize() {
+            if(analyser && ctx) {
+                const buffer = new Uint8Array(analyser.frequencyBinCount); analyser.getByteFrequencyData(buffer);
+                ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
+                const count=64, step=Math.floor(buffer.length/count), w=(canvas.width/count)-2; let x=0;
+                for(let i=0; i<count; i++) {
+                    let sum=0; for(let j=0; j<step; j++) sum+=buffer[(i*step)+j];
+                    let v = (sum/step) * (i>count/2 ? 1.5 : 1);
+                    const h = (canvas.height * (v/255)) * 0.9;
+                    const grad = ctx.createLinearGradient(0, canvas.height, 0, canvas.height-h);
+                    grad.addColorStop(0,'#047857'); grad.addColorStop(0.5,'#10b981'); grad.addColorStop(1,'#34d399');
+                    ctx.fillStyle=grad; 
+                    if(h>0){ ctx.beginPath(); ctx.rect(x, canvas.height-h, w, h); ctx.fill(); ctx.fillStyle='#d1fae5'; ctx.fillRect(x, canvas.height-h-2, w, 1); }
+                    x+=w+2;
+                }
+            }
+            requestAnimationFrame(visualize);
+        }
+        visualize();
+    </script>
+</body>
+</html>
