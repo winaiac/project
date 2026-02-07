@@ -26,9 +26,6 @@
             background-color: #0f0f0f;
             background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #050505 100%);
             -webkit-app-region: drag;
-            /* ป้องกันการเลือกข้อความโดยไม่ตั้งใจบนจอสัมผัส */
-            -webkit-user-select: none;
-            user-select: none;
         }
 
         /* --- THEME DEFINITIONS --- */
@@ -42,6 +39,7 @@
             flex-shrink: 0;
             margin: 0;
             -webkit-app-region: drag;
+            user-select: none;
         }
 
         /* FIX: Elements that MUST be clickable (Not draggable) */
@@ -58,8 +56,6 @@
         .preset-btn-side {
             -webkit-app-region: no-drag;
             cursor: pointer;
-            /* ป้องกันการแตะซ้ำเร็วๆ แล้วขยายจอในมือถือ */
-            touch-action: manipulation;
         }
 
         .faceplate {
@@ -599,7 +595,6 @@
             background: #451a03;
         }
 
-        /* Progress Bar for Long Press */
         .hold-progress {
             position: absolute;
             bottom: 0;
@@ -651,10 +646,79 @@
         .overflow-x-auto::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
+        /* Window Controls - Only Min/Close/Fullscreen */
+        .win-controls {
+            position: fixed;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            gap: 4px;
+            z-index: 10000;
+            -webkit-app-region: no-drag;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 4px 8px;
+            border-radius: 20px;
+            border: 1px solid #444;
+            backdrop-filter: blur(5px);
+        }
+
+        .win-btn {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #333;
+            color: #ccc;
+            font-weight: bold;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid #555;
+        }
+
+        .win-btn:hover {
+            background: #555;
+            color: white;
+        }
+
+        .win-btn-close {
+            background: #7f1d1d;
+            border-color: #ef4444;
+        }
+
+        .win-btn-close:hover {
+            background: #ef4444;
+        }
+
+        .win-btn-min {
+            background: #854d0e;
+            border-color: #eab308;
+        }
+
+        .win-btn-min:hover {
+            background: #eab308;
+        }
+
+        .win-btn-full {
+            background: #1e3a8a;
+            border-color: #3b82f6;
+        }
+
+        .win-btn-full:hover {
+            background: #3b82f6;
+        }
     </style>
 </head>
 
 <body>
+
+    <div class="win-controls">
+        <button class="win-btn win-btn-full" onclick="toggleFullScreen()" title="Fullscreen">⛶</button>
+        <button class="win-btn win-btn-min" onclick="windowApi('minimize')" title="Minimize">_</button>
+        <button class="win-btn win-btn-close" onclick="windowApi('close')" title="Close">X</button>
+    </div>
 
     <div id="scaler">
         <div id="casing" class="retro-casing theme-wood">
@@ -915,6 +979,16 @@
         window.addEventListener('resize', fitToScreen);
         window.addEventListener('load', fitToScreen);
         setTimeout(fitToScreen, 100);
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
 
         // --- SETUP UI ---
         const freqs = [31, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
