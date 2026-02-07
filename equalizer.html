@@ -10,21 +10,60 @@
         href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&family=Orbitron:wght@500;700&display=swap"
         rel="stylesheet">
     <style>
-        /* --- 90s Retro Texture & Skin --- */
+        /* --- CORE STYLES --- */
         body {
             font-family: 'Kanit', sans-serif;
-            background-color: #0f0f0f;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000 100%);
+            background-color: transparent;
             color: #d1d5db;
-            transition: background 0.5s;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            /* Background */
+            background-color: #0f0f0f;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #050505 100%);
+
+            -webkit-app-region: drag;
         }
 
+        /* --- THEME DEFINITIONS --- */
         .retro-casing {
             position: relative;
-            padding: 3rem;
+            padding: 2.5rem;
             border-radius: 12px;
-            box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.5), 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 0 2px #000;
+            box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.5), 0 30px 80px rgba(0, 0, 0, 1), 0 0 0 2px #000;
             transition: all 0.5s ease;
+
+            /* Fixed Width for stability */
+            width: 1100px;
+            flex-shrink: 0;
+
+            -webkit-app-region: drag;
+            user-select: none;
+        }
+
+        /* FIX: Elements that MUST be clickable (Not draggable) */
+        button,
+        input,
+        canvas,
+        iframe,
+        .win-controls,
+        .theme-btn,
+        a,
+        .credit-link,
+        .playlist-item,
+        .playlist-controls {
+            -webkit-app-region: no-drag;
+            cursor: pointer;
+        }
+
+        .faceplate {
+            -webkit-app-region: drag;
         }
 
         /* Themes */
@@ -69,7 +108,7 @@
             align-items: center;
             justify-content: center;
             z-index: 10;
-            transition: all 0.5s;
+            -webkit-app-region: drag;
         }
 
         .screw::after {
@@ -133,23 +172,23 @@
         }
 
         .screw.tl {
-            top: 16px;
-            left: 16px;
+            top: 12px;
+            left: 12px;
         }
 
         .screw.tr {
-            top: 16px;
-            right: 16px;
+            top: 12px;
+            right: 12px;
         }
 
         .screw.bl {
-            bottom: 16px;
-            left: 16px;
+            bottom: 12px;
+            left: 12px;
         }
 
         .screw.br {
-            bottom: 16px;
-            right: 16px;
+            bottom: 12px;
+            right: 12px;
         }
 
         .vfd-screen {
@@ -163,7 +202,6 @@
             overflow: hidden;
         }
 
-        /* Grid overlay on screen */
         .vfd-screen::before {
             content: '';
             position: absolute;
@@ -209,19 +247,13 @@
         }
 
         .theme-btn {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border-radius: 4px;
             border: 1px solid rgba(0, 0, 0, 0.5);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
             cursor: pointer;
-            transition: transform 0.1s, box-shadow 0.2s;
             position: relative;
-        }
-
-        .theme-btn:active {
-            transform: translateY(1px);
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.8);
         }
 
         .theme-btn::after {
@@ -230,8 +262,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background: rgba(0, 0, 0, 0.3);
         }
@@ -261,22 +293,58 @@
             box-shadow: 0 0 5px #00ff00;
         }
 
-        .fullscreen-btn {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(0, 0, 0, 0.5);
+        /* Window Controls */
+        .win-controls {
+            position: fixed;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            gap: 4px;
+            z-index: 10000;
+            -webkit-app-region: no-drag;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 4px 8px;
+            border-radius: 20px;
+            border: 1px solid #444;
+            backdrop-filter: blur(5px);
+        }
+
+        .win-btn {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #333;
+            color: #ccc;
+            font-weight: bold;
+            font-size: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: #aaa;
+            border: 1px solid #555;
         }
 
-        .fullscreen-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
+        .win-btn:hover {
+            background: #555;
+            color: white;
+        }
+
+        .win-btn-close {
+            background: #7f1d1d;
+            border-color: #ef4444;
+        }
+
+        .win-btn-close:hover {
+            background: #ef4444;
+        }
+
+        .win-btn-min {
+            background: #854d0e;
+            border-color: #eab308;
+        }
+
+        .win-btn-min:hover {
+            background: #eab308;
         }
 
         input[type=range] {
@@ -297,15 +365,14 @@
 
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 24px;
-            width: 14px;
+            height: 20px;
+            width: 12px;
             background: linear-gradient(to right, #444, #777, #444);
             cursor: pointer;
-            margin-top: -10px;
+            margin-top: -8px;
             box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.8);
             border: 1px solid #111;
             border-radius: 1px;
-            position: relative;
         }
 
         #master-volume::-webkit-slider-thumb {
@@ -316,12 +383,20 @@
             margin-top: -6px;
         }
 
+        #seek-bar::-webkit-slider-thumb {
+            height: 12px;
+            width: 6px;
+            border-radius: 0;
+            margin-top: -3px;
+            background: #10b981;
+        }
+
         .slider-vertical-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 250px;
-            width: 40px;
+            height: 200px;
+            width: 36px;
             background: #151515;
             border-left: 1px solid #2a2a2a;
             border-right: 1px solid #2a2a2a;
@@ -330,7 +405,7 @@
 
         input[type=range].slider-vertical {
             transform: rotate(-90deg);
-            width: 250px;
+            width: 200px;
             max-width: none;
         }
 
@@ -339,7 +414,7 @@
             font-weight: bold;
             color: #888;
             text-transform: uppercase;
-            font-size: 10px;
+            font-size: 9px;
             letter-spacing: 0.5px;
         }
 
@@ -350,47 +425,170 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
             font-family: 'Kanit', sans-serif;
             font-weight: bold;
-            padding: 4px 16px;
+            padding: 2px 10px;
             border-radius: 2px;
             text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
             display: inline-block;
-            background-size: 200% auto;
-            transition: 0.5s;
-        }
-
-        .credit-plate:hover {
-            background-position: right center;
-        }
-
-        .credit-link {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .led-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #333;
-            box-shadow: inset 1px 1px 1px #000;
-            display: inline-block;
-            margin-right: 6px;
-        }
-
-        .btn-retro-active .led-indicator {
-            background: #00ff00;
-            box-shadow: 0 0 5px #00ff00, inset -1px -1px 2px rgba(0, 0, 0, 0.2);
+            font-size: 10px;
         }
 
         .faceplate {
             background-color: #1a1a1a;
             border: 1px solid #333;
             box-shadow: inset 0 0 20px #000;
-            padding: 20px;
+            padding: 16px;
             border-radius: 4px;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Custom Scrollbar for overflow handling */
+        /* Auto-scaling Container - CENTERED */
+        #scaler {
+            transform-origin: center center;
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .zoom-text {
+            font-size: 10px;
+            color: #aaa;
+            margin: 0 4px;
+            font-family: 'Orbitron', sans-serif;
+            line-height: 22px;
+            width: 30px;
+            text-align: center;
+        }
+
+        /* Playlist Styles */
+        #playlist-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 10, 0.95);
+            z-index: 30;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .playlist-header {
+            font-family: 'Orbitron', sans-serif;
+            color: #10b981;
+            font-size: 12px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .playlist-actions button {
+            margin-left: 5px;
+            font-size: 10px;
+            padding: 2px 6px;
+            border: 1px solid #444;
+            border-radius: 2px;
+            color: #aaa;
+            background: #222;
+        }
+
+        .playlist-actions button:hover {
+            color: #fff;
+            border-color: #666;
+            background: #333;
+        }
+
+        .playlist-list {
+            flex: 1;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #888;
+        }
+
+        .playlist-item {
+            padding: 4px 6px;
+            cursor: pointer;
+            border-bottom: 1px solid #1a1a1a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: all 0.1s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .playlist-item:hover {
+            background: #222;
+            color: #ccc;
+        }
+
+        .playlist-item.active {
+            color: #10b981;
+            background: #112d22;
+            font-weight: bold;
+        }
+
+        .playlist-item.dragging {
+            opacity: 0.5;
+            background: #333;
+        }
+
+        .playlist-item.drag-over {
+            border-top: 2px solid #10b981;
+        }
+
+        .track-controls {
+            display: none;
+            gap: 4px;
+        }
+
+        /* Show controls on hover OR when in delete mode */
+        .playlist-item:hover .track-controls,
+        .playlist-item.delete-mode .track-controls {
+            display: flex;
+        }
+
+        .track-btn {
+            font-size: 9px;
+            padding: 0 4px;
+            color: #666;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 2px;
+        }
+
+        .track-btn:hover {
+            color: #fff;
+            border-color: #555;
+        }
+
+        .track-btn-del {
+            color: #ef4444;
+            border-color: #7f1d1d;
+        }
+
+        .track-btn-del:hover {
+            background: #7f1d1d;
+            color: white;
+        }
+
+        .playlist-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .playlist-list::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
         .overflow-x-auto::-webkit-scrollbar {
             height: 8px;
         }
@@ -410,186 +608,238 @@
     </style>
 </head>
 
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
+<body>
 
-    <!-- Retro Casing -->
-    <div id="casing" class="w-full max-w-6xl retro-casing theme-wood">
-        <div class="screw tl"></div>
-        <div class="screw tr"></div>
-        <div class="screw bl"></div>
-        <div class="screw br"></div>
 
-        <div class="faceplate h-full w-full">
-            <!-- Header -->
-            <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-800 pb-4">
-                <div class="flex items-center gap-4">
-                    <h1 class="text-3xl font-bold text-gray-400 digital-font tracking-widest"
+    <div id="scaler">
+        <div id="casing" class="retro-casing theme-wood">
+            <div class="screw tl"></div>
+            <div class="screw tr"></div>
+            <div class="screw bl"></div>
+            <div class="screw br"></div>
+
+            <div class="faceplate h-full">
+                <!-- Header -->
+                <div
+                    class="flex flex-col md:flex-row justify-between items-center mb-4 border-b border-gray-800 pb-2 shrink-0">
+                    <h1 class="text-2xl font-bold text-gray-400 digital-font tracking-widest"
                         style="text-shadow: 2px 2px 0 #000;">
-                        EQUALIZER <span class="text-amber-600 text-sm font-sans tracking-normal font-bold">STEREO
-                            2.0</span>
+                        EQ <span class="text-amber-600 text-sm font-sans tracking-normal font-bold">STEREO 2.0</span>
                     </h1>
-                </div>
-                <div class="flex flex-wrap items-center justify-center gap-4 mt-4 md:mt-0">
-                    <div class="flex items-center gap-2 bg-[#111] px-3 py-1 rounded border border-gray-700">
-                        <span class="printed-label text-[9px] mr-1">SKIN:</span>
-                        <div class="theme-btn theme-btn-wood theme-active" onclick="setTheme('wood')"
-                            title="Classic Wood"></div>
-                        <div class="theme-btn theme-btn-metal" onclick="setTheme('metal')" title="Brushed Metal"></div>
-                        <div class="theme-btn theme-btn-black" onclick="setTheme('black')" title="Matte Black"></div>
-                        <div class="theme-btn theme-btn-pink" onclick="setTheme('pink')" title="Retro Pink"></div>
-                        <!-- Fullscreen Button -->
-                        <div class="fullscreen-btn ml-2" onclick="toggleFullScreen()" title="Full Screen">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path
-                                    d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div
-                        class="bg-black border border-gray-700 px-4 py-1 rounded-sm shadow-[inset_0_0_10px_#000] flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-red-600 animate-pulse shadow-[0_0_5px_red]"></div>
-                        <span id="track-name"
-                            class="text-xs text-emerald-500 digital-font truncate max-w-[150px] tracking-wide">NO
-                            SIGNAL</span>
-                    </div>
-                    <a href="https://facebook.com/winayo1" target="_blank" class="credit-link">
-                        <div class="credit-plate">วินัย ออดิโอ้</div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Content -->
-            <div id="eq-mode-content">
-                <!-- Visualizer -->
-                <div class="relative w-full h-56 vfd-screen mb-8 group bg-black">
-                    <canvas id="visualizer" class="w-full h-full relative z-10 opacity-90"></canvas>
-                    <div id="start-overlay"
-                        class="hidden absolute inset-0 flex flex-col items-center justify-center bg-black/90 z-20">
-                    </div>
-                </div>
-
-                <!-- Control Panel -->
-                <div class="bg-[#222] p-4 rounded border border-gray-800 shadow-inner mb-8">
-                    <div class="flex flex-col lg:flex-row gap-6 items-center justify-between">
-                        <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-center lg:justify-start">
-                            <div class="printed-label mr-2">SOURCE:</div>
-                            <button id="radio-btn"
-                                class="btn-retro px-4 py-2 rounded text-xs font-bold text-amber-500 border-amber-900 shadow-[0_0_5px_rgba(245,158,11,0.2)]">RADIO</button>
-                            <input type="file" id="audio-upload" accept="audio/*" class="hidden">
-                            <label for="audio-upload"
-                                class="btn-retro cursor-pointer px-4 py-2 rounded text-xs flex items-center gap-2 font-bold">FILE</label>
-                            <button id="demo-btn" class="btn-retro px-4 py-2 rounded text-xs font-bold">DEMO</button>
-                            <button id="mic-btn" class="btn-retro px-4 py-2 rounded text-xs font-bold">MIC</button>
-                            <button id="tab-btn" class="btn-retro px-4 py-2 rounded text-xs font-bold">PC-IN</button>
-                            <audio id="audio-player" class="hidden" crossorigin="anonymous"></audio>
+                    <div class="flex flex-wrap items-center justify-center gap-3 mt-2 md:mt-0">
+                        <div class="flex items-center gap-1 bg-[#111] px-2 py-1 rounded border border-gray-700">
+                            <span class="printed-label text-[8px] mr-1">SKIN:</span>
+                            <div class="theme-btn theme-btn-wood theme-active" onclick="setTheme('wood')"
+                                title="Classic Wood"></div>
+                            <div class="theme-btn theme-btn-metal" onclick="setTheme('metal')" title="Brushed Metal">
+                            </div>
+                            <div class="theme-btn theme-btn-black" onclick="setTheme('black')" title="Matte Black">
+                            </div>
+                            <div class="theme-btn theme-btn-pink" onclick="setTheme('pink')" title="Retro Pink"></div>
                         </div>
                         <div
-                            class="flex items-center gap-6 w-full lg:w-auto justify-center bg-[#1a1a1a] px-6 py-2 rounded border border-gray-800">
-                            <!-- SAFETY LOCK BUTTON -->
-                            <button id="safety-btn"
-                                class="btn-retro px-3 py-2 rounded text-xs flex items-center gap-1 font-bold border border-gray-600 text-gray-400 hover:text-white"
-                                title="Unlock Volume/Bass Limits">
-                                🔒 SAFE
-                            </button>
+                            class="bg-black border border-gray-700 px-3 py-1 rounded-sm shadow-[inset_0_0_10px_#000] flex items-center gap-2">
+                            <div class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse shadow-[0_0_5px_red]"></div>
+                            <span id="track-name"
+                                class="text-[10px] text-emerald-500 digital-font truncate max-w-[120px] tracking-wide">NO
+                                SIGNAL</span>
+                        </div>
+                        <a href="https://facebook.com/winayo1" target="_blank" class="credit-link no-drag">
+                            <div class="credit-plate">วินัย ออดิโอ้</div>
+                        </a>
+                    </div>
+                </div>
 
-                            <!-- VISUALIZER STYLE SWITCHER -->
-                            <button id="vis-style-btn"
-                                class="btn-retro px-4 py-2 rounded text-xs flex items-center gap-2 font-bold border border-blue-600/50 text-blue-400 hover:text-white">
-                                📊 VISUAL MODE
-                            </button>
+                <!-- Unified Content Viewport with FIXED HEIGHT -->
+                <div id="content-viewport" class="h-[560px] relative">
 
-                            <button id="monitor-btn"
-                                class="btn-retro-active px-4 py-2 rounded text-xs flex items-center gap-2 font-bold border border-emerald-600/50">
-                                <span class="led-indicator"></span> EQ MONITOR
-                            </button>
-                            <button id="play-btn"
-                                class="w-10 h-10 bg-gradient-to-br from-gray-700 to-black rounded-full border-2 border-gray-600 flex items-center justify-center shadow-lg active:translate-y-0.5 disabled:opacity-50"
-                                disabled>
-                                <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                    viewBox="0 0 24 24" fill="#10b981" stroke="none">
-                                    <polygon points="5 3 19 12 5 21 5 3" />
-                                </svg>
-                                <svg id="pause-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="16"
-                                    height="16" viewBox="0 0 24 24" fill="#fbbf24" stroke="none">
-                                    <rect x="6" y="4" width="4" height="16" />
-                                    <rect x="14" y="4" width="4" height="16" />
-                                </svg>
-                            </button>
-                            <div class="flex items-center gap-2">
-                                <span class="printed-label">VOL</span>
-                                <!-- Volume set to 50% by default -->
-                                <input type="range" id="master-volume" min="0" max="1" step="0.01" value="0.5"
-                                    class="w-24">
+                    <!-- 1. EQ Mode -->
+                    <div id="eq-mode-content" class="h-full flex flex-col">
+                        <!-- Visualizer Area -->
+                        <div class="relative w-full h-48 vfd-screen mb-6 group bg-black shrink-0">
+                            <canvas id="visualizer" class="w-full h-full relative z-10 opacity-90"></canvas>
+                            <div id="start-overlay"
+                                class="hidden absolute inset-0 flex flex-col items-center justify-center bg-black/90 z-20">
+                            </div>
+
+                            <!-- Playlist Overlay -->
+                            <div id="playlist-overlay" class="hidden">
+                                <div class="playlist-header">
+                                    <span>PLAYLIST <span id="playlist-count">(0)</span></span>
+                                    <div class="playlist-actions">
+                                        <button onclick="document.getElementById('add-audio-upload').click()">+
+                                            ADD</button>
+                                        <input type="file" id="add-audio-upload" accept="audio/*" multiple
+                                            class="hidden">
+                                    </div>
+                                </div>
+                                <div id="playlist-container" class="playlist-list">
+                                    <div class="p-4 text-center text-gray-600 italic">No files loaded.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Control Panel -->
+                        <div class="bg-[#222] p-3 rounded border border-gray-800 shadow-inner mb-6 shrink-0">
+                            <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+                                <div class="flex flex-wrap items-center gap-2 justify-center">
+                                    <div class="printed-label mr-1">SOURCE:</div>
+                                    <button id="radio-btn"
+                                        class="btn-retro px-3 py-1.5 rounded text-[10px] font-bold text-amber-500 border-amber-900">RADIO</button>
+                                    <input type="file" id="audio-upload" accept="audio/*" multiple class="hidden">
+                                    <input type="file" id="folder-upload" webkitdirectory directory class="hidden">
+                                    <button onclick="document.getElementById('folder-upload').click()"
+                                        class="btn-retro cursor-pointer px-3 py-1.5 rounded text-[10px] flex items-center gap-1 font-bold text-emerald-400">FOLDER</button>
+                                    <label for="audio-upload"
+                                        class="btn-retro cursor-pointer px-3 py-1.5 rounded text-[10px] flex items-center gap-1 font-bold">FILE</label>
+                                    <button id="demo-btn"
+                                        class="btn-retro px-3 py-1.5 rounded text-[10px] font-bold">DEMO</button>
+                                    <button id="mic-btn"
+                                        class="btn-retro px-3 py-1.5 rounded text-[10px] font-bold">MIC</button>
+                                    <button id="tab-btn"
+                                        class="btn-retro px-3 py-1.5 rounded text-[10px] font-bold">PC-IN</button>
+                                    <audio id="audio-player" class="hidden" crossorigin="anonymous"></audio>
+                                </div>
+                                <div
+                                    class="flex items-center gap-3 bg-[#111] px-3 py-1.5 rounded border border-gray-800">
+                                    <button id="list-btn"
+                                        class="btn-retro px-2 py-1 rounded text-[10px] font-bold border border-gray-600 text-gray-400 hover:text-white"
+                                        title="Toggle Playlist">LIST</button>
+                                    <button id="vis-style-btn"
+                                        class="btn-retro px-2 py-1 rounded text-[10px] font-bold border border-blue-600/50 text-blue-400 hover:text-white"
+                                        title="Change Visual">📊</button>
+
+                                    <!-- Transport Controls -->
+                                    <div class="flex items-center gap-1">
+                                        <button id="repeat-btn"
+                                            class="btn-retro w-6 h-6 rounded flex items-center justify-center text-[8px] font-bold text-gray-400"
+                                            title="Repeat">🔁</button>
+                                        <button id="prev-btn"
+                                            class="btn-retro w-6 h-6 rounded flex items-center justify-center text-[10px] disabled:opacity-50">⏮</button>
+                                        <button id="play-btn"
+                                            class="w-8 h-8 bg-gradient-to-br from-gray-700 to-black rounded-full border border-gray-600 flex items-center justify-center shadow-lg active:translate-y-0.5 disabled:opacity-50"
+                                            disabled>
+                                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="12"
+                                                height="12" viewBox="0 0 24 24" fill="#10b981">
+                                                <polygon points="5 3 19 12 5 21 5 3" />
+                                            </svg>
+                                            <svg id="pause-icon" class="hidden" xmlns="http://www.w3.org/2000/svg"
+                                                width="12" height="12" viewBox="0 0 24 24" fill="#fbbf24">
+                                                <rect x="6" y="4" width="4" height="16" />
+                                                <rect x="14" y="4" width="4" height="16" />
+                                            </svg>
+                                        </button>
+                                        <button id="next-btn"
+                                            class="btn-retro w-6 h-6 rounded flex items-center justify-center text-[10px] disabled:opacity-50">⏭</button>
+                                    </div>
+
+                                    <button id="monitor-btn"
+                                        class="btn-retro-active px-2 py-1 rounded text-[9px] font-bold border border-emerald-600/50">EQ
+                                        ON</button>
+
+                                    <div class="flex items-center gap-2">
+                                        <span class="printed-label">VOL</span>
+                                        <input type="range" id="master-volume" min="0" max="1" step="0.01" value="0.5"
+                                            class="w-16">
+                                    </div>
+
+                                    <button id="safety-btn"
+                                        class="btn-retro px-1 py-1 rounded text-[8px] font-bold border border-gray-600 text-gray-500 hover:text-white"
+                                        title="Safe">🔒</button>
+                                </div>
+                            </div>
+
+                            <!-- Seek Bar Row -->
+                            <div class="w-full flex items-center gap-2 mt-3 px-2 border-t border-gray-800 pt-2"
+                                id="seek-container">
+                                <span id="current-time"
+                                    class="text-[9px] font-mono text-emerald-500 w-8 text-right">00:00</span>
+                                <input type="range" id="seek-bar" min="0" value="0" step="0.1"
+                                    class="flex-1 h-1.5 cursor-pointer accent-emerald-500 bg-gray-900 rounded-lg appearance-none">
+                                <span id="duration" class="text-[9px] font-mono text-emerald-500 w-8">00:00</span>
+                            </div>
+
+                            <div class="flex justify-end mt-2">
+                                <button id="reset-eq"
+                                    class="text-[9px] text-gray-500 hover:text-red-400 font-mono tracking-wider">[ RESET
+                                    ALL
+                                    ]</button>
+                            </div>
+                        </div>
+
+                        <!-- Bands -->
+                        <div
+                            class="bg-[#111] p-4 rounded border-2 border-[#333] shadow-[inset_0_0_20px_#000] flex flex-1 min-h-0">
+                            <div
+                                class="flex flex-col justify-between items-end mr-3 text-gray-500 text-[9px] font-bold py-4 h-full flex-none">
+                                <span>+12</span><span>0</span><span>-12</span>
+                            </div>
+                            <div class="flex-1 overflow-x-auto h-full flex items-center">
+                                <div class="flex md:grid md:grid-cols-10 gap-1 min-w-max justify-items-center px-1"
+                                    id="eq-container"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="flex justify-end mt-2">
-                        <button id="reset-eq"
-                            class="text-[10px] text-gray-500 hover:text-red-400 uppercase tracking-wider font-mono">[
-                            RESET ALL ]</button>
-                    </div>
-                </div>
 
-                <!-- Bands (Fixed Vertical Layout with Scroll) -->
-                <div class="bg-[#111] p-6 rounded border-2 border-[#333] shadow-[inset_0_0_20px_#000] flex">
-                    <!-- Vertical Scale (Fixed) -->
-                    <div
-                        class="flex flex-col justify-between items-end mr-4 text-gray-500 text-[10px] font-bold py-4 h-[250px] flex-none">
-                        <span>+12dB</span>
-                        <span>0dB</span>
-                        <span>-12dB</span>
-                    </div>
-
-                    <!-- Sliders Container (Scrollable) -->
-                    <div class="flex-1 overflow-x-auto">
-                        <div class="flex md:grid md:grid-cols-10 gap-1 md:gap-2 min-w-max md:min-w-0 justify-items-center pb-4 px-2"
-                            id="eq-container">
-                            <!-- JS Will Populate -->
+                    <!-- 2. Radio Mode -->
+                    <div id="radio-mode-content"
+                        class="hidden w-full h-full relative bg-zinc-900 border-2 border-gray-700 rounded overflow-hidden shadow-2xl flex flex-col">
+                        <div
+                            class="bg-[#111] p-2 flex justify-between items-center z-30 border-b border-gray-600 shrink-0">
+                            <div class="flex items-center gap-2">
+                                <span
+                                    class="text-amber-500 font-bold ml-2 text-sm tracking-wider flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span> LUANGTA YOUTUBE
+                                </span>
+                            </div>
+                            <button id="close-radio-btn"
+                                class="bg-red-800 hover:bg-red-600 text-white px-3 py-1 rounded text-[10px] font-bold transition border border-red-900">CLOSE
+                                RADIO</button>
+                        </div>
+                        <div class="w-full flex-1 bg-black relative flex items-center justify-center">
+                            <iframe id="radio-frame-youtube" class="w-full h-full" src="" title="YouTube video player"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Radio Mode Interface -->
-            <div id="radio-mode-content"
-                class="hidden w-full h-[650px] relative bg-zinc-900 border-2 border-gray-700 rounded overflow-hidden shadow-2xl">
-                <div
-                    class="absolute top-0 left-0 w-full bg-[#111] p-3 flex justify-between items-center z-30 border-b border-gray-600 shadow-md">
-                    <div class="flex items-center gap-4">
-                        <span class="text-amber-500 font-bold ml-2 tracking-wider flex items-center gap-2">
-                            <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                            LUANGTA YOUTUBE
-                        </span>
-                    </div>
-                    <button id="close-radio-btn"
-                        class="bg-red-800 hover:bg-red-600 text-white px-4 py-1.5 rounded text-xs font-bold transition flex items-center gap-2 border border-red-900 shadow-lg">
-                        CLOSE RADIO
-                    </button>
-                </div>
-                <div class="w-full h-full bg-black relative flex items-center justify-center pt-[50px]">
-                    <iframe id="radio-frame-youtube" class="w-full h-full" src="" title="YouTube video player"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
-                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- 1. SETUP UI ---
+        // --- AUTO-FIT LOGIC ---
+        function fitToScreen() {
+            const casing = document.getElementById('casing');
+            const wrapper = document.getElementById('scaler');
+            const casingW = casing.offsetWidth;
+            const casingH = casing.offsetHeight;
+            const winW = window.innerWidth;
+            const winH = window.innerHeight;
+            const padding = 20;
+            const scaleX = (winW - padding) / casingW;
+            const scaleY = (winH - padding) / casingH;
+            let scale = Math.min(scaleX, scaleY);
+            scale = scale * currentZoom;
+            wrapper.style.transform = `scale(${scale})`;
+            document.getElementById('zoom-level').innerText = Math.round(scale * 100) + '%';
+        }
+        window.addEventListener('resize', fitToScreen);
+        window.addEventListener('load', fitToScreen);
+        setTimeout(fitToScreen, 100);
+
+        // --- SETUP UI ---
         const freqs = [31, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
         const container = document.getElementById('eq-container');
         freqs.forEach((f, index) => {
             const label = f >= 1000 ? (f / 1000) + 'k' : f;
             const color = (f === 1000) ? 'text-emerald-500' : 'text-gray-300';
             const div = document.createElement('div');
-            div.className = 'flex flex-col items-center w-16 md:w-auto';
-            // Add ID to sensitive bands for locking
+            div.className = 'flex flex-col items-center w-14 md:w-auto';
             const extraAttr = (index <= 2) ? `data-safe="true"` : '';
-            div.innerHTML = `<div class="slider-vertical-wrapper"><input type="range" class="slider-vertical eq-band" data-freq="${f}" ${extraAttr} min="-12" max="12" value="0" step="0.1"></div><div class="text-center mt-3 border-t border-gray-700 w-full pt-1"><span class="block printed-label ${color}">${label}</span><span class="block text-[8px] text-gray-600 font-mono">Hz</span></div>`;
+            div.innerHTML = `<div class="slider-vertical-wrapper"><input type="range" class="slider-vertical eq-band" data-freq="${f}" ${extraAttr} min="-12" max="12" value="0" step="0.1"></div><div class="text-center mt-2 border-t border-gray-700 w-full pt-1"><span class="block printed-label ${color}">${label}</span><span class="block text-[7px] text-gray-600 font-mono">Hz</span></div>`;
             container.appendChild(div);
         });
 
@@ -598,33 +848,39 @@
             document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('theme-active'));
             const btn = document.querySelector(`.theme-btn-${name}`);
             if (btn) btn.classList.add('theme-active');
+            setTimeout(fitToScreen, 50);
         };
 
-        window.toggleFullScreen = function () {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+        window.windowApi = function (action) {
+            if (window.pywebview) {
+                if (action === 'close') window.pywebview.api.close_window();
+                if (action === 'minimize') window.pywebview.api.minimize_window();
             }
         };
 
-        // --- SAFETY LOCK LOGIC ---
+        let currentZoom = 1.0;
+        window.adjustZoom = function (delta) {
+            let newZoom = currentZoom + delta;
+            if (newZoom < 0.2) newZoom = 0.2;
+            if (newZoom > 3.0) newZoom = 3.0;
+            currentZoom = newZoom;
+            fitToScreen();
+        };
+
         let isSafetyLocked = true;
         const SAFETY_VOL_LIMIT = 0.8;
-        const SAFETY_EQ_LIMIT = 7.2; // Approx 80% of 12dB range relative to center? Actually 80% of travel from 0 to 12 is 9.6. Let's use 7.2 as conservative.
+        const SAFETY_EQ_LIMIT = 7.2;
 
         function toggleSafetyLock() {
             isSafetyLocked = !isSafetyLocked;
             const btn = document.getElementById('safety-btn');
             if (isSafetyLocked) {
-                btn.innerHTML = '🔒 SAFE';
+                btn.innerHTML = '🔒';
                 btn.classList.remove('text-red-500', 'border-red-500');
                 btn.classList.add('text-gray-400', 'border-gray-600');
                 enforceSafetyLimits();
             } else {
-                btn.innerHTML = '🔓 UNLOCK';
+                btn.innerHTML = '🔓';
                 btn.classList.add('text-red-500', 'border-red-500');
                 btn.classList.remove('text-gray-400', 'border-gray-600');
             }
@@ -632,13 +888,8 @@
 
         function enforceSafetyLimits() {
             if (!isSafetyLocked) return;
-            // Check Volume
             const vol = document.getElementById('master-volume');
-            if (vol.value > SAFETY_VOL_LIMIT) {
-                vol.value = SAFETY_VOL_LIMIT;
-                if (gainNode) gainNode.gain.value = SAFETY_VOL_LIMIT;
-            }
-            // Check EQ Bands (31, 63, 125 are indices 0, 1, 2)
+            if (vol.value > SAFETY_VOL_LIMIT) { vol.value = SAFETY_VOL_LIMIT; if (gainNode) gainNode.gain.value = SAFETY_VOL_LIMIT; }
             const bands = document.querySelectorAll('.eq-band');
             for (let i = 0; i < 3; i++) {
                 if (parseFloat(bands[i].value) > SAFETY_EQ_LIMIT) {
@@ -648,7 +899,6 @@
             }
         }
 
-        // --- 2. AUDIO ENGINE & VISUALIZER ---
         const audioPlayer = document.getElementById('audio-player');
         const eqBands = document.querySelectorAll('.eq-band');
         const canvas = document.getElementById('visualizer');
@@ -659,38 +909,67 @@
         let audioContext, gainNode, eqInputNode, splitter, analyserL, analyserR, merger;
         let filters = [], isPlaying = false, animationId;
         let elementSourceNode = null, streamSourceNode = null, isBypass = false;
-        let visualizerStyle = 1; // Default to 1 (Mirror/Stereo)
-
+        let visualizerStyle = 1;
         const isExe = window.pywebview !== undefined;
 
+        // --- PLAYLIST LOGIC ---
+        let playlist = [];
+        let currentTrackIndex = -1;
+        let repeatMode = 0; // 0: Off, 1: All, 2: One
+        let pressTimer = null; // Timer for long press delete
+        let draggedIndex = -1; // Index of item currently being dragged
+
+        // --- SEEK BAR LOGIC ---
+        const seekBar = document.getElementById('seek-bar');
+        const currentTimeDisplay = document.getElementById('current-time');
+        const durationDisplay = document.getElementById('duration');
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "00:00";
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            if (!streamSourceNode) { // Only for file/demo
+                seekBar.max = audioPlayer.duration;
+                durationDisplay.innerText = formatTime(audioPlayer.duration);
+                seekBar.disabled = false;
+            }
+        });
+
+        audioPlayer.addEventListener('timeupdate', () => {
+            if (!streamSourceNode) { // Only update if not streaming
+                currentTimeDisplay.innerText = formatTime(audioPlayer.currentTime);
+                seekBar.value = audioPlayer.currentTime;
+            }
+        });
+
+        seekBar.addEventListener('input', () => {
+            if (audioPlayer.duration) {
+                audioPlayer.currentTime = seekBar.value;
+            }
+        });
+
+
         function safeAddListener(id, event, fn) { const el = document.getElementById(id); if (el) el.addEventListener(event, fn); }
-        function resizeCanvas() { if (canvas) { canvas.width = canvas.parentElement.offsetWidth; canvas.height = canvas.parentElement.offsetHeight; } }
-        window.addEventListener('resize', resizeCanvas); resizeCanvas();
+        function resizeViz() { if (canvas) { canvas.width = canvas.parentElement.offsetWidth; canvas.height = canvas.parentElement.offsetHeight; } }
+        window.addEventListener('resize', resizeViz); resizeViz();
 
         function initAudio() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                eqInputNode = audioContext.createGain();
-                gainNode = audioContext.createGain();
-
-                // STEREO SPLIT SYSTEM
-                splitter = audioContext.createChannelSplitter(2);
-                merger = audioContext.createChannelMerger(2);
-
-                analyserL = audioContext.createAnalyser();
-                analyserL.fftSize = 2048; analyserL.smoothingTimeConstant = 0.8;
-
-                analyserR = audioContext.createAnalyser();
-                analyserR.fftSize = 2048; analyserR.smoothingTimeConstant = 0.8;
-
+                eqInputNode = audioContext.createGain(); gainNode = audioContext.createGain();
+                splitter = audioContext.createChannelSplitter(2); merger = audioContext.createChannelMerger(2);
+                analyserL = audioContext.createAnalyser(); analyserL.fftSize = 2048; analyserL.smoothingTimeConstant = 0.8;
+                analyserR = audioContext.createAnalyser(); analyserR.fftSize = 2048; analyserR.smoothingTimeConstant = 0.8;
                 filters = freqs.map((f, i) => {
                     const filter = audioContext.createBiquadFilter(); filter.frequency.value = f;
                     filter.type = (i === 0) ? 'lowshelf' : (i === freqs.length - 1) ? 'highshelf' : 'peaking';
                     if (filter.type === 'peaking') filter.Q.value = 1.4; filter.gain.value = 0; return filter;
                 });
-
                 setupRouting(false);
-                // Set initial volume gain
                 gainNode.gain.value = 0.5;
             }
             if (audioContext.state === 'suspended') audioContext.resume();
@@ -698,145 +977,55 @@
 
         function setupRouting(bypass) {
             if (!eqInputNode) return;
-            eqInputNode.disconnect();
-            filters.forEach(f => f.disconnect());
-            splitter.disconnect();
-            analyserL.disconnect();
-            analyserR.disconnect();
-            merger.disconnect();
-
-            // Chain Filters
+            eqInputNode.disconnect(); filters.forEach(f => f.disconnect());
+            splitter.disconnect(); analyserL.disconnect(); analyserR.disconnect(); merger.disconnect();
             let eqOut = eqInputNode;
-            if (!bypass) {
-                filters.forEach(f => { eqOut.connect(f); eqOut = f; });
-                updateMonitorUI(true);
-            } else {
-                updateMonitorUI(false);
-            }
-
-            // Split for Visualizer (L/R)
-            eqOut.connect(splitter);
-            splitter.connect(analyserL, 0); // L -> Analyser L
-            splitter.connect(analyserR, 1); // R -> Analyser R
-
-            // Merge back for output
-            // Note: AnalyserNode passes audio through, so we can chain
-            analyserL.connect(merger, 0, 0);
-            analyserR.connect(merger, 0, 1);
-
-            merger.connect(gainNode);
-            gainNode.connect(audioContext.destination);
+            if (!bypass) { filters.forEach(f => { eqOut.connect(f); eqOut = f; }); updateMonitorUI(true); } else { updateMonitorUI(false); }
+            eqOut.connect(splitter); splitter.connect(analyserL, 0); splitter.connect(analyserR, 1);
+            analyserL.connect(merger, 0, 0); analyserR.connect(merger, 0, 1);
+            merger.connect(gainNode); gainNode.connect(audioContext.destination);
         }
 
         function updateMonitorUI(isEQ) {
             const btn = document.getElementById('monitor-btn'); if (!btn) return;
-            if (isEQ) { btn.classList.add('btn-retro-active'); btn.classList.remove('btn-retro'); btn.innerHTML = '<span class="led-indicator" style="background-color:#00ff00;box-shadow:0 0 5px #00ff00"></span> EQ MONITOR'; }
-            else { btn.classList.remove('btn-retro-active'); btn.classList.add('btn-retro'); btn.innerHTML = '<span class="led-indicator" style="background-color:#333;box-shadow:none"></span> RAW BYPASS'; }
+            if (isEQ) { btn.classList.add('btn-retro-active'); btn.classList.remove('btn-retro'); btn.innerHTML = '<span class="led-indicator" style="background-color:#00ff00;box-shadow:0 0 5px #00ff00"></span> EQ ON'; }
+            else { btn.classList.remove('btn-retro-active'); btn.classList.add('btn-retro'); btn.innerHTML = '<span class="led-indicator" style="background-color:#333;box-shadow:none"></span> RAW'; }
         }
 
-        // --- Visualizer Drawing (Stereo Logic) ---
         function visualize() {
             if (!analyserL || !ctx) { requestAnimationFrame(visualize); return; }
-
             const bufferLen = analyserL.frequencyBinCount;
-            const dataL = new Uint8Array(bufferLen);
-            const dataR = new Uint8Array(bufferLen);
-            const w = canvas.width;
-            const h = canvas.height;
-
+            const dataL = new Uint8Array(bufferLen); const dataR = new Uint8Array(bufferLen);
+            const w = canvas.width; const h = canvas.height;
             function draw() {
                 animationId = requestAnimationFrame(draw);
-                analyserL.getByteFrequencyData(dataL);
-                analyserR.getByteFrequencyData(dataR);
-
+                analyserL.getByteFrequencyData(dataL); analyserR.getByteFrequencyData(dataR);
                 ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h);
-
-                // --- Style 0: Dual Bars (Left Top / Right Bottom) ---
                 if (visualizerStyle === 0) {
-                    const bars = 64;
-                    const usefulBins = Math.floor(bufferLen * 0.7);
-                    const step = Math.floor(usefulBins / bars);
-                    const barW = (w / bars) - 2;
-
+                    const bars = 64; const usefulBins = Math.floor(bufferLen * 0.7); const step = Math.floor(usefulBins / bars); const barW = (w / bars) - 2;
                     for (let i = 0; i < bars; i++) {
-                        let sumL = 0, sumR = 0;
-                        for (let j = 0; j < step; j++) {
-                            sumL += dataL[(i * step) + j];
-                            sumR += dataR[(i * step) + j];
-                        }
-                        const vL = (sumL / step);
-                        const vR = (sumR / step);
-
-                        const hL = (h / 2) * (vL / 255);
-                        const hR = (h / 2) * (vR / 255);
-
-                        ctx.fillStyle = getGradient(h, 0);
-                        ctx.fillRect(i * (barW + 2), (h / 2) - hL, barW, hL);
-
-                        ctx.fillStyle = getGradient(h, 1);
-                        ctx.fillRect(i * (barW + 2), (h / 2), barW, hR);
+                        let sumL = 0, sumR = 0; for (let j = 0; j < step; j++) { sumL += dataL[(i * step) + j]; sumR += dataR[(i * step) + j]; }
+                        const hL = (h / 2) * ((sumL / step) / 255); const hR = (h / 2) * ((sumR / step) / 255);
+                        ctx.fillStyle = getGradient(h, 0); ctx.fillRect(i * (barW + 2), (h / 2) - hL, barW, hL);
+                        ctx.fillStyle = getGradient(h, 1); ctx.fillRect(i * (barW + 2), (h / 2), barW, hR);
                     }
                     ctx.strokeStyle = '#333'; ctx.beginPath(); ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2); ctx.stroke();
-                }
-
-                // --- Style 1: Mirror (Center Out) ---
-                else if (visualizerStyle === 1) {
-                    const bars = 64;
-                    const usefulBins = Math.floor(bufferLen * 0.7);
-                    const step = Math.floor(usefulBins / bars);
-                    // Adjust bar width calculation to prevent gaps and ensure centering
-                    const totalBarW = w / bars;
-                    const barFillW = totalBarW - 1; // 1px gap
-
-                    const centerX = w / 2;
-
+                } else if (visualizerStyle === 1) {
+                    const bars = 64; const usefulBins = Math.floor(bufferLen * 0.7); const step = Math.floor(usefulBins / bars); const barW = (w / bars); const centerX = w / 2;
                     for (let i = 0; i < bars; i++) {
                         let sum = 0; for (let j = 0; j < step; j++) sum += (dataL[(i * step) + j] + dataR[(i * step) + j]) / 2;
-                        const val = (sum / step) / 255;
-                        const barH = h * val;
-
-                        // Right side expansion
-                        const xRight = centerX + (i * totalBarW);
-                        // Left side expansion (mirror)
-                        const xLeft = centerX - ((i + 1) * totalBarW);
-
+                        const barH = h * ((sum / step) / 255);
+                        const xRight = centerX + (i * barW); const xLeft = centerX - ((i + 1) * barW);
                         ctx.fillStyle = getGradient(h, 0);
-
-                        // Draw Right
-                        if (xRight < w) ctx.fillRect(xRight, (h - barH) / 2, barFillW, barH);
-                        // Draw Left
-                        if (xLeft >= -totalBarW) ctx.fillRect(xLeft, (h - barH) / 2, barFillW, barH);
+                        if (xRight < w) ctx.fillRect(xRight, (h - barH) / 2, barW - 1, barH);
+                        if (xLeft >= -barW) ctx.fillRect(xLeft, (h - barH) / 2, barW - 1, barH);
                     }
-                }
-
-                // --- Style 2: Waveform (Oscilloscope) ---
-                else {
-                    analyserL.getByteTimeDomainData(dataL);
-                    analyserR.getByteTimeDomainData(dataR);
-                    ctx.lineWidth = 2;
-
-                    ctx.strokeStyle = '#10b981';
-                    ctx.beginPath();
-                    let sliceWidth = w * 1.0 / bufferLen;
-                    let x = 0;
-                    for (let i = 0; i < bufferLen; i++) {
-                        let v = dataL[i] / 128.0;
-                        let y = v * h / 4 + h / 4;
-                        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-                        x += sliceWidth;
-                    }
-                    ctx.stroke();
-
-                    ctx.strokeStyle = '#f59e0b';
-                    ctx.beginPath();
-                    x = 0;
-                    for (let i = 0; i < bufferLen; i++) {
-                        let v = dataR[i] / 128.0;
-                        let y = v * h / 4 + h * 0.75;
-                        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-                        x += sliceWidth;
-                    }
-                    ctx.stroke();
+                } else {
+                    analyserL.getByteTimeDomainData(dataL); analyserR.getByteTimeDomainData(dataR); ctx.lineWidth = 2;
+                    ctx.strokeStyle = '#10b981'; ctx.beginPath(); let sliceWidth = w * 1.0 / bufferLen; let x = 0;
+                    for (let i = 0; i < bufferLen; i++) { let v = dataL[i] / 128.0; let y = v * h / 4 + h / 4; if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); x += sliceWidth; } ctx.stroke();
+                    ctx.strokeStyle = '#f59e0b'; ctx.beginPath(); x = 0;
+                    for (let i = 0; i < bufferLen; i++) { let v = dataR[i] / 128.0; let y = v * h / 4 + h * 0.75; if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); x += sliceWidth; } ctx.stroke();
                 }
             }
             draw();
@@ -844,24 +1033,24 @@
 
         function getGradient(h, type) {
             const grad = ctx.createLinearGradient(0, h, 0, 0);
-            grad.addColorStop(0, '#22c55e');   // Green
-            grad.addColorStop(0.6, '#eab308'); // Yellow
-            grad.addColorStop(1, '#ef4444');   // Red
-            return grad;
+            grad.addColorStop(0, '#22c55e'); grad.addColorStop(0.6, '#eab308'); grad.addColorStop(1, '#ef4444'); return grad;
         }
 
-        // --- Logic & Events ---
         function clearActiveModes() {
             document.getElementById('eq-mode-content').classList.remove('hidden');
             document.getElementById('radio-mode-content').classList.add('hidden');
             document.getElementById('radio-frame-youtube').src = "";
-
             ['mic-btn', 'tab-btn', 'demo-btn', 'radio-btn'].forEach(id => { const b = document.getElementById(id); if (b) { b.classList.remove('btn-retro-active'); b.classList.add('btn-retro'); } });
             if (streamSourceNode) { try { streamSourceNode.disconnect(); } catch (e) { } streamSourceNode = null; }
             if (audioPlayer.srcObject) { audioPlayer.srcObject.getTracks().forEach(t => t.stop()); audioPlayer.srcObject = null; }
             audioPlayer.pause(); audioPlayer.removeAttribute('crossorigin'); audioPlayer.removeAttribute('src');
             if (elementSourceNode) { try { elementSourceNode.disconnect(); } catch (e) { } }
             isBypass = false; setupRouting(false);
+
+            // Disable Seek Bar for non-file modes
+            document.getElementById('seek-bar').disabled = true;
+            document.getElementById('current-time').innerText = "00:00";
+            document.getElementById('duration').innerText = "00:00";
         }
 
         function loadRadio() {
@@ -872,9 +1061,14 @@
             document.getElementById('track-name').textContent = "RADIO MODE";
             document.getElementById('radio-frame-youtube').src = radioUrlLive;
             document.getElementById('track-name').textContent = "LUANGTA DHARMA";
+            setTimeout(fitToScreen, 50);
         }
 
-        safeAddListener('close-radio-btn', 'click', () => { clearActiveModes(); document.getElementById('track-name').textContent = "NO SIGNAL"; });
+        safeAddListener('close-radio-btn', 'click', () => {
+            clearActiveModes();
+            document.getElementById('track-name').textContent = "NO SIGNAL";
+            setTimeout(fitToScreen, 50);
+        });
 
         safeAddListener('vis-style-btn', 'click', () => {
             visualizerStyle = (visualizerStyle + 1) % 3;
@@ -882,11 +1076,27 @@
             document.getElementById('track-name').textContent = styles[visualizerStyle];
         });
 
+        safeAddListener('list-btn', 'click', () => {
+            const overlay = document.getElementById('playlist-overlay');
+            if (overlay.classList.contains('hidden')) {
+                overlay.classList.remove('hidden');
+                document.getElementById('list-btn').classList.add('btn-retro-active');
+                document.getElementById('list-btn').classList.remove('btn-retro');
+            } else {
+                overlay.classList.add('hidden');
+                document.getElementById('list-btn').classList.remove('btn-retro-active');
+                document.getElementById('list-btn').classList.add('btn-retro');
+            }
+        });
+
         safeAddListener('safety-btn', 'click', toggleSafetyLock);
 
         function switchToFileMode(isRadio) {
-            clearActiveModes(); initAudio();
+            // clearActiveModes(); // Don't clear mode if we are just changing file in same mode
+            // But for safety, let's init
+            initAudio();
             document.getElementById('play-btn').disabled = false;
+            document.getElementById('seek-bar').disabled = false; // Enable seek
             if (!isRadio) audioPlayer.setAttribute('crossorigin', 'anonymous');
             try { elementSourceNode = audioContext.createMediaElementSource(audioPlayer); elementSourceNode.connect(eqInputNode); } catch (e) { if (elementSourceNode) elementSourceNode.connect(eqInputNode); }
             audioPlayer.muted = false; audioPlayer.volume = 1.0;
@@ -921,9 +1131,249 @@
             } catch (e) { console.error(e); clearActiveModes(); }
         }
 
-        function loadFile(file) { switchToFileMode(false); audioPlayer.src = URL.createObjectURL(file); document.getElementById('track-name').textContent = file.name.toUpperCase().substring(0, 20); playAudio(); }
-        function loadDemo() { switchToFileMode(false); document.getElementById('demo-btn').classList.add('btn-retro-active'); audioPlayer.src = demoTrackUrl; document.getElementById('track-name').textContent = "DEMO: MOONLIGHT"; playAudio(); }
-        function playAudio() { audioPlayer.load(); const h = () => { togglePlay(true); audioPlayer.removeEventListener('canplay', h); }; audioPlayer.addEventListener('canplay', h); }
+        // --- PLAYLIST FUNCTIONS ---
+        function loadFiles(files) {
+            // We append files instead of replacing if playlist is already active in FILE mode?
+            // Actually standard behavior is: if loading from button, maybe append?
+            // But drag/drop or main load usually replaces.
+            // Let's implement append for the "+" button.
+
+            // Check if we are appending
+            const isAppend = window.isAppending;
+            window.isAppending = false; // reset flag
+
+            if (!isAppend) {
+                clearActiveModes(); // Reset other modes
+                playlist = [];
+                currentTrackIndex = 0;
+            }
+
+            for (let i = 0; i < files.length; i++) {
+                if (files[i].type.startsWith('audio/')) {
+                    playlist.push({
+                        name: files[i].name,
+                        url: URL.createObjectURL(files[i])
+                    });
+                }
+            }
+
+            if (playlist.length > 0) {
+                renderPlaylist();
+                switchToFileMode(false);
+                if (!isAppend || !isPlaying) {
+                    playTrack(currentTrackIndex); // Play first if new list or stopped
+                }
+                // Open playlist view
+                document.getElementById('playlist-overlay').classList.remove('hidden');
+                document.getElementById('list-btn').classList.add('btn-retro-active');
+            }
+        }
+
+        // Wrapper for add button
+        safeAddListener('add-audio-upload', 'change', e => {
+            window.isAppending = true;
+            loadFiles(e.target.files);
+        });
+
+        function loadDemo() {
+            clearActiveModes();
+            document.getElementById('demo-btn').classList.add('btn-retro-active');
+            playlist = [{ name: "DEMO: MOONLIGHT", url: demoTrackUrl }];
+            currentTrackIndex = 0;
+            renderPlaylist();
+            switchToFileMode(false);
+            playTrack(0);
+        }
+
+        function renderPlaylist() {
+            const container = document.getElementById('playlist-container');
+            container.innerHTML = '';
+            document.getElementById('playlist-count').textContent = `(${playlist.length})`;
+
+            playlist.forEach((track, index) => {
+                const item = document.createElement('div');
+                item.className = 'playlist-item ' + (index === currentTrackIndex ? 'active' : '');
+                item.draggable = true;
+                item.dataset.index = index;
+
+                // Drag Events
+                item.addEventListener('dragstart', (e) => handleDragStart(e, index));
+                item.addEventListener('dragover', handleDragOver);
+                item.addEventListener('drop', (e) => handleDrop(e, index));
+                item.addEventListener('dragend', handleDragEnd);
+
+                // Long Press (Delete Mode)
+                item.addEventListener('mousedown', () => handleLongPressStart(index));
+                item.addEventListener('mouseup', handleLongPressEnd);
+                item.addEventListener('mouseleave', handleLongPressEnd);
+                item.addEventListener('touchstart', () => handleLongPressStart(index)); // Mobile
+                item.addEventListener('touchend', handleLongPressEnd);
+
+                // Track Name Clickable
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = (index + 1) + ". " + track.name;
+                nameSpan.className = "flex-1 overflow-hidden text-ellipsis pointer-events-none"; // Prevent text select
+                item.onclick = () => { if (!item.classList.contains('delete-mode')) playTrack(index); };
+
+                // Delete Button (Initially Hidden)
+                const delBtn = document.createElement('button');
+                delBtn.className = "track-btn track-btn-del hidden ml-2";
+                delBtn.innerHTML = "DELETE ❌";
+                delBtn.onclick = (e) => { e.stopPropagation(); removeTrack(index); };
+
+                item.appendChild(nameSpan);
+                item.appendChild(delBtn);
+                container.appendChild(item);
+            });
+        }
+
+        // --- Drag & Drop Reorder ---
+        function handleDragStart(e, index) {
+            draggedIndex = index;
+            e.dataTransfer.effectAllowed = 'move';
+            e.target.classList.add('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDrop(e, targetIndex) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (draggedIndex !== targetIndex && draggedIndex > -1) {
+                // Move item in array
+                const movedItem = playlist.splice(draggedIndex, 1)[0];
+                playlist.splice(targetIndex, 0, movedItem);
+
+                // Update current playing index if needed
+                if (currentTrackIndex === draggedIndex) currentTrackIndex = targetIndex;
+                else if (currentTrackIndex > draggedIndex && currentTrackIndex <= targetIndex) currentTrackIndex--;
+                else if (currentTrackIndex < draggedIndex && currentTrackIndex >= targetIndex) currentTrackIndex++;
+
+                renderPlaylist();
+            }
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            document.querySelectorAll('.playlist-item').forEach(item => {
+                item.classList.remove('dragging', 'drag-over');
+            });
+            draggedIndex = -1;
+        }
+
+        // --- Long Press Delete ---
+        function handleLongPressStart(index) {
+            pressTimer = setTimeout(() => {
+                // Enter Delete Mode for this item
+                const items = document.querySelectorAll('.playlist-item');
+                const targetItem = items[index];
+                if (targetItem) {
+                    targetItem.classList.add('delete-mode', 'bg-red-900/50');
+                    targetItem.querySelector('.track-btn-del').classList.remove('hidden');
+                }
+            }, 1000); // 1 second
+        }
+
+        function handleLongPressEnd() {
+            if (pressTimer) clearTimeout(pressTimer);
+        }
+
+        // Click elsewhere to cancel delete mode
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.playlist-item') && !e.target.closest('.track-btn-del')) {
+                document.querySelectorAll('.playlist-item').forEach(item => {
+                    item.classList.remove('delete-mode', 'bg-red-900/50');
+                    const delBtn = item.querySelector('.track-btn-del');
+                    if (delBtn) delBtn.classList.add('hidden');
+                });
+            }
+        });
+
+        function moveTrack(index, direction) {
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= playlist.length) return;
+
+            // Swap
+            const temp = playlist[index];
+            playlist[index] = playlist[newIndex];
+            playlist[newIndex] = temp;
+
+            // Update current index if moved
+            if (currentTrackIndex === index) currentTrackIndex = newIndex;
+            else if (currentTrackIndex === newIndex) currentTrackIndex = index;
+
+            renderPlaylist();
+        }
+
+        function removeTrack(index) {
+            playlist.splice(index, 1);
+            if (index < currentTrackIndex) {
+                currentTrackIndex--;
+            } else if (index === currentTrackIndex) {
+                // If removing playing track, play next or stop
+                if (playlist.length > 0) {
+                    if (currentTrackIndex >= playlist.length) currentTrackIndex = 0;
+                    playTrack(currentTrackIndex);
+                } else {
+                    audioPlayer.pause();
+                    isPlaying = false;
+                    updateUI(false);
+                    document.getElementById('track-name').textContent = "NO SIGNAL";
+                }
+            }
+            renderPlaylist();
+        }
+
+        function playTrack(index) {
+            if (index < 0 || index >= playlist.length) return;
+            currentTrackIndex = index;
+            const track = playlist[index];
+
+            audioPlayer.src = track.url;
+            document.getElementById('track-name').textContent = track.name.toUpperCase().substring(0, 20);
+
+            renderPlaylist(); // To update active highlight
+            playAudio();
+        }
+
+        function playNext() {
+            if (playlist.length === 0) return;
+            let nextIndex = currentTrackIndex + 1;
+            if (nextIndex >= playlist.length) nextIndex = 0;
+            playTrack(nextIndex);
+        }
+
+        function playPrev() {
+            if (playlist.length === 0) return;
+            let prevIndex = currentTrackIndex - 1;
+            if (prevIndex < 0) prevIndex = playlist.length - 1;
+            playTrack(prevIndex);
+        }
+
+        // Repeat Logic
+        function toggleRepeat() {
+            repeatMode = (repeatMode + 1) % 3;
+            const btn = document.getElementById('repeat-btn');
+            const modes = ["🔁 OFF", "🔁 ALL", "🔂 ONE"];
+            const titles = ["Repeat Off", "Repeat All", "Repeat One"];
+            const colors = ["text-gray-400", "text-emerald-400", "text-amber-400"];
+
+            btn.innerHTML = modes[repeatMode].split(" ")[0]; // Just icon
+            btn.title = titles[repeatMode];
+            btn.className = `btn-retro w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold ${colors[repeatMode]}`;
+
+            // Update tooltip text somewhere if needed, but Title is enough
+        }
+
+        function playAudio() {
+            audioPlayer.load();
+            const h = () => { togglePlay(true); audioPlayer.removeEventListener('canplay', h); };
+            audioPlayer.addEventListener('canplay', h);
+        }
 
         function togglePlay(force) {
             if (streamSourceNode) return;
@@ -936,18 +1386,22 @@
             if (p) { play.classList.add('hidden'); pause.classList.remove('hidden'); } else { play.classList.remove('hidden'); pause.classList.add('hidden'); }
         }
 
-        safeAddListener('audio-upload', 'change', e => loadFile(e.target.files[0]));
+        safeAddListener('audio-upload', 'change', e => loadFiles(e.target.files));
+        safeAddListener('folder-upload', 'change', e => loadFiles(e.target.files));
+
         safeAddListener('demo-btn', 'click', loadDemo); safeAddListener('demo-btn-overlay', 'click', loadDemo);
         safeAddListener('radio-btn', 'click', loadRadio); safeAddListener('radio-btn-overlay', 'click', loadRadio);
         safeAddListener('mic-btn', 'click', () => startLiveInput('mic')); safeAddListener('mic-btn-overlay', 'click', () => startLiveInput('mic'));
         safeAddListener('tab-btn', 'click', () => startLiveInput('tab')); safeAddListener('tab-btn-overlay', 'click', () => startLiveInput('tab'));
         safeAddListener('play-btn', 'click', () => { if (!audioContext) initAudio(); togglePlay(); });
 
+        safeAddListener('prev-btn', 'click', playPrev);
+        safeAddListener('next-btn', 'click', playNext);
+        safeAddListener('repeat-btn', 'click', toggleRepeat);
+
         // Safety Check for Volume Input
         safeAddListener('master-volume', 'input', e => {
-            if (isSafetyLocked && parseFloat(e.target.value) > SAFETY_VOL_LIMIT) {
-                e.target.value = SAFETY_VOL_LIMIT;
-            }
+            if (isSafetyLocked && parseFloat(e.target.value) > SAFETY_VOL_LIMIT) { e.target.value = SAFETY_VOL_LIMIT; }
             if (gainNode) gainNode.gain.value = e.target.value;
         });
 
@@ -966,7 +1420,26 @@
             });
             b.addEventListener('dblclick', () => { b.value = 0; if (filters[i]) filters[i].gain.value = 0; });
         });
-        audioPlayer.addEventListener('ended', () => { isPlaying = false; updateUI(false); });
+
+        // Auto Next Track Logic
+        audioPlayer.addEventListener('ended', () => {
+            // 0: Off, 1: All, 2: One
+            if (repeatMode === 2) {
+                // Repeat One: Play current index again
+                playTrack(currentTrackIndex);
+            } else if (repeatMode === 1) {
+                // Repeat All: Loop back to start if at end
+                playNext();
+            } else {
+                // Repeat Off: Stop if last song
+                if (currentTrackIndex < playlist.length - 1) {
+                    playNext();
+                } else {
+                    isPlaying = false;
+                    updateUI(false);
+                }
+            }
+        });
 
         visualize();
     </script>
