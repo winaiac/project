@@ -26,6 +26,9 @@
             background-color: #0f0f0f;
             background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #050505 100%);
             -webkit-app-region: drag;
+            /* ป้องกันการเลือกข้อความโดยไม่ตั้งใจบนจอสัมผัส */
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         /* --- THEME DEFINITIONS --- */
@@ -39,7 +42,6 @@
             flex-shrink: 0;
             margin: 0;
             -webkit-app-region: drag;
-            user-select: none;
         }
 
         /* FIX: Elements that MUST be clickable (Not draggable) */
@@ -56,6 +58,8 @@
         .preset-btn-side {
             -webkit-app-region: no-drag;
             cursor: pointer;
+            /* ป้องกันการแตะซ้ำเร็วๆ แล้วขยายจอในมือถือ */
+            touch-action: manipulation;
         }
 
         .faceplate {
@@ -286,60 +290,6 @@
         .theme-active::after {
             background: #00ff00;
             box-shadow: 0 0 5px #00ff00;
-        }
-
-        /* Window Controls */
-        .win-controls {
-            position: fixed;
-            top: 8px;
-            right: 8px;
-            display: flex;
-            gap: 4px;
-            z-index: 10000;
-            -webkit-app-region: no-drag;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 4px 8px;
-            border-radius: 20px;
-            border: 1px solid #444;
-            backdrop-filter: blur(5px);
-        }
-
-        .win-btn {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background: #333;
-            color: #ccc;
-            font-weight: bold;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 1px solid #555;
-        }
-
-        .win-btn:hover {
-            background: #555;
-            color: white;
-        }
-
-        .win-btn-close {
-            background: #7f1d1d;
-            border-color: #ef4444;
-        }
-
-        .win-btn-close:hover {
-            background: #ef4444;
-        }
-
-        .win-btn-min {
-            background: #854d0e;
-            border-color: #eab308;
-        }
-
-        .win-btn-min:hover {
-            background: #eab308;
         }
 
         input[type=range] {
@@ -649,6 +599,7 @@
             background: #451a03;
         }
 
+        /* Progress Bar for Long Press */
         .hold-progress {
             position: absolute;
             bottom: 0;
@@ -673,11 +624,13 @@
             }
         }
 
-        .playlist-list::-webkit-scrollbar {
+        .playlist-list::-webkit-scrollbar,
+        .preset-list::-webkit-scrollbar {
             width: 6px;
         }
 
-        .playlist-list::-webkit-scrollbar-thumb {
+        .playlist-list::-webkit-scrollbar-thumb,
+        .preset-list::-webkit-scrollbar-thumb {
             background: #333;
             border-radius: 3px;
         }
@@ -702,11 +655,6 @@
 </head>
 
 <body>
-
-    <div class="win-controls">
-        <button class="win-btn win-btn-min" onclick="windowApi('minimize')" title="Minimize">_</button>
-        <button class="win-btn win-btn-close" onclick="windowApi('close')" title="Close">X</button>
-    </div>
 
     <div id="scaler">
         <div id="casing" class="retro-casing theme-wood">
@@ -747,7 +695,7 @@
                     </div>
                 </div>
 
-                <!-- Unified Content Viewport with FIXED HEIGHT (Reduced slightly for better fit) -->
+                <!-- Unified Content Viewport with FIXED HEIGHT -->
                 <div id="content-viewport" class="h-[550px] relative">
 
                     <!-- 1. EQ Mode -->
@@ -778,6 +726,9 @@
                                     <div class="p-4 text-center text-gray-600 italic">No files loaded.</div>
                                 </div>
                             </div>
+
+                            <!-- Preset Overlay (Not used in this layout, but kept hidden) -->
+                            <div id="preset-overlay" class="hidden overlay-panel"></div>
                         </div>
 
                         <!-- Control Panel -->
@@ -873,9 +824,12 @@
                             class="bg-[#111] p-4 rounded border-2 border-[#333] shadow-[inset_0_0_20px_#000] flex flex-1 min-h-0 items-center justify-between gap-4">
 
                             <!-- LEFT: Standard Presets -->
-                            <div id="left-presets"
-                                class="w-24 grid grid-cols-2 gap-1.5 h-full content-center preset-side-panel">
-                                <!-- JS will populate -->
+                            <div class="flex flex-col h-full justify-center">
+                                <div class="text-[9px] text-gray-500 font-bold text-center mb-1">STANDARD</div>
+                                <div id="left-presets"
+                                    class="w-24 grid grid-cols-2 gap-1.5 content-center preset-side-panel">
+                                    <!-- JS will populate -->
+                                </div>
                             </div>
 
                             <!-- CENTER: Scale + EQ -->
@@ -891,13 +845,15 @@
                             </div>
 
                             <!-- RIGHT: Custom Presets -->
-                            <div class="flex flex-col gap-2 h-full justify-center">
+                            <div class="flex flex-col h-full justify-center">
+                                <div class="text-[9px] text-amber-500 font-bold text-center mb-1">CUSTOM (กดค้างบันทึก)
+                                </div>
                                 <div id="right-presets"
                                     class="w-24 grid grid-cols-2 gap-1.5 content-center preset-side-panel">
                                     <!-- JS will populate -->
                                 </div>
                                 <!-- Save/Load Buttons -->
-                                <div class="flex gap-1 justify-center mt-1">
+                                <div class="flex gap-1 justify-center mt-2">
                                     <button
                                         class="text-[8px] bg-blue-900 text-blue-200 px-2 py-1 rounded border border-blue-700 hover:bg-blue-700 w-full"
                                         onclick="exportCustomPresets()" title="Save Presets to File">SAVE</button>
@@ -1136,6 +1092,7 @@
                 const btn = document.createElement('button');
                 btn.className = 'preset-btn-side';
                 btn.textContent = name;
+                btn.title = "คลิกเพื่อโหลด";
                 btn.onclick = () => {
                     applyPreset(presets[name]);
                     highlightPreset(btn);
@@ -1148,25 +1105,35 @@
                 const btn = document.createElement('button');
                 btn.className = 'preset-btn-side custom';
                 btn.textContent = p.name;
+                btn.title = "คลิกเพื่อโหลด / กดค้าง 1 วินาทีเพื่อบันทึก";
 
                 // Click to load
-                btn.onclick = () => {
-                    applyPreset(p.values);
-                    highlightPreset(btn);
+                btn.onclick = (e) => {
+                    // Prevent click if it was a long press
+                    if (e.detail === 0) return; // synthetic click?
                 };
 
-                // Long press to save
+                // Long press logic
                 let pressTimer;
-                btn.addEventListener('mousedown', () => {
+                let isLongPress = false;
+
+                // Touch Start
+                const startPress = (e) => {
+                    if (e.type === 'touchstart') e.preventDefault(); // Stop mouse emulation
+                    isLongPress = false;
+
                     const bar = document.createElement('div');
                     bar.className = 'hold-progress';
                     btn.appendChild(bar);
-                    setTimeout(() => bar.style.width = '100%', 10);
+                    // Force reflow
+                    void btn.offsetWidth;
+                    bar.style.width = '100%';
 
                     pressTimer = setTimeout(() => {
+                        isLongPress = true;
                         const newName = prompt("ตั้งชื่อ Preset ใหม่:", p.name);
                         if (newName) {
-                            p.name = newName.substring(0, 8); // Limit length
+                            p.name = newName.substring(0, 8);
                             p.values = getCurrentEQValues();
                             saveCustomPresetsToStorage();
                             btn.textContent = p.name;
@@ -1174,16 +1141,34 @@
                         }
                         if (bar) bar.remove();
                     }, 1000);
-                });
+                };
 
-                const clearPress = () => {
+                // Touch End / Mouse Up
+                const endPress = (e) => {
+                    if (pressTimer) {
+                        clearTimeout(pressTimer);
+                        pressTimer = null;
+                    }
+                    const bar = btn.querySelector('.hold-progress');
+                    if (bar) bar.remove();
+
+                    if (!isLongPress) {
+                        // Short press -> Load Preset
+                        applyPreset(p.values);
+                        highlightPreset(btn);
+                    }
+                };
+
+                btn.addEventListener('mousedown', startPress);
+                btn.addEventListener('touchstart', startPress);
+
+                btn.addEventListener('mouseup', endPress);
+                btn.addEventListener('mouseleave', () => {
                     if (pressTimer) clearTimeout(pressTimer);
                     const bar = btn.querySelector('.hold-progress');
                     if (bar) bar.remove();
-                };
-
-                btn.addEventListener('mouseup', clearPress);
-                btn.addEventListener('mouseleave', clearPress);
+                });
+                btn.addEventListener('touchend', endPress);
 
                 rightContainer.appendChild(btn);
             });
