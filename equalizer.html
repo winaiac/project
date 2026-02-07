@@ -23,11 +23,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-
-            /* Background */
             background-color: #0f0f0f;
             background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #050505 100%);
-
             -webkit-app-region: drag;
         }
 
@@ -38,11 +35,9 @@
             border-radius: 12px;
             box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.5), 0 30px 80px rgba(0, 0, 0, 1), 0 0 0 2px #000;
             transition: all 0.5s ease;
-
-            /* Fixed Width for stability */
             width: 1100px;
             flex-shrink: 0;
-
+            margin: 0;
             -webkit-app-region: drag;
             user-select: none;
         }
@@ -52,12 +47,13 @@
         input,
         canvas,
         iframe,
-        .win-controls,
         .theme-btn,
         a,
         .credit-link,
         .playlist-item,
-        .playlist-controls {
+        .playlist-controls,
+        .relink-btn,
+        .preset-btn-side {
             -webkit-app-region: no-drag;
             cursor: pointer;
         }
@@ -220,7 +216,6 @@
             letter-spacing: 1px;
         }
 
-        /* Buttons & Sliders */
         .btn-retro {
             background: linear-gradient(to bottom, #3a3a3a, #222);
             border: 1px solid #000;
@@ -391,12 +386,13 @@
             background: #10b981;
         }
 
+        /* Adjusted Slider Height - FIXED to 135px */
         .slider-vertical-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 200px;
-            width: 36px;
+            height: 135px;
+            width: 30px;
             background: #151515;
             border-left: 1px solid #2a2a2a;
             border-right: 1px solid #2a2a2a;
@@ -405,7 +401,7 @@
 
         input[type=range].slider-vertical {
             transform: rotate(-90deg);
-            width: 200px;
+            width: 135px;
             max-width: none;
         }
 
@@ -451,16 +447,6 @@
             align-items: center;
         }
 
-        .zoom-text {
-            font-size: 10px;
-            color: #aaa;
-            margin: 0 4px;
-            font-family: 'Orbitron', sans-serif;
-            line-height: 22px;
-            width: 30px;
-            text-align: center;
-        }
-
         /* Playlist Styles */
         #playlist-overlay {
             position: absolute;
@@ -487,8 +473,14 @@
             align-items: center;
         }
 
-        .playlist-actions button {
-            margin-left: 5px;
+        .playlist-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .playlist-actions button,
+        .playlist-actions label {
+            margin-left: 2px;
             font-size: 10px;
             padding: 2px 6px;
             border: 1px solid #444;
@@ -497,7 +489,8 @@
             background: #222;
         }
 
-        .playlist-actions button:hover {
+        .playlist-actions button:hover,
+        .playlist-actions label:hover {
             color: #fff;
             border-color: #666;
             background: #333;
@@ -536,13 +529,10 @@
             font-weight: bold;
         }
 
-        .playlist-item.dragging {
-            opacity: 0.5;
-            background: #333;
-        }
-
-        .playlist-item.drag-over {
-            border-top: 2px solid #10b981;
+        .playlist-item.missing-file {
+            color: #ef4444;
+            font-style: italic;
+            opacity: 0.7;
         }
 
         .track-controls {
@@ -550,7 +540,6 @@
             gap: 4px;
         }
 
-        /* Show controls on hover OR when in delete mode */
         .playlist-item:hover .track-controls,
         .playlist-item.delete-mode .track-controls {
             display: flex;
@@ -578,6 +567,110 @@
         .track-btn-del:hover {
             background: #7f1d1d;
             color: white;
+        }
+
+        .relink-btn {
+            background-color: #7f1d1d;
+            color: #fca5a5;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            border: 1px solid #ef4444;
+            border-radius: 4px;
+            text-align: center;
+            animation: pulse-border 2s infinite;
+        }
+
+        .relink-btn:hover {
+            background-color: #991b1b;
+            color: white;
+        }
+
+        /* Preset Side Buttons */
+        .preset-side-panel {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            align-content: center;
+        }
+
+        .preset-btn-side {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #888;
+            font-size: 9px;
+            font-family: 'Kanit', sans-serif;
+            border-radius: 4px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.1;
+            transition: all 0.1s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .preset-btn-side:hover {
+            background: #252525;
+            color: #ccc;
+            border-color: #555;
+        }
+
+        .preset-btn-side:active {
+            background: #111;
+            transform: translateY(1px);
+        }
+
+        .preset-btn-side.active {
+            color: #10b981;
+            border-color: #10b981;
+            background: #112d22;
+            box-shadow: 0 0 5px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Custom preset style */
+        .preset-btn-side.custom {
+            border-color: #854d0e;
+            color: #fdba74;
+        }
+
+        .preset-btn-side.custom:hover {
+            border-color: #fbbf24;
+            color: #fff;
+        }
+
+        .preset-btn-side.custom.active {
+            border-color: #fbbf24;
+            color: #fbbf24;
+            background: #451a03;
+        }
+
+        .hold-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: #fbbf24;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        @keyframes pulse-border {
+            0% {
+                border-color: #ef4444;
+            }
+
+            50% {
+                border-color: #f87171;
+            }
+
+            100% {
+                border-color: #ef4444;
+            }
         }
 
         .playlist-list::-webkit-scrollbar {
@@ -610,6 +703,10 @@
 
 <body>
 
+    <div class="win-controls">
+        <button class="win-btn win-btn-min" onclick="windowApi('minimize')" title="Minimize">_</button>
+        <button class="win-btn win-btn-close" onclick="windowApi('close')" title="Close">X</button>
+    </div>
 
     <div id="scaler">
         <div id="casing" class="retro-casing theme-wood">
@@ -650,8 +747,8 @@
                     </div>
                 </div>
 
-                <!-- Unified Content Viewport with FIXED HEIGHT -->
-                <div id="content-viewport" class="h-[560px] relative">
+                <!-- Unified Content Viewport with FIXED HEIGHT (Reduced slightly for better fit) -->
+                <div id="content-viewport" class="h-[550px] relative">
 
                     <!-- 1. EQ Mode -->
                     <div id="eq-mode-content" class="h-full flex flex-col">
@@ -663,17 +760,21 @@
                             </div>
 
                             <!-- Playlist Overlay -->
-                            <div id="playlist-overlay" class="hidden">
+                            <div id="playlist-overlay" class="hidden overlay-panel">
                                 <div class="playlist-header">
                                     <span>PLAYLIST <span id="playlist-count">(0)</span></span>
                                     <div class="playlist-actions">
-                                        <button onclick="document.getElementById('add-audio-upload').click()">+
-                                            ADD</button>
+                                        <button onclick="savePlaylist()" title="Save Playlist as .json">💾 SAVE</button>
+                                        <button onclick="document.getElementById('playlist-import').click()"
+                                            title="Load Playlist">📂 OPEN</button>
+                                        <input type="file" id="playlist-import" accept=".json" class="hidden">
+                                        <button onclick="document.getElementById('add-audio-upload').click()"
+                                            title="Add Music">➕ ADD</button>
                                         <input type="file" id="add-audio-upload" accept="audio/*" multiple
                                             class="hidden">
                                     </div>
                                 </div>
-                                <div id="playlist-container" class="playlist-list">
+                                <div id="playlist-container" class="playlist-list flex flex-col">
                                     <div class="p-4 text-center text-gray-600 italic">No files loaded.</div>
                                 </div>
                             </div>
@@ -702,6 +803,7 @@
                                 </div>
                                 <div
                                     class="flex items-center gap-3 bg-[#111] px-3 py-1.5 rounded border border-gray-800">
+
                                     <button id="list-btn"
                                         class="btn-retro px-2 py-1 rounded text-[10px] font-bold border border-gray-600 text-gray-400 hover:text-white"
                                         title="Toggle Playlist">LIST</button>
@@ -761,22 +863,50 @@
 
                             <div class="flex justify-end mt-2">
                                 <button id="reset-eq"
-                                    class="text-[9px] text-gray-500 hover:text-red-400 font-mono tracking-wider">[ RESET
-                                    ALL
-                                    ]</button>
+                                    class="text-[9px] text-gray-500 hover:text-red-400 font-mono tracking-wider">[
+                                    RESET ALL ]</button>
                             </div>
                         </div>
 
-                        <!-- Bands -->
+                        <!-- Bands Section with Side Presets -->
                         <div
-                            class="bg-[#111] p-4 rounded border-2 border-[#333] shadow-[inset_0_0_20px_#000] flex flex-1 min-h-0">
-                            <div
-                                class="flex flex-col justify-between items-end mr-3 text-gray-500 text-[9px] font-bold py-4 h-full flex-none">
-                                <span>+12</span><span>0</span><span>-12</span>
+                            class="bg-[#111] p-4 rounded border-2 border-[#333] shadow-[inset_0_0_20px_#000] flex flex-1 min-h-0 items-center justify-between gap-4">
+
+                            <!-- LEFT: Standard Presets -->
+                            <div id="left-presets"
+                                class="w-24 grid grid-cols-2 gap-1.5 h-full content-center preset-side-panel">
+                                <!-- JS will populate -->
                             </div>
-                            <div class="flex-1 overflow-x-auto h-full flex items-center">
+
+                            <!-- CENTER: Scale + EQ -->
+                            <div class="flex-1 flex items-center justify-center">
+                                <!-- Scale labels -->
+                                <div class="flex flex-col justify-between items-end mr-3 text-gray-500 text-[9px] font-bold py-2 h-[135px] flex-none"
+                                    style="margin-top: -8px;">
+                                    <span>+12</span><span>0</span><span>-12</span>
+                                </div>
+                                <!-- Sliders -->
                                 <div class="flex md:grid md:grid-cols-10 gap-1 min-w-max justify-items-center px-1"
                                     id="eq-container"></div>
+                            </div>
+
+                            <!-- RIGHT: Custom Presets -->
+                            <div class="flex flex-col gap-2 h-full justify-center">
+                                <div id="right-presets"
+                                    class="w-24 grid grid-cols-2 gap-1.5 content-center preset-side-panel">
+                                    <!-- JS will populate -->
+                                </div>
+                                <!-- Save/Load Buttons -->
+                                <div class="flex gap-1 justify-center mt-1">
+                                    <button
+                                        class="text-[8px] bg-blue-900 text-blue-200 px-2 py-1 rounded border border-blue-700 hover:bg-blue-700 w-full"
+                                        onclick="exportCustomPresets()" title="Save Presets to File">SAVE</button>
+                                    <button
+                                        class="text-[8px] bg-green-900 text-green-200 px-2 py-1 rounded border border-green-700 hover:bg-green-700 w-full"
+                                        onclick="document.getElementById('preset-file-import').click()"
+                                        title="Load Presets from File">LOAD</button>
+                                    <input type="file" id="preset-file-import" accept=".json" class="hidden">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -824,7 +954,7 @@
             let scale = Math.min(scaleX, scaleY);
             scale = scale * currentZoom;
             wrapper.style.transform = `scale(${scale})`;
-            document.getElementById('zoom-level').innerText = Math.round(scale * 100) + '%';
+            setTimeout(resizeSliders, 100);
         }
         window.addEventListener('resize', fitToScreen);
         window.addEventListener('load', fitToScreen);
@@ -842,6 +972,19 @@
             div.innerHTML = `<div class="slider-vertical-wrapper"><input type="range" class="slider-vertical eq-band" data-freq="${f}" ${extraAttr} min="-12" max="12" value="0" step="0.1"></div><div class="text-center mt-2 border-t border-gray-700 w-full pt-1"><span class="block printed-label ${color}">${label}</span><span class="block text-[7px] text-gray-600 font-mono">Hz</span></div>`;
             container.appendChild(div);
         });
+
+        // DYNAMIC SLIDER RESIZING
+        function resizeSliders() {
+            const wrappers = document.querySelectorAll('.slider-vertical-wrapper');
+            if (wrappers.length === 0) return;
+            const wrapper = wrappers[0];
+            const availableHeight = wrapper.clientHeight;
+            const sliders = document.querySelectorAll('input.slider-vertical');
+            sliders.forEach(slider => {
+                slider.style.width = availableHeight + 'px';
+            });
+        }
+        window.addEventListener('resize', resizeSliders);
 
         window.setTheme = function (name) {
             document.getElementById('casing').className = `w-full max-w-6xl retro-casing theme-${name}`;
@@ -916,8 +1059,163 @@
         let playlist = [];
         let currentTrackIndex = -1;
         let repeatMode = 0; // 0: Off, 1: All, 2: One
-        let pressTimer = null; // Timer for long press delete
-        let draggedIndex = -1; // Index of item currently being dragged
+        let pressTimer = null;
+        let draggedIndex = -1;
+
+        // --- PRESET LOGIC ---
+        const presets = {
+            'Normal': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'Pop': [2, 3, 4, 3, -1, -1, 1, 2, 3, 3],
+            'Rock': [4, 3, 2, 0, -2, -2, 0, 2, 4, 4],
+            'Jazz': [3, 2, 1, 2, -2, -2, 0, 1, 3, 4],
+            'Classic': [3, 2, 1, 1, 1, 1, 2, 3, 3, 3],
+            'Bass+': [6, 5, 4, 2, 0, 0, 0, 0, 0, 0],
+            'Treble+': [0, 0, 0, 0, 0, 1, 2, 4, 5, 6],
+            'Mid+': [0, 0, -2, 2, 4, 4, 2, -2, 0, 0]
+        };
+        let customPresets = [];
+        const CUSTOM_STORAGE_KEY = 'winai_eq_custom_presets';
+
+        function loadCustomPresets() {
+            const saved = localStorage.getItem(CUSTOM_STORAGE_KEY);
+            if (saved) {
+                try { customPresets = JSON.parse(saved); } catch (e) { customPresets = []; }
+            }
+            if (customPresets.length !== 8) {
+                customPresets = [];
+                for (let i = 0; i < 8; i++) {
+                    customPresets.push({ name: `User ${i + 1}`, values: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] });
+                }
+            }
+        }
+
+        function saveCustomPresetsToStorage() {
+            localStorage.setItem(CUSTOM_STORAGE_KEY, JSON.stringify(customPresets));
+        }
+
+        function exportCustomPresets() {
+            const data = JSON.stringify(customPresets);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'winai_eq_custom.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importCustomPresets(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (evt) {
+                try {
+                    const items = JSON.parse(evt.target.result);
+                    if (Array.isArray(items) && items.length === 8) {
+                        customPresets = items;
+                        saveCustomPresetsToStorage();
+                        renderPresetsUI();
+                        alert("โหลด Custom Presets เรียบร้อยแล้ว!");
+                    } else {
+                        alert("ไฟล์ไม่ถูกต้อง (ต้องมี 8 Presets)");
+                    }
+                } catch (err) { alert("ไฟล์เสีย"); }
+            };
+            reader.readAsText(file);
+        }
+
+        function renderPresetsUI() {
+            const leftContainer = document.getElementById('left-presets');
+            const rightContainer = document.getElementById('right-presets');
+
+            leftContainer.innerHTML = '';
+            rightContainer.innerHTML = '';
+
+            // Left: Standard Presets
+            Object.keys(presets).forEach(name => {
+                const btn = document.createElement('button');
+                btn.className = 'preset-btn-side';
+                btn.textContent = name;
+                btn.onclick = () => {
+                    applyPreset(presets[name]);
+                    highlightPreset(btn);
+                };
+                leftContainer.appendChild(btn);
+            });
+
+            // Right: Custom Presets
+            customPresets.forEach((p, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'preset-btn-side custom';
+                btn.textContent = p.name;
+
+                // Click to load
+                btn.onclick = () => {
+                    applyPreset(p.values);
+                    highlightPreset(btn);
+                };
+
+                // Long press to save
+                let pressTimer;
+                btn.addEventListener('mousedown', () => {
+                    const bar = document.createElement('div');
+                    bar.className = 'hold-progress';
+                    btn.appendChild(bar);
+                    setTimeout(() => bar.style.width = '100%', 10);
+
+                    pressTimer = setTimeout(() => {
+                        const newName = prompt("ตั้งชื่อ Preset ใหม่:", p.name);
+                        if (newName) {
+                            p.name = newName.substring(0, 8); // Limit length
+                            p.values = getCurrentEQValues();
+                            saveCustomPresetsToStorage();
+                            btn.textContent = p.name;
+                            alert(`บันทึก "${p.name}" เรียบร้อย!`);
+                        }
+                        if (bar) bar.remove();
+                    }, 1000);
+                });
+
+                const clearPress = () => {
+                    if (pressTimer) clearTimeout(pressTimer);
+                    const bar = btn.querySelector('.hold-progress');
+                    if (bar) bar.remove();
+                };
+
+                btn.addEventListener('mouseup', clearPress);
+                btn.addEventListener('mouseleave', clearPress);
+
+                rightContainer.appendChild(btn);
+            });
+        }
+
+        function highlightPreset(targetBtn) {
+            document.querySelectorAll('.preset-btn-side').forEach(b => b.classList.remove('active'));
+            targetBtn.classList.add('active');
+        }
+
+        function getCurrentEQValues() {
+            const bands = document.querySelectorAll('.eq-band');
+            const vals = [];
+            bands.forEach(b => vals.push(parseFloat(b.value)));
+            return vals;
+        }
+
+        function applyPreset(values) {
+            const bands = document.querySelectorAll('.eq-band');
+            bands.forEach((b, i) => {
+                if (values[i] !== undefined) {
+                    b.value = values[i];
+                    b.dispatchEvent(new Event('input'));
+                }
+            });
+        }
+
+        safeAddListener('preset-file-import', 'change', importCustomPresets);
+
+        // Initial Load
+        loadCustomPresets();
+        renderPresetsUI();
 
         // --- SEEK BAR LOGIC ---
         const seekBar = document.getElementById('seek-bar');
@@ -932,7 +1230,7 @@
         }
 
         audioPlayer.addEventListener('loadedmetadata', () => {
-            if (!streamSourceNode) { // Only for file/demo
+            if (!streamSourceNode) {
                 seekBar.max = audioPlayer.duration;
                 durationDisplay.innerText = formatTime(audioPlayer.duration);
                 seekBar.disabled = false;
@@ -940,7 +1238,7 @@
         });
 
         audioPlayer.addEventListener('timeupdate', () => {
-            if (!streamSourceNode) { // Only update if not streaming
+            if (!streamSourceNode) {
                 currentTimeDisplay.innerText = formatTime(audioPlayer.currentTime);
                 seekBar.value = audioPlayer.currentTime;
             }
@@ -1089,6 +1387,9 @@
             }
         });
 
+        // Playlist Open/Save Handlers
+        safeAddListener('playlist-import', 'change', importPlaylist);
+
         safeAddListener('safety-btn', 'click', toggleSafetyLock);
 
         function switchToFileMode(isRadio) {
@@ -1133,37 +1434,60 @@
 
         // --- PLAYLIST FUNCTIONS ---
         function loadFiles(files) {
-            // We append files instead of replacing if playlist is already active in FILE mode?
-            // Actually standard behavior is: if loading from button, maybe append?
-            // But drag/drop or main load usually replaces.
-            // Let's implement append for the "+" button.
-
-            // Check if we are appending
             const isAppend = window.isAppending;
-            window.isAppending = false; // reset flag
+            window.isAppending = false;
 
-            if (!isAppend) {
-                clearActiveModes(); // Reset other modes
+            const brokenTracks = playlist.filter(t => t.url === null);
+            const isRelinking = brokenTracks.length > 0;
+
+            if (!isAppend && !isRelinking) {
+                clearActiveModes();
                 playlist = [];
                 currentTrackIndex = 0;
             }
 
+            let relinkedCount = 0;
+            let addedCount = 0;
+
             for (let i = 0; i < files.length; i++) {
                 if (files[i].type.startsWith('audio/')) {
-                    playlist.push({
-                        name: files[i].name,
-                        url: URL.createObjectURL(files[i])
-                    });
+                    const url = URL.createObjectURL(files[i]);
+                    const name = files[i].name;
+                    let used = false;
+
+                    if (isRelinking) {
+                        const target = playlist.find(t => t.url === null && t.name === name);
+                        if (target) {
+                            target.url = url;
+                            target.className = '';
+                            relinkedCount++;
+                            used = true;
+                        }
+                    }
+
+                    if (!used && (!isRelinking || isAppend)) {
+                        playlist.push({ name: name, url: url });
+                        addedCount++;
+                    }
                 }
             }
 
             if (playlist.length > 0) {
                 renderPlaylist();
-                switchToFileMode(false);
-                if (!isAppend || !isPlaying) {
-                    playTrack(currentTrackIndex); // Play first if new list or stopped
+                if (isRelinking) {
+                    if (relinkedCount > 0) {
+                        alert(`เชื่อมโยงไฟล์สำเร็จ ${relinkedCount} เพลง!`);
+                        if (!isPlaying && playlist[currentTrackIndex] && playlist[currentTrackIndex].url) {
+                            switchToFileMode(false);
+                            playTrack(currentTrackIndex);
+                        }
+                    } else if (addedCount === 0 && !isAppend) {
+                        alert("ไม่พบไฟล์ที่ตรงกันในโฟลเดอร์นี้");
+                    }
+                } else {
+                    switchToFileMode(false);
+                    if (!isAppend || !isPlaying) playTrack(currentTrackIndex);
                 }
-                // Open playlist view
                 document.getElementById('playlist-overlay').classList.remove('hidden');
                 document.getElementById('list-btn').classList.add('btn-retro-active');
             }
@@ -1174,6 +1498,35 @@
             window.isAppending = true;
             loadFiles(e.target.files);
         });
+
+        function savePlaylist() {
+            const data = JSON.stringify(playlist.map(t => ({ name: t.name })));
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'playlist.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importPlaylist(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (evt) {
+                try {
+                    const items = JSON.parse(evt.target.result);
+                    clearActiveModes();
+                    playlist = items.map(i => ({ name: i.name, url: null }));
+                    currentTrackIndex = 0;
+                    renderPlaylist();
+                    document.getElementById('playlist-overlay').classList.remove('hidden');
+                    document.getElementById('list-btn').classList.add('btn-retro-active');
+                } catch (err) { alert("Invalid playlist file"); }
+            };
+            reader.readAsText(file);
+        }
 
         function loadDemo() {
             clearActiveModes();
@@ -1190,32 +1543,45 @@
             container.innerHTML = '';
             document.getElementById('playlist-count').textContent = `(${playlist.length})`;
 
+            // Add Relink Button if broken links exist
+            const brokenCount = playlist.filter(t => t.url === null).length;
+            if (brokenCount > 0) {
+                const warnDiv = document.createElement('div');
+                warnDiv.className = "relink-btn";
+                warnDiv.textContent = `⚠️ พบ ${brokenCount} เพลงที่ยังไม่เชื่อมโยง คลิกเพื่อเลือกโฟลเดอร์เพลง`;
+                warnDiv.onclick = () => document.getElementById('folder-upload').click();
+                container.appendChild(warnDiv);
+            }
+
             playlist.forEach((track, index) => {
                 const item = document.createElement('div');
                 item.className = 'playlist-item ' + (index === currentTrackIndex ? 'active' : '');
+                if (track.url === null) item.classList.add('missing-file');
+
                 item.draggable = true;
                 item.dataset.index = index;
 
-                // Drag Events
                 item.addEventListener('dragstart', (e) => handleDragStart(e, index));
                 item.addEventListener('dragover', handleDragOver);
                 item.addEventListener('drop', (e) => handleDrop(e, index));
                 item.addEventListener('dragend', handleDragEnd);
 
-                // Long Press (Delete Mode)
                 item.addEventListener('mousedown', () => handleLongPressStart(index));
                 item.addEventListener('mouseup', handleLongPressEnd);
                 item.addEventListener('mouseleave', handleLongPressEnd);
-                item.addEventListener('touchstart', () => handleLongPressStart(index)); // Mobile
+                item.addEventListener('touchstart', () => handleLongPressStart(index));
                 item.addEventListener('touchend', handleLongPressEnd);
 
-                // Track Name Clickable
                 const nameSpan = document.createElement('span');
                 nameSpan.textContent = (index + 1) + ". " + track.name;
-                nameSpan.className = "flex-1 overflow-hidden text-ellipsis pointer-events-none"; // Prevent text select
-                item.onclick = () => { if (!item.classList.contains('delete-mode')) playTrack(index); };
+                nameSpan.className = "flex-1 overflow-hidden text-ellipsis pointer-events-none";
+                item.onclick = () => {
+                    if (!item.classList.contains('delete-mode')) {
+                        if (track.url) playTrack(index);
+                        else document.getElementById('folder-upload').click(); // Suggest finding folder
+                    }
+                };
 
-                // Delete Button (Initially Hidden)
                 const delBtn = document.createElement('button');
                 delBtn.className = "track-btn track-btn-del hidden ml-2";
                 delBtn.innerHTML = "DELETE ❌";
@@ -1244,11 +1610,9 @@
             e.preventDefault();
             e.stopPropagation();
             if (draggedIndex !== targetIndex && draggedIndex > -1) {
-                // Move item in array
                 const movedItem = playlist.splice(draggedIndex, 1)[0];
                 playlist.splice(targetIndex, 0, movedItem);
 
-                // Update current playing index if needed
                 if (currentTrackIndex === draggedIndex) currentTrackIndex = targetIndex;
                 else if (currentTrackIndex > draggedIndex && currentTrackIndex <= targetIndex) currentTrackIndex--;
                 else if (currentTrackIndex < draggedIndex && currentTrackIndex >= targetIndex) currentTrackIndex++;
@@ -1268,21 +1632,23 @@
         // --- Long Press Delete ---
         function handleLongPressStart(index) {
             pressTimer = setTimeout(() => {
-                // Enter Delete Mode for this item
                 const items = document.querySelectorAll('.playlist-item');
+                // Adjust index for warning div offset
+                const hasWarning = playlist.some(t => t.url === null);
+                // Warning div is first child, so playlist items are +1
+                // But querySelectorAll('.playlist-item') gets only items, so index matches
                 const targetItem = items[index];
                 if (targetItem) {
                     targetItem.classList.add('delete-mode', 'bg-red-900/50');
                     targetItem.querySelector('.track-btn-del').classList.remove('hidden');
                 }
-            }, 1000); // 1 second
+            }, 1000);
         }
 
         function handleLongPressEnd() {
             if (pressTimer) clearTimeout(pressTimer);
         }
 
-        // Click elsewhere to cancel delete mode
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.playlist-item') && !e.target.closest('.track-btn-del')) {
                 document.querySelectorAll('.playlist-item').forEach(item => {
@@ -1293,28 +1659,11 @@
             }
         });
 
-        function moveTrack(index, direction) {
-            const newIndex = index + direction;
-            if (newIndex < 0 || newIndex >= playlist.length) return;
-
-            // Swap
-            const temp = playlist[index];
-            playlist[index] = playlist[newIndex];
-            playlist[newIndex] = temp;
-
-            // Update current index if moved
-            if (currentTrackIndex === index) currentTrackIndex = newIndex;
-            else if (currentTrackIndex === newIndex) currentTrackIndex = index;
-
-            renderPlaylist();
-        }
-
         function removeTrack(index) {
             playlist.splice(index, 1);
             if (index < currentTrackIndex) {
                 currentTrackIndex--;
             } else if (index === currentTrackIndex) {
-                // If removing playing track, play next or stop
                 if (playlist.length > 0) {
                     if (currentTrackIndex >= playlist.length) currentTrackIndex = 0;
                     playTrack(currentTrackIndex);
@@ -1330,13 +1679,15 @@
 
         function playTrack(index) {
             if (index < 0 || index >= playlist.length) return;
-            currentTrackIndex = index;
             const track = playlist[index];
-
+            if (!track.url) {
+                alert("File missing. Please use the Relink button.");
+                return;
+            }
+            currentTrackIndex = index;
             audioPlayer.src = track.url;
             document.getElementById('track-name').textContent = track.name.toUpperCase().substring(0, 20);
-
-            renderPlaylist(); // To update active highlight
+            renderPlaylist();
             playAudio();
         }
 
@@ -1362,11 +1713,9 @@
             const titles = ["Repeat Off", "Repeat All", "Repeat One"];
             const colors = ["text-gray-400", "text-emerald-400", "text-amber-400"];
 
-            btn.innerHTML = modes[repeatMode].split(" ")[0]; // Just icon
+            btn.innerHTML = modes[repeatMode].split(" ")[0];
             btn.title = titles[repeatMode];
             btn.className = `btn-retro w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold ${colors[repeatMode]}`;
-
-            // Update tooltip text somewhere if needed, but Title is enough
         }
 
         function playAudio() {
@@ -1399,7 +1748,6 @@
         safeAddListener('next-btn', 'click', playNext);
         safeAddListener('repeat-btn', 'click', toggleRepeat);
 
-        // Safety Check for Volume Input
         safeAddListener('master-volume', 'input', e => {
             if (isSafetyLocked && parseFloat(e.target.value) > SAFETY_VOL_LIMIT) { e.target.value = SAFETY_VOL_LIMIT; }
             if (gainNode) gainNode.gain.value = e.target.value;
@@ -1410,10 +1758,9 @@
         const resetFn = () => { eqBands.forEach((b, i) => { b.value = 0; if (filters[i]) filters[i].gain.value = 0; }); };
         safeAddListener('reset-eq', 'click', resetFn); safeAddListener('reset-eq-mobile', 'click', resetFn);
 
-        // Safety Check for EQ Bands
         eqBands.forEach((b, i) => {
             b.addEventListener('input', () => {
-                if (isSafetyLocked && i < 3 && parseFloat(b.value) > SAFETY_EQ_LIMIT) { // 0,1,2 are low bands
+                if (isSafetyLocked && i < 3 && parseFloat(b.value) > SAFETY_EQ_LIMIT) {
                     b.value = SAFETY_EQ_LIMIT;
                 }
                 if (filters[i]) filters[i].gain.value = parseFloat(b.value);
@@ -1423,15 +1770,11 @@
 
         // Auto Next Track Logic
         audioPlayer.addEventListener('ended', () => {
-            // 0: Off, 1: All, 2: One
             if (repeatMode === 2) {
-                // Repeat One: Play current index again
                 playTrack(currentTrackIndex);
             } else if (repeatMode === 1) {
-                // Repeat All: Loop back to start if at end
                 playNext();
             } else {
-                // Repeat Off: Stop if last song
                 if (currentTrackIndex < playlist.length - 1) {
                     playNext();
                 } else {
