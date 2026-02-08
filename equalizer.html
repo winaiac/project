@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winai Audio Equalizer - Stereo Edition</title>
+    <title>Winai Audio Equalizer - Professional 20-Band</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&family=Orbitron:wght@500;700&display=swap"
@@ -35,7 +35,9 @@
             border-radius: 12px;
             box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.5), 0 30px 80px rgba(0, 0, 0, 1), 0 0 0 2px #000;
             transition: all 0.5s ease;
-            width: 1100px;
+            width: 1280px;
+            /* Increased width for 20 bands */
+            max-width: 98vw;
             flex-shrink: 0;
             margin: 0;
             -webkit-app-region: drag;
@@ -338,7 +340,8 @@
             align-items: center;
             justify-content: center;
             height: 135px;
-            width: 30px;
+            width: 24px;
+            /* Reduced width to fit 20 bands */
             background: #151515;
             border-left: 1px solid #2a2a2a;
             border-right: 1px solid #2a2a2a;
@@ -356,8 +359,10 @@
             font-weight: bold;
             color: #888;
             text-transform: uppercase;
-            font-size: 9px;
-            letter-spacing: 0.5px;
+            font-size: 8px;
+            /* Slightly smaller for 20 bands */
+            letter-spacing: 0px;
+            transform: scale(0.9);
         }
 
         .credit-plate {
@@ -709,6 +714,12 @@
         .win-btn-full:hover {
             background: #3b82f6;
         }
+
+        /* Grid for 20 bands */
+        .grid-cols-20 {
+            display: grid;
+            grid-template-columns: repeat(20, minmax(0, 1fr));
+        }
     </style>
 </head>
 
@@ -733,7 +744,8 @@
                     class="flex flex-col md:flex-row justify-between items-center mb-4 border-b border-gray-800 pb-2 shrink-0">
                     <h1 class="text-2xl font-bold text-gray-400 digital-font tracking-widest"
                         style="text-shadow: 2px 2px 0 #000;">
-                        EQ <span class="text-amber-600 text-sm font-sans tracking-normal font-bold">STEREO 2.0</span>
+                        EQ <span class="text-amber-600 text-sm font-sans tracking-normal font-bold">STEREO <span
+                                class="text-white bg-red-800 px-1 rounded text-xs ml-1">PRO 20-BAND</span></span>
                     </h1>
                     <div class="flex flex-wrap items-center justify-center gap-3 mt-2 md:mt-0">
                         <div class="flex items-center gap-1 bg-[#111] px-2 py-1 rounded border border-gray-700">
@@ -899,12 +911,12 @@
                             <!-- CENTER: Scale + EQ -->
                             <div class="flex-1 flex items-center justify-center">
                                 <!-- Scale labels -->
-                                <div class="flex flex-col justify-between items-end mr-3 text-gray-500 text-[9px] font-bold py-2 h-[135px] flex-none"
+                                <div class="flex flex-col justify-between items-end mr-2 text-gray-500 text-[9px] font-bold py-2 h-[135px] flex-none"
                                     style="margin-top: -8px;">
                                     <span>+12</span><span>0</span><span>-12</span>
                                 </div>
-                                <!-- Sliders -->
-                                <div class="flex md:grid md:grid-cols-10 gap-1 min-w-max justify-items-center px-1"
+                                <!-- Sliders 20-Band Container -->
+                                <div class="grid grid-cols-20 gap-0.5 justify-items-center px-1 w-full"
                                     id="eq-container"></div>
                             </div>
 
@@ -990,16 +1002,33 @@
             }
         }
 
-        // --- SETUP UI ---
-        const freqs = [31, 63, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
+        // --- SETUP UI : 20 BANDS (ISO Standard) ---
+        // 31, 45, 63, 90, 125, 180, 250, 350, 500, 700, 1k, 1.4k, 2k, 2.8k, 4k, 5.6k, 8k, 11k, 16k, 20k
+        const freqs = [31, 45, 63, 90, 125, 180, 250, 350, 500, 700, 1000, 1400, 2000, 2800, 4000, 5600, 8000, 11200, 16000, 20000];
+
         const container = document.getElementById('eq-container');
         freqs.forEach((f, index) => {
-            const label = f >= 1000 ? (f / 1000) + 'k' : f;
+            let label;
+            if (f >= 1000) {
+                // Formatting for KHz (e.g. 1.4k, 11.2k)
+                label = (f / 1000).toString().replace(/\.0$/, '') + 'k';
+            } else {
+                label = f;
+            }
+
             const color = (f === 1000) ? 'text-emerald-500' : 'text-gray-300';
+            // Safety range expanded for bass (approx < 125Hz)
+            const extraAttr = (index <= 5) ? `data-safe="true"` : '';
+
             const div = document.createElement('div');
-            div.className = 'flex flex-col items-center w-14 md:w-auto';
-            const extraAttr = (index <= 2) ? `data-safe="true"` : '';
-            div.innerHTML = `<div class="slider-vertical-wrapper"><input type="range" class="slider-vertical eq-band" data-freq="${f}" ${extraAttr} min="-12" max="12" value="0" step="0.1"></div><div class="text-center mt-2 border-t border-gray-700 w-full pt-1"><span class="block printed-label ${color}">${label}</span><span class="block text-[7px] text-gray-600 font-mono">Hz</span></div>`;
+            div.className = 'flex flex-col items-center w-full';
+            div.innerHTML = `
+                <div class="slider-vertical-wrapper">
+                    <input type="range" class="slider-vertical eq-band" data-freq="${f}" ${extraAttr} min="-12" max="12" value="0" step="0.1">
+                </div>
+                <div class="text-center mt-2 border-t border-gray-700 w-full pt-1">
+                    <span class="block printed-label ${color}">${label}</span>
+                </div>`;
             container.appendChild(div);
         });
 
@@ -1064,7 +1093,8 @@
             const vol = document.getElementById('master-volume');
             if (vol.value > SAFETY_VOL_LIMIT) { vol.value = SAFETY_VOL_LIMIT; if (gainNode) gainNode.gain.value = SAFETY_VOL_LIMIT; }
             const bands = document.querySelectorAll('.eq-band');
-            for (let i = 0; i < 3; i++) {
+            // Enforce limits on first 6 bands (Bass)
+            for (let i = 0; i < 6; i++) {
                 if (parseFloat(bands[i].value) > SAFETY_EQ_LIMIT) {
                     bands[i].value = SAFETY_EQ_LIMIT;
                     if (filters[i]) filters[i].gain.value = SAFETY_EQ_LIMIT;
@@ -1092,19 +1122,20 @@
         let pressTimer = null;
         let draggedIndex = -1;
 
-        // --- PRESET LOGIC ---
+        // --- PRESET LOGIC (Remapped for 20 Bands) ---
+        // 0-4: Low | 5-9: Low-Mid | 10-14: High-Mid | 15-19: High
         const presets = {
-            'Normal': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'Pop': [2, 3, 4, 3, -1, -1, 1, 2, 3, 3],
-            'Rock': [4, 3, 2, 0, -2, -2, 0, 2, 4, 4],
-            'Jazz': [3, 2, 1, 2, -2, -2, 0, 1, 3, 4],
-            'Classic': [3, 2, 1, 1, 1, 1, 2, 3, 3, 3],
-            'Bass+': [6, 5, 4, 2, 0, 0, 0, 0, 0, 0],
-            'Treble+': [0, 0, 0, 0, 0, 1, 2, 4, 5, 6],
-            'Mid+': [0, 0, -2, 2, 4, 4, 2, -2, 0, 0]
+            'Normal': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'Pop': [2, 2.5, 3, 3, 3, 3, 2, 1, -1, -1, -1, 0, 1, 2, 3, 3, 3, 3.5, 4, 4],
+            'Rock': [4, 3.5, 3, 2.5, 2, 1, 0, -1, -2, -2, -1, 0, 1, 2, 3, 3.5, 4, 4.5, 5, 5],
+            'Jazz': [3, 2.5, 2, 2, 2, 1, 1, 2, -1, -2, -1, 0, 1, 2, 2, 3, 3, 3.5, 4, 4],
+            'Classic': [3, 2.5, 2, 1.5, 1, 1, 1, 1.5, 2, 2.5, 2, 2, 2.5, 3, 3, 3, 3, 3, 2, 2],
+            'Bass+': [6, 5.5, 5, 4.5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'Treble+': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 5.5, 6, 6.5, 7],
+            'Mid+': [0, 0, 0, -1, -2, -2, 0, 2, 4, 4, 4, 4, 2, 0, -1, -2, -2, -2, 0, 0]
         };
         let customPresets = [];
-        const CUSTOM_STORAGE_KEY = 'winai_eq_custom_presets';
+        const CUSTOM_STORAGE_KEY = 'winai_eq_pro_20_custom';
 
         function loadCustomPresets() {
             const saved = localStorage.getItem(CUSTOM_STORAGE_KEY);
@@ -1114,9 +1145,18 @@
             if (customPresets.length !== 8) {
                 customPresets = [];
                 for (let i = 0; i < 8; i++) {
-                    customPresets.push({ name: `User ${i + 1}`, values: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] });
+                    // Initialize with 20 zeros
+                    const zeros = new Array(20).fill(0);
+                    customPresets.push({ name: `User ${i + 1}`, values: zeros });
                 }
             }
+            // Compatibility check: if old 10-band preset is loaded, pad it
+            customPresets.forEach(p => {
+                if (p.values.length < 20) {
+                    const diff = 20 - p.values.length;
+                    for (let k = 0; k < diff; k++) p.values.push(0);
+                }
+            });
         }
 
         function saveCustomPresetsToStorage() {
@@ -1129,7 +1169,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'winai_eq_custom.json';
+            a.download = 'winai_eq_pro_20_custom.json';
             a.click();
             URL.revokeObjectURL(url);
         }
@@ -1142,6 +1182,15 @@
                 try {
                     const items = JSON.parse(evt.target.result);
                     if (Array.isArray(items) && items.length === 8) {
+                        // Fix length if importing old presets
+                        items.forEach(it => {
+                            if (it.values.length < 20) {
+                                // Simple mapping for old presets: just pad with 0s for now or duplicate logic
+                                // Ideally, user should remaster for 20 bands.
+                                while (it.values.length < 20) it.values.push(0);
+                            }
+                        });
+
                         customPresets = items;
                         saveCustomPresetsToStorage();
                         renderPresetsUI();
@@ -1262,11 +1311,20 @@
 
         function applyPreset(values) {
             const bands = document.querySelectorAll('.eq-band');
+            // Check for array length mismatch (10 vs 20)
             bands.forEach((b, i) => {
-                if (values[i] !== undefined) {
-                    b.value = values[i];
-                    b.dispatchEvent(new Event('input'));
+                let val = 0;
+                if (i < values.length) {
+                    val = values[i];
+                } else if (values.length === 10) {
+                    // Logic to handle 10-band preset on 20-band EQ (Interpolation-ish)
+                    // If index is 11, it maps roughly to index 5 of old preset
+                    const mapIdx = Math.floor(i / 2);
+                    val = values[mapIdx] || 0;
                 }
+
+                b.value = val;
+                b.dispatchEvent(new Event('input'));
             });
         }
 
@@ -1321,11 +1379,18 @@
                 splitter = audioContext.createChannelSplitter(2); merger = audioContext.createChannelMerger(2);
                 analyserL = audioContext.createAnalyser(); analyserL.fftSize = 2048; analyserL.smoothingTimeConstant = 0.8;
                 analyserR = audioContext.createAnalyser(); analyserR.fftSize = 2048; analyserR.smoothingTimeConstant = 0.8;
+
+                // Create 20 Filters
                 filters = freqs.map((f, i) => {
                     const filter = audioContext.createBiquadFilter(); filter.frequency.value = f;
                     filter.type = (i === 0) ? 'lowshelf' : (i === freqs.length - 1) ? 'highshelf' : 'peaking';
-                    if (filter.type === 'peaking') filter.Q.value = 1.4; filter.gain.value = 0; return filter;
+                    if (filter.type === 'peaking') {
+                        // Narrower Q factor for 20 bands to prevent overlap muddiness
+                        filter.Q.value = 2.0;
+                    }
+                    filter.gain.value = 0; return filter;
                 });
+
                 setupRouting(false);
                 gainNode.gain.value = 0.5;
             }
@@ -1819,7 +1884,8 @@
 
         eqBands.forEach((b, i) => {
             b.addEventListener('input', () => {
-                if (isSafetyLocked && i < 3 && parseFloat(b.value) > SAFETY_EQ_LIMIT) {
+                // Safety Lock Expanded to first 6 bands (approx < 180Hz)
+                if (isSafetyLocked && i < 6 && parseFloat(b.value) > SAFETY_EQ_LIMIT) {
                     b.value = SAFETY_EQ_LIMIT;
                 }
                 if (filters[i]) filters[i].gain.value = parseFloat(b.value);
