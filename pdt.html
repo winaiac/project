@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เมล็ดพันธุ์แผ่นดินธรรม - สถิติการเลือกตั้ง</title>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js"></script>
+    <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/mapdata/countries/th/th-all.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Prompt', sans-serif;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .map-container {
+            height: 850px;
+            width: 100%;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+        }
+
+        .district-row:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .district-row:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200 shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-xl">🌱</div>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-800">พรรคแผ่นดินธรรม</h1>
+                    <p class="text-xs text-gray-500">ผลคะแนนรวมอย่างไม่เป็นทางการ (อ้างอิง กกต.)</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-xs text-gray-500 uppercase tracking-wide">คะแนนรวมทั่วประเทศ</div>
+                <div class="text-2xl font-bold text-green-700">12,440</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-6">
+
+        <!-- Main Map Container -->
+        <div class="card p-0 relative overflow-hidden border border-gray-200 shadow-xl">
+            <div id="container" class="map-container bg-slate-50"></div>
+
+            <!-- Statistics Overlay (Top Right - No Frame, Narrow Width) -->
+            <div class="absolute top-4 right-4 p-2 text-xs z-10 w-48 hidden md:block">
+                <h3 class="font-bold text-gray-700 mb-2 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    ภาพรวมการเลือกตั้ง
+                </h3>
+                <div class="space-y-1.5 pl-1">
+                    <div class="flex justify-between items-center text-gray-600">
+                        <span class="opacity-80">ผู้มาใช้สิทธิ</span>
+                        <span class="font-bold">34,140,733</span>
+                    </div>
+                    <div class="flex justify-between items-center text-green-700">
+                        <span class="opacity-80">บัตรดี</span>
+                        <span class="font-bold">30,389,184</span>
+                    </div>
+                    <div class="flex justify-between items-center text-red-600">
+                        <span class="opacity-80">บัตรเสีย</span>
+                        <span class="font-bold">871,776</span>
+                    </div>
+                    <div class="flex justify-between items-center text-orange-600">
+                        <span class="opacity-80">Vote No</span>
+                        <span class="font-bold">2,879,773</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Left Panel Overlay (Info Panel) Moved to Bottom Right (Gulf of Thailand) -->
+            <div
+                class="absolute bottom-4 right-4 w-80 max-h-[calc(100%-2rem)] flex flex-col gap-4 z-20 pointer-events-none">
+
+                <!-- Intro View (Top Provinces) - Fully Transparent -->
+                <div id="intro-view"
+                    class="overflow-hidden flex flex-col transition-all duration-300 max-h-full pointer-events-auto backdrop-blur-none bg-transparent">
+                    <div class="p-5 text-center shrink-0">
+                        <div
+                            class="inline-block p-2 bg-green-50/50 rounded-full mb-2 text-xl shadow-sm border border-green-100/50">
+                            🏆</div>
+                        <h3 class="text-lg font-bold text-gray-800 drop-shadow-sm">จังหวัดฐานเสียงหลัก</h3>
+                        <p class="text-[10px] text-gray-600 font-medium">10 อันดับจังหวัดที่มีคะแนนสูงสุด</p>
+                    </div>
+                    <div class="flex-grow overflow-y-auto" style="max-height: 400px;">
+                        <table class="w-full text-sm">
+                            <tbody id="top-provinces-list"></tbody>
+                        </table>
+                    </div>
+                    <div class="p-3 text-center text-[10px] text-gray-500 shrink-0 font-medium">
+                        คลิกที่จังหวัดบนแผนที่เพื่อดูรายละเอียด
+                    </div>
+                </div>
+
+                <!-- Detail View (Province Details) - Fully Transparent -->
+                <div id="detail-view"
+                    class="overflow-hidden flex flex-col hidden transition-all duration-300 max-h-full pointer-events-auto backdrop-blur-none bg-transparent">
+                    <div class="p-5 shrink-0">
+                        <button id="back-btn"
+                            class="text-xs text-green-800 hover:text-green-900 font-bold mb-3 flex items-center gap-1 bg-white/40 px-2 py-1 rounded shadow-sm w-fit transition-colors hover:bg-white/60">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            กลับไปหน้าหลัก
+                        </button>
+                        <h2 id="prov-name" class="text-2xl font-bold text-gray-800 leading-tight drop-shadow-sm">จังหวัด
+                        </h2>
+                        <div class="flex items-baseline gap-2 mt-1">
+                            <span id="prov-score" class="text-3xl font-bold text-green-800 drop-shadow-sm">0</span>
+                            <span
+                                class="text-xs text-gray-600 font-medium px-2 py-0.5 rounded-full border border-gray-400/30 bg-white/20">คะแนนรวม</span>
+                        </div>
+                    </div>
+
+                    <div class="flex-grow overflow-hidden flex flex-col" style="max-height: 400px;">
+                        <div
+                            class="px-4 py-2 border-b border-gray-400/20 text-[10px] font-bold text-gray-600 uppercase flex justify-between tracking-wider bg-white/10">
+                            <span>เขตเลือกตั้ง</span>
+                            <span>คะแนน</span>
+                        </div>
+                        <div class="overflow-y-auto flex-grow p-0">
+                            <table class="w-full text-sm">
+                                <tbody id="district-list"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Legend (Moved to Bottom Left - Andaman Sea) -->
+            <div
+                class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-sm border border-gray-100 text-xs z-10">
+                <div class="font-medium mb-2 text-gray-600">ระดับคะแนนความนิยม</div>
+                <div class="flex items-center gap-2">
+                    <span class="text-gray-400">น้อย</span>
+                    <div class="w-32 h-2 rounded-full bg-gradient-to-r from-green-50 to-green-800"></div>
+                    <span class="text-green-800 font-bold">มาก</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div
+            class="container mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+            <div>
+                <p class="font-semibold text-gray-700">พรรคแผ่นดินธรรม</p>
+                <p>ข้อมูลสถิติการเลือกตั้ง 2566 (บัตรบัญชีรายชื่อ)</p>
+            </div>
+            <div class="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
+                <span>รวบรวมและรายงานโดย:</span>
+                <a href="https://www.facebook.com/winayo1" target="_blank"
+                    class="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                    </svg>
+                    วินัย แอดมินร้อยเอ็ด
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const mapData = [{ "hc-key": "Bangkok", "name": "กรุงเทพมหานคร", "value": 386, "districts": [{ "id": 1, "v": 7 }, { "id": 2, "v": 12 }, { "id": 3, "v": 10 }, { "id": 4, "v": 8 }, { "id": 5, "v": 6 }, { "id": 6, "v": 16 }, { "id": 7, "v": 14 }, { "id": 8, "v": 14 }, { "id": 9, "v": 17 }, { "id": 10, "v": 9 }, { "id": 11, "v": 14 }, { "id": 12, "v": 24 }, { "id": 13, "v": 7 }, { "id": 14, "v": 5 }, { "id": 15, "v": 13 }, { "id": 16, "v": 10 }, { "id": 17, "v": 20 }, { "id": 18, "v": 18 }, { "id": 19, "v": 7 }, { "id": 20, "v": 14 }, { "id": 21, "v": 11 }, { "id": 22, "v": 9 }, { "id": 23, "v": 9 }, { "id": 24, "v": 10 }, { "id": 25, "v": 12 }, { "id": 26, "v": 9 }, { "id": 27, "v": 11 }, { "id": 28, "v": 8 }, { "id": 29, "v": 9 }, { "id": 30, "v": 24 }, { "id": 31, "v": 14 }, { "id": 32, "v": 8 }, { "id": 33, "v": 7 }] }, { "hc-key": "Nakhon Ratchasima", "name": "นครราชสีมา", "value": 441, "districts": [{ "id": 1, "v": 10 }, { "id": 2, "v": 21 }, { "id": 3, "v": 20 }, { "id": 4, "v": 22 }, { "id": 5, "v": 29 }, { "id": 6, "v": 29 }, { "id": 7, "v": 25 }, { "id": 8, "v": 20 }, { "id": 9, "v": 42 }, { "id": 10, "v": 29 }, { "id": 11, "v": 29 }, { "id": 12, "v": 33 }, { "id": 13, "v": 26 }, { "id": 14, "v": 28 }, { "id": 15, "v": 63 }, { "id": 16, "v": 15 }] }, { "hc-key": "Khon Kaen", "name": "ขอนแก่น", "value": 430, "districts": [{ "id": 1, "v": 14 }, { "id": 2, "v": 42 }, { "id": 3, "v": 44 }, { "id": 4, "v": 60 }, { "id": 5, "v": 79 }, { "id": 6, "v": 22 }, { "id": 7, "v": 53 }, { "id": 8, "v": 65 }, { "id": 9, "v": 16 }, { "id": 10, "v": 19 }, { "id": 11, "v": 16 }] }, { "hc-key": "Ubon Ratchathani", "name": "อุบลราชธานี", "value": 529, "districts": [{ "id": 1, "v": 23 }, { "id": 2, "v": 120 }, { "id": 3, "v": 42 }, { "id": 4, "v": 45 }, { "id": 5, "v": 38 }, { "id": 6, "v": 29 }, { "id": 7, "v": 32 }, { "id": 8, "v": 39 }, { "id": 9, "v": 80 }, { "id": 10, "v": 50 }, { "id": 11, "v": 31 }] }, { "hc-key": "Chiang Mai", "name": "เชียงใหม่", "value": 482, "districts": [{ "id": 1, "v": 7 }, { "id": 2, "v": 23 }, { "id": 3, "v": 18 }, { "id": 4, "v": 43 }, { "id": 5, "v": 42 }, { "id": 6, "v": 77 }, { "id": 7, "v": 79 }, { "id": 8, "v": 23 }, { "id": 9, "v": 61 }, { "id": 10, "v": 109 }] }, { "hc-key": "Chon Buri", "name": "ชลบุรี", "value": 170, "districts": [{ "id": 1, "v": 11 }, { "id": 2, "v": 10 }, { "id": 3, "v": 15 }, { "id": 4, "v": 17 }, { "id": 5, "v": 22 }, { "id": 6, "v": 20 }, { "id": 7, "v": 17 }, { "id": 8, "v": 15 }, { "id": 9, "v": 10 }, { "id": 10, "v": 33 }] }, { "hc-key": "Buriram", "name": "บุรีรัมย์", "value": 236, "districts": [{ "id": 1, "v": 15 }, { "id": 2, "v": 22 }, { "id": 3, "v": 18 }, { "id": 4, "v": 17 }, { "id": 5, "v": 10 }, { "id": 6, "v": 26 }, { "id": 7, "v": 73 }, { "id": 8, "v": 27 }, { "id": 9, "v": 14 }, { "id": 10, "v": 14 }] }, { "hc-key": "Udon Thani", "name": "อุดรธานี", "value": 254, "districts": [{ "id": 1, "v": 18 }, { "id": 2, "v": 22 }, { "id": 3, "v": 12 }, { "id": 4, "v": 24 }, { "id": 5, "v": 14 }, { "id": 6, "v": 45 }, { "id": 7, "v": 28 }, { "id": 8, "v": 26 }, { "id": 9, "v": 35 }, { "id": 10, "v": 30 }] }, { "hc-key": "Nakhon Si Thammarat", "name": "นครศรีธรรมราช", "value": 127, "districts": [{ "id": 1, "v": 7 }, { "id": 2, "v": 16 }, { "id": 3, "v": 9 }, { "id": 4, "v": 19 }, { "id": 5, "v": 23 }, { "id": 6, "v": 21 }, { "id": 7, "v": 10 }, { "id": 8, "v": 14 }, { "id": 9, "v": 8 }, { "id": 10, "v": 0 }] }, { "hc-key": "Songkhla", "name": "สงขลา", "value": 183, "districts": [{ "id": 1, "v": 9 }, { "id": 2, "v": 8 }, { "id": 3, "v": 12 }, { "id": 4, "v": 47 }, { "id": 5, "v": 27 }, { "id": 6, "v": 23 }, { "id": 7, "v": 20 }, { "id": 8, "v": 22 }, { "id": 9, "v": 15 }] }, { "hc-key": "Si Sa Ket", "name": "ศรีสะเกษ", "value": 294, "districts": [{ "id": 1, "v": 33 }, { "id": 2, "v": 25 }, { "id": 3, "v": 56 }, { "id": 4, "v": 38 }, { "id": 5, "v": 27 }, { "id": 6, "v": 22 }, { "id": 7, "v": 19 }, { "id": 8, "v": 45 }, { "id": 9, "v": 29 }] }, { "hc-key": "Nonthaburi", "name": "นนทบุรี", "value": 102, "districts": [{ "id": 1, "v": 6 }, { "id": 2, "v": 7 }, { "id": 3, "v": 6 }, { "id": 4, "v": 9 }, { "id": 5, "v": 11 }, { "id": 6, "v": 12 }, { "id": 7, "v": 43 }, { "id": 8, "v": 8 }] }, { "hc-key": "Roi Et", "name": "ร้อยเอ็ด", "value": 323, "districts": [{ "id": 1, "v": 48 }, { "id": 2, "v": 51 }, { "id": 3, "v": 60 }, { "id": 4, "v": 49 }, { "id": 5, "v": 19 }, { "id": 6, "v": 24 }, { "id": 7, "v": 49 }, { "id": 8, "v": 23 }] }, { "hc-key": "Samut Prakan", "name": "สมุทรปราการ", "value": 154, "districts": [{ "id": 1, "v": 17 }, { "id": 2, "v": 14 }, { "id": 3, "v": 8 }, { "id": 4, "v": 9 }, { "id": 5, "v": 24 }, { "id": 6, "v": 17 }, { "id": 7, "v": 19 }, { "id": 8, "v": 46 }] }, { "hc-key": "Surin", "name": "สุรินทร์", "value": 261, "districts": [{ "id": 1, "v": 36 }, { "id": 2, "v": 19 }, { "id": 3, "v": 36 }, { "id": 4, "v": 24 }, { "id": 5, "v": 60 }, { "id": 6, "v": 35 }, { "id": 7, "v": 30 }, { "id": 8, "v": 21 }] }, { "hc-key": "Chiang Rai", "name": "เชียงราย", "value": 493, "districts": [{ "id": 1, "v": 46 }, { "id": 2, "v": 79 }, { "id": 3, "v": 114 }, { "id": 4, "v": 102 }, { "id": 5, "v": 17 }, { "id": 6, "v": 80 }, { "id": 7, "v": 55 }] }, { "hc-key": "Chaiyaphum", "name": "ชัยภูมิ", "value": 206, "districts": [{ "id": 1, "v": 6 }, { "id": 2, "v": 34 }, { "id": 3, "v": 20 }, { "id": 4, "v": 30 }, { "id": 5, "v": 35 }, { "id": 6, "v": 21 }, { "id": 7, "v": 60 }] }, { "hc-key": "Pathum Thani", "name": "ปทุมธานี", "value": 197, "districts": [{ "id": 1, "v": 24 }, { "id": 2, "v": 15 }, { "id": 3, "v": 39 }, { "id": 4, "v": 52 }, { "id": 5, "v": 22 }, { "id": 6, "v": 11 }, { "id": 7, "v": 16 }] }, { "hc-key": "Sakon Nakhon", "name": "สกลนคร", "value": 238, "districts": [{ "id": 1, "v": 41 }, { "id": 2, "v": 43 }, { "id": 3, "v": 24 }, { "id": 4, "v": 25 }, { "id": 5, "v": 37 }, { "id": 6, "v": 25 }, { "id": 7, "v": 43 }] }, { "hc-key": "Surat Thani", "name": "สุราษฎร์ธานี", "value": 106, "districts": [{ "id": 1, "v": 18 }, { "id": 2, "v": 14 }, { "id": 3, "v": 14 }, { "id": 4, "v": 15 }, { "id": 5, "v": 18 }, { "id": 6, "v": 12 }, { "id": 7, "v": 15 }] }, { "hc-key": "Kalasin", "name": "กาฬสินธุ์", "value": 183, "districts": [{ "id": 1, "v": 15 }, { "id": 2, "v": 27 }, { "id": 3, "v": 59 }, { "id": 4, "v": 45 }, { "id": 5, "v": 23 }, { "id": 6, "v": 14 }] }, { "hc-key": "Nakhon Pathom", "name": "นครปฐม", "value": 161, "districts": [{ "id": 1, "v": 13 }, { "id": 2, "v": 26 }, { "id": 3, "v": 23 }, { "id": 4, "v": 34 }, { "id": 5, "v": 38 }, { "id": 6, "v": 27 }] }, { "hc-key": "Nakhon Sawan", "name": "นครสวรรค์", "value": 253, "districts": [{ "id": 1, "v": 12 }, { "id": 2, "v": 21 }, { "id": 3, "v": 62 }, { "id": 4, "v": 40 }, { "id": 5, "v": 58 }, { "id": 6, "v": 60 }] }, { "hc-key": "Phetchabun", "name": "เพชรบูรณ์", "value": 183, "districts": [{ "id": 1, "v": 19 }, { "id": 2, "v": 45 }, { "id": 3, "v": 41 }, { "id": 4, "v": 27 }, { "id": 5, "v": 28 }, { "id": 6, "v": 23 }] }, { "hc-key": "Maha Sarakham", "name": "มหาสารคาม", "value": 135, "districts": [{ "id": 1, "v": 40 }, { "id": 2, "v": 18 }, { "id": 3, "v": 12 }, { "id": 4, "v": 29 }, { "id": 5, "v": 20 }, { "id": 6, "v": 16 }] }, { "hc-key": "Kanchanaburi", "name": "กาญจนบุรี", "value": 146, "districts": [{ "id": 1, "v": 32 }, { "id": 2, "v": 22 }, { "id": 3, "v": 27 }, { "id": 4, "v": 24 }, { "id": 5, "v": 41 }] }, { "hc-key": "Lop Buri", "name": "ลพบุรี", "value": 143, "districts": [{ "id": 1, "v": 48 }, { "id": 2, "v": 29 }, { "id": 3, "v": 23 }, { "id": 4, "v": 43 }, { "id": 5, "v": 0 }] }, { "hc-key": "Phra Nakhon Si Ayutthaya", "name": "พระนครศรีอยุธยา", "value": 124, "districts": [{ "id": 1, "v": 21 }, { "id": 2, "v": 28 }, { "id": 3, "v": 24 }, { "id": 4, "v": 26 }, { "id": 5, "v": 25 }] }, { "hc-key": "Phitsanulok", "name": "พิษณุโลก", "value": 140, "districts": [{ "id": 1, "v": 19 }, { "id": 2, "v": 16 }, { "id": 3, "v": 42 }, { "id": 4, "v": 20 }, { "id": 5, "v": 43 }] }, { "hc-key": "Rayong", "name": "ระยอง", "value": 61, "districts": [{ "id": 1, "v": 11 }, { "id": 2, "v": 17 }, { "id": 3, "v": 13 }, { "id": 4, "v": 10 }, { "id": 5, "v": 10 }] }, { "hc-key": "Ratchaburi", "name": "ราชบุรี", "value": 244, "districts": [{ "id": 1, "v": 32 }, { "id": 2, "v": 85 }, { "id": 3, "v": 56 }, { "id": 4, "v": 29 }, { "id": 5, "v": 42 }] }, { "hc-key": "Suphan Buri", "name": "สุพรรณบุรี", "value": 141, "districts": [{ "id": 1, "v": 18 }, { "id": 2, "v": 29 }, { "id": 3, "v": 41 }, { "id": 4, "v": 27 }, { "id": 5, "v": 26 }] }, { "hc-key": "Narathiwat", "name": "นราธิวาส", "value": 310, "districts": [{ "id": 1, "v": 52 }, { "id": 2, "v": 88 }, { "id": 3, "v": 92 }, { "id": 4, "v": 31 }, { "id": 5, "v": 47 }] }, { "hc-key": "Pattani", "name": "ปัตตานี", "value": 118, "districts": [{ "id": 1, "v": 26 }, { "id": 2, "v": 17 }, { "id": 3, "v": 17 }, { "id": 4, "v": 35 }, { "id": 5, "v": 23 }] }, { "hc-key": "Krabi", "name": "กระบี่", "value": 33, "districts": [{ "id": 1, "v": 10 }, { "id": 2, "v": 18 }, { "id": 3, "v": 5 }] }, { "hc-key": "Kamphaeng Phet", "name": "กำแพงเพชร", "value": 211, "districts": [{ "id": 1, "v": 54 }, { "id": 2, "v": 52 }, { "id": 3, "v": 45 }, { "id": 4, "v": 60 }] }, { "hc-key": "Chachoengsao", "name": "ฉะเชิงเทรา", "value": 242, "districts": [{ "id": 1, "v": 25 }, { "id": 2, "v": 49 }, { "id": 3, "v": 100 }, { "id": 4, "v": 68 }] }, { "hc-key": "Chanthaburi", "name": "จันทบุรี", "value": 82, "districts": [{ "id": 1, "v": 19 }, { "id": 2, "v": 25 }, { "id": 3, "v": 38 }] }, { "hc-key": "Chai Nat", "name": "ชัยนาท", "value": 70, "districts": [{ "id": 1, "v": 31 }, { "id": 2, "v": 39 }] }, { "hc-key": "Chumphon", "name": "ชุมพร", "value": 42, "districts": [{ "id": 1, "v": 12 }, { "id": 2, "v": 20 }, { "id": 3, "v": 10 }] }, { "hc-key": "Trang", "name": "ตรัง", "value": 44, "districts": [{ "id": 1, "v": 10 }, { "id": 2, "v": 10 }, { "id": 3, "v": 13 }, { "id": 4, "v": 11 }] }, { "hc-key": "Trat", "name": "ตราด", "value": 40, "districts": [{ "id": 1, "v": 40 }] }, { "hc-key": "Tak", "name": "ตาก", "value": 154, "districts": [{ "id": 1, "v": 31 }, { "id": 2, "v": 39 }, { "id": 3, "v": 84 }] }, { "hc-key": "Nakhon Nayok", "name": "นครนายก", "value": 50, "districts": [{ "id": 1, "v": 28 }, { "id": 2, "v": 22 }] }, { "hc-key": "Nakhon Phanom", "name": "นครพนม", "value": 122, "districts": [{ "id": 1, "v": 17 }, { "id": 2, "v": 42 }, { "id": 3, "v": 20 }, { "id": 4, "v": 43 }] }, { "hc-key": "Nan", "name": "น่าน", "value": 247, "districts": [{ "id": 1, "v": 87 }, { "id": 2, "v": 102 }, { "id": 3, "v": 58 }] }, { "hc-key": "Bueng Kan", "name": "บึงกาฬ", "value": 67, "districts": [{ "id": 1, "v": 19 }, { "id": 2, "v": 29 }, { "id": 3, "v": 19 }] }, { "hc-key": "Prachin Buri", "name": "ปราจีนบุรี", "value": 91, "districts": [{ "id": 1, "v": 30 }, { "id": 2, "v": 24 }, { "id": 3, "v": 37 }] }, { "hc-key": "Phayao", "name": "พะเยา", "value": 555, "districts": [{ "id": 1, "v": 167 }, { "id": 2, "v": 168 }, { "id": 3, "v": 220 }] }, { "hc-key": "Phang Nga", "name": "พังงา", "value": 41, "districts": [{ "id": 1, "v": 13 }, { "id": 2, "v": 28 }] }, { "hc-key": "Phatthalung", "name": "พัทลุง", "value": 58, "districts": [{ "id": 1, "v": 22 }, { "id": 2, "v": 13 }, { "id": 3, "v": 23 }] }, { "hc-key": "Phichit", "name": "พิจิตร", "value": 99, "districts": [{ "id": 1, "v": 26 }, { "id": 2, "v": 28 }, { "id": 3, "v": 45 }] }, { "hc-key": "Phetchaburi", "name": "เพชรบุรี", "value": 74, "districts": [{ "id": 1, "v": 18 }, { "id": 2, "v": 27 }, { "id": 3, "v": 29 }] }, { "hc-key": "Phrae", "name": "แพร่", "value": 61, "districts": [{ "id": 1, "v": 17 }, { "id": 2, "v": 21 }, { "id": 3, "v": 23 }] }, { "hc-key": "Phuket", "name": "ภูเก็ต", "value": 56, "districts": [{ "id": 1, "v": 20 }, { "id": 2, "v": 12 }, { "id": 3, "v": 24 }] }, { "hc-key": "Mukdahan", "name": "มุกดาหาร", "value": 141, "districts": [{ "id": 1, "v": 52 }, { "id": 2, "v": 89 }] }, { "hc-key": "Mae Hong Son", "name": "แม่ฮ่องสอน", "value": 210, "districts": [{ "id": 1, "v": 104 }, { "id": 2, "v": 106 }] }, { "hc-key": "Yasothon", "name": "ยโสธร", "value": 41, "districts": [{ "id": 1, "v": 15 }, { "id": 2, "v": 13 }, { "id": 3, "v": 13 }] }, { "hc-key": "Yala", "name": "ยะลา", "value": 85, "districts": [{ "id": 1, "v": 24 }, { "id": 2, "v": 27 }, { "id": 3, "v": 34 }] }, { "hc-key": "Ranong", "name": "ระนอง", "value": 19, "districts": [{ "id": 1, "v": 19 }] }, { "hc-key": "Lampang", "name": "ลำปาง", "value": 268, "districts": [{ "id": 1, "v": 31 }, { "id": 2, "v": 78 }, { "id": 3, "v": 55 }, { "id": 4, "v": 104 }] }, { "hc-key": "Lamphun", "name": "ลำพูน", "value": 102, "districts": [{ "id": 1, "v": 45 }, { "id": 2, "v": 57 }] }, { "hc-key": "Loei", "name": "เลย", "value": 137, "districts": [{ "id": 1, "v": 21 }, { "id": 2, "v": 41 }, { "id": 3, "v": 42 }, { "id": 4, "v": 33 }] }, { "hc-key": "Satun", "name": "สตูล", "value": 40, "districts": [{ "id": 1, "v": 24 }, { "id": 2, "v": 16 }] }, { "hc-key": "Samut Songkhram", "name": "สมุทรสงคราม", "value": 28, "districts": [{ "id": 1, "v": 28 }] }, { "hc-key": "Samut Sakhon", "name": "สมุทรสาคร", "value": 57, "districts": [{ "id": 1, "v": 7 }, { "id": 2, "v": 10 }, { "id": 3, "v": 26 }] }, { "hc-key": "Sa Kaeo", "name": "สระแก้ว", "value": 178, "districts": [{ "id": 1, "v": 57 }, { "id": 2, "v": 44 }, { "id": 3, "v": 77 }] }, { "hc-key": "Saraburi", "name": "สระบุรี", "value": 120, "districts": [{ "id": 1, "v": 20 }, { "id": 2, "v": 47 }, { "id": 3, "v": 12 }, { "id": 4, "v": 41 }] }, { "hc-key": "Sing Buri", "name": "สิงห์บุรี", "value": 41, "districts": [{ "id": 1, "v": 41 }] }, { "hc-key": "Sukhothai", "name": "สุโขทัย", "value": 100, "districts": [{ "id": 1, "v": 23 }, { "id": 2, "v": 25 }, { "id": 3, "v": 24 }, { "id": 4, "v": 28 }] }, { "hc-key": "Nong Khai", "name": "หนองคาย", "value": 79, "districts": [{ "id": 1, "v": 21 }, { "id": 2, "v": 28 }, { "id": 3, "v": 30 }] }, { "hc-key": "Nong Bua Lam Phu", "name": "หนองบัวลำภู", "value": 167, "districts": [{ "id": 1, "v": 63 }, { "id": 2, "v": 46 }, { "id": 3, "v": 58 }] }, { "hc-key": "Ang Thong", "name": "อ่างทอง", "value": 47, "districts": [{ "id": 1, "v": 21 }, { "id": 2, "v": 26 }] }, { "hc-key": "Amnat Charoen", "name": "อำนาจเจริญ", "value": 62, "districts": [{ "id": 1, "v": 23 }, { "id": 2, "v": 39 }] }, { "hc-key": "Uttaradit", "name": "อุตรดิตถ์", "value": 93, "districts": [{ "id": 1, "v": 13 }, { "id": 2, "v": 47 }, { "id": 3, "v": 33 }] }, { "hc-key": "Uthai Thani", "name": "อุทัยธานี", "value": 32, "districts": [{ "id": 1, "v": 17 }, { "id": 2, "v": 15 }] }];
+
+        Highcharts.mapChart('container', {
+            chart: {
+                map: 'countries/th/th-all',
+                backgroundColor: 'transparent',
+                style: { fontFamily: 'Sarabun' }
+            },
+            title: { text: '' },
+            credits: { enabled: false },
+            mapNavigation: {
+                enabled: true,
+                buttonOptions: { verticalAlign: 'middle', align: 'left' }
+            },
+            colorAxis: {
+                min: 0,
+                max: 600,
+                minColor: '#f0fdf4',
+                maxColor: '#15803d',
+                labels: { style: { color: '#94a3b8' } }
+            },
+            tooltip: {
+                useHTML: true,
+                headerFormat: '',
+                pointFormat: '<div class="text-center"><span class="font-bold text-gray-700">{{point.name}}</span><br><span class="text-green-600 font-bold text-lg">{{point.value}}</span> <span class="text-xs text-gray-400">คะแนน</span></div>',
+                backgroundColor: 'rgba(255,255,255,0.95)',
+                borderColor: '#e2e8f0',
+                borderRadius: 8,
+                padding: 12,
+                shadow: true
+            },
+            series: [{
+                data: mapData,
+                name: 'คะแนนเสียง',
+                joinBy: ['name', 'hc-key'],
+                nullColor: '#f1f5f9',
+                borderColor: '#cbd5e1',
+                borderWidth: 1,
+                states: { hover: { color: '#facc15', borderColor: '#a16207' } },
+                dataLabels: {
+                    enabled: true,
+                    format: '{{point.name}}',
+                    style: { fontWeight: 'normal', color: '#334155', textOutline: 'none', fontSize: '9px' }
+                },
+                point: {
+                    events: {
+                        click: function () { updateDetails(this); }
+                    }
+                }
+            }]
+        });
+
+        const introView = document.getElementById('intro-view');
+        const detailView = document.getElementById('detail-view');
+        const topList = document.getElementById('top-provinces-list');
+
+        const sortedData = [...mapData].sort((a, b) => b.value - a.value).slice(0, 10);
+        sortedData.forEach((item, index) => {
+            const tr = document.createElement('tr');
+            tr.className = "border-b border-gray-50 last:border-0 hover:bg-green-50 transition-colors cursor-pointer group";
+            tr.innerHTML = `
+                <td class="py-3 px-3 text-gray-400 w-8 text-xs font-mono">${index + 1}.</td>
+                <td class="py-3 font-medium text-gray-700 group-hover:text-green-800 transition-colors">${item.name}</td>
+                <td class="py-3 px-3 text-right font-bold text-green-600">${item.value.toLocaleString()}</td>
+            `;
+            tr.onclick = () => { updateDetails(item); };
+            topList.appendChild(tr);
+        });
+
+        function updateDetails(data) {
+            introView.classList.add('hidden');
+            detailView.classList.remove('hidden');
+            document.getElementById('prov-name').textContent = data.name;
+            document.getElementById('prov-score').textContent = data.value.toLocaleString();
+
+            const tbody = document.getElementById('district-list');
+            tbody.innerHTML = '';
+
+            const districts = data.districts || [];
+            if (districts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="2" class="p-8 text-center text-gray-400 text-xs">ไม่มีข้อมูลรายเขต</td></tr>';
+            } else {
+                districts.sort((a, b) => b.v - a.v);
+                const maxVal = districts[0].v;
+                districts.forEach(d => {
+                    const percent = maxVal > 0 ? (d.v / maxVal) * 100 : 0;
+                    const tr = document.createElement('tr');
+                    tr.className = "district-row border-b border-white/10 last:border-0";
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 w-20 align-middle text-gray-700 font-mono text-xs">เขต ${d.id}</td>
+                        <td class="py-3 px-4 relative align-middle">
+                            <div class="flex justify-between items-center relative z-10">
+                                <span class="font-semibold text-gray-800 text-sm">${d.v.toLocaleString()}</span>
+                            </div>
+                            <div class="absolute left-0 bottom-1 top-1 bg-green-200/60 rounded-r-md" style="width: ${percent}%; opacity: 0.6;"></div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        document.getElementById('back-btn').addEventListener('click', () => {
+            detailView.classList.add('hidden');
+            introView.classList.remove('hidden');
+        });
+    </script>
+</body>
+
+</html>
